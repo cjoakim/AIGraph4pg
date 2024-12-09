@@ -1,0 +1,12 @@
+SELECT * FROM cypher('{{graphname}}', $$
+MATCH (a:Case), (b:Case)
+WHERE a.id = {{id1}} AND b.id = {{id2}}
+CREATE (a)-[e:{{relname}} 
+{case_id: '{{case_id}}',
+ cited_case_id: '{{cited_case_id}}',
+ case_name: '{{case_name}}',
+ cited_case_name: '{{cited_case_name}}',
+ cited_case_year: {{cited_case_year}}
+}]->(b)
+RETURN e
+$$) as (e agtype);

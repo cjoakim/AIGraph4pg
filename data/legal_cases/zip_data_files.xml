@@ -1,0 +1,35 @@
+<project name="zip_data_files" default="zip_data_files" basedir=".">
+
+    <description>
+        Apache Ant script to create a zip data files, containing the
+        primary PostgreSQL datasets, for storage in GitHub.
+        Chris Joakim, Microsoft
+        Use: ant -f zip_data_files.xml
+    </description>
+
+    <target name="zip_data_files" >
+
+        <delete file="age_load_statments.zip" quiet="true"/>
+        <delete file="legal_cases.zip" quiet="true"/>
+        <delete file="case_id_dict.zip" quiet="true"/>
+
+        <zip destfile="age_load_statments.zip"
+             includes="age_load_statments.sql"
+             basedir="."
+             update="true" />
+
+        <zip destfile="legal_cases.zip"
+             includes="legal_cases.sql"
+             basedir="."
+             update="true" />
+
+        <zip destfile="case_url_dict.zip"
+             includes="case_url_dict.json"
+             basedir="."
+             update="true" />
+
+        <echo message="done." />
+
+    </target>
+
+</project>

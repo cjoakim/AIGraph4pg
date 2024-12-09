@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+{% block title %} AIGraph4pg : {{ query_type }} {% endblock %}
+
+{% block content %}
+<div class="container">
+  <h5>{{ query_type }}</h5>
+  <br>
+  <form method="post" id="form" name="form">
+    <div class="row align-items-center">
+      <div class="col-2 dropdown">
+        <button class="btn btn-outline-primary mb-3 dropdown-toggle" type="button"
+          id="sample_query_btn" data-bs-toggle="dropdown" aria-expanded="false">
+          {{ query_type }}
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          {% for query in sample_queries %}
+            <li><a class="dropdown-item" href="#">{{ query['name'] }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="query_text" class="form-label"></label>
+      <textarea rows='6' class="form-control fs-4" id="query_text" name="query_text" value="{{ query_text }}">{{ query_text }}</textarea>
+    </div>
+
+    <div class="mb-6 ">
+      <button type="submit" id="submit_button" name="submit_button" class="btn btn-outline-primary mb-3">Submit</button>
+      <span class="text-muted fs-5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ elapsed_seconds }}</span>
+    </div>
+    <p class="text-danger fw-bold" id="error_message" name="error_message">{{ error_message }}</p>
+  </form>
+</div>
+
+<hr>
+
+<div class="container fs-5" id="results_div" name="results_div">
+
+  <h5>{{ tuples_results_message }}</h5>
+  <pre>
+  <code>
+{{ tuples_results }}
+  </code>
+  </pre>
+  
+  <hr>
+
+  <h5>{{ json_results_message }}</h5>
+  <pre>
+  <code>
+{{ json_results }}
+  </code>
+  <code>
+{{ elapsed }}
+  </code>
+  </pre>
+  <br>
+  <br>
+</div>
+
+<hr/>
+
+<pre>
+
+
+</pre>
+<div class="container">
+  <h1>{{ vis_message }}</h1>
+  <h3 class="text-body fw-bold" id="legal_case_info" name="legal_case_info"></h3>
+
+  <div class="container-fluid" id="d3viz" name="d3viz">
+      <svg style="width:95%;height:1024px;">
+        <g></g>
+    </svg>
+  </div>
+
+  <div class="invisible" id="inline_graph_json" name="inline_graph_json">
+    {{ inline_graph_json }}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script type="application/text" id="queries">
+{{ queries_json}}
+</script>
+
+<script>
+const form = document.getElementById("form");
+const query_button  = document.getElementById("sample_query_btn");
+const query_text    = document.getElementById("query_text");
+const submit_button = document.getElementById("submit_button");
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+const legalCaseInfo = document.getElementById("legal_case_info");
+
+var queries_list = {};
+$.getJSON( "/sample_queries", function(data) {
+  queries_list = data;
+});
+
+submit_button.addEventListener('click', 
+    function(event) {
+      event.preventDefault();
+      submit_button.disabled = true;
+      submit_button.textContent = "Processing...";
+      form.submit();
+    }
+);
+
+$(document).ready(function() {
+  console.log("document ready");
+  dropdownItems.forEach(item => {
+    item.addEventListener('click', function(event) {
+      selected_query_name = event.currentTarget.innerHTML;
+      queries_list.forEach(query => {
+        if (query["name"].includes(selected_query_name)) {
+          query_text.value = query["text"];
+        }
+      });
+      return;
+    });
+  });
+
+  var graph_json = document.getElementById("inline_graph_json").innerHTML.trim().replaceAll("'", "\"");
+  var graph_obj = JSON.parse(graph_json);
+  console.log(JSON.stringify(graph_obj, null, 2));
+
+  // Get the graph_data, if present.  Not all queries will have graph data.
+  if (graph_obj.hasOwnProperty('graph_data')) {
+    var graph_data = graph_obj['graph_data']; 
+    var nodes = graph_data['nodes'];
+    var edges = graph_data['edges'];
+    console.log('nodes count: ' + nodes.length);
+    console.log('edges count: ' + edges.length);
+
+    var width = document.getElementById("d3viz").offsetWidth
+    var height = document.getElementById("d3viz").offsetHeight
+    console.log('svg.width: ' + width + ', svg.height: ' + height);
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    function nodeClicked(e, d) {
+      console.log(d)
+      var value = d.id + ", " + d.name
+      value = value.replace(/&amp;/g, "&");
+      if (d.year) {
+        value = value + ", " + d.year;
+      }
+      console.log("nodeClicked: " + value);
+      legalCaseInfo.innerHTML = value;
+    }
+    function nodeDblClicked(e, d) {
+      console.log("nodeDblClicked: " + d.name);
+    }
+    function nodeMouseOver(e, d) {
+      //console.log("nodeMouseOver: " + d.name);
+    }
+    function nodeMouseOut(e, d) {
+      //console.log("nodeMouseOut: " + d.name);
+    }
+    function initZoom() {
+      d3.select('svg').call(zoom);
+    }
+    function handleZoom(e) {
+      console.log('handle zoom');
+      d3.select('svg g').attr('transform', e.transform);
+    }
+    let zoom = d3.zoom().on('zoom', handleZoom);
+
+    generateGraphViz(nodes, edges);
+
+    function generateGraphViz(nodes, edges) {
+      console.log("generateGraphViz");
+
+      var typeScale = d3.scaleOrdinal()
+        .domain(["library", "author", "maintainer"])
+        .range(["#75739F", "#41A368", "#FE9922"]);
+
+      var marker = d3.select("svg").append('defs')
+          .append('marker')
+          .attr("id", "Triangle")
+          .attr("refX", 12)
+          .attr("refY", 6)
+          .attr("markerUnits", 'userSpaceOnUse')
+          .attr("markerWidth", 12)
+          .attr("markerHeight", 18)
+          .attr("orient", 'auto')
+          .append('path')
+          .attr("d", 'M 0 0 12 6 0 12 3 6');
+
+      var nodeHash = {};
+      nodes.forEach(n => {
+          nodeHash[n.id] = n;
+      });
+      edges.forEach(edge => {
+          edge.weight = parseInt(edge.weight);
+          edge.source = nodeHash[edge.source];
+          edge.target = nodeHash[edge.target];
+      });
+      var linkForce = d3.forceLink(edges);
+
+      var simulation = d3.forceSimulation()
+          .force("charge", d3.forceManyBody().strength(-2000))
+          .force("center", d3.forceCenter().x(800).y(500))
+          .force("link", linkForce)
+          .nodes(nodes)
+          .on("tick", forceTick);
+
+      d3.select("svg g").selectAll("line.link")
+          .data(edges, d => `${d.source.id}-${d.target.id}`)
+          .enter()
+          .append("line")
+          .attr("class", "link")
+          .style("opacity", 1.0)
+          .style("stroke", "red")
+          .style("stroke-width", d => d.weight);
+
+      d3.selectAll("line").attr("marker-end", "url(#Triangle)");
+
+      var nodeEnter = d3.select("svg g").selectAll("g.node")
+          .data(nodes, d => d.id)
+          .enter()
+          .append("g")
+          .attr("class", "node");
+
+      nodeEnter.append("circle")
+          .attr("r", 5)
+          .style("fill", d => typeScale(d.type));
+      nodeEnter.append("text")
+          .style("text-anchor", "middle")
+          .attr("y", 15)
+          .text(d => d.id);
+
+      // Register mouse event handler functions for each Node
+
+      d3.selectAll("g.node").on("click", function(e, d) {
+          nodeClicked(e, d);
+      });
+      d3.selectAll("g.node").on("dblclick", function(e, d) {
+          nodeDblClicked(e, d);
+      });
+      d3.selectAll("g.node").on("mouseover", function(e, d) {
+          nodeMouseOver(e, d);
+      });
+      d3.selectAll("g.node").on("mouseout", function(e, d) {
+          nodeMouseOut(e, d);
+      });
+
+      function forceTick() {
+          d3.selectAll("line.link")
+              .attr("x1", d => d.source.x)
+              .attr("x2", d => d.target.x)
+              .attr("y1", d => d.source.y)
+              .attr("y2", d => d.target.y);
+          d3.selectAll("g.node")
+              .attr("transform", d => `translate(${d.x},${d.y})`);
+      }
+      initZoom();
+    }
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+SELECT * FROM cypher('{{graphname}}', $$
+CREATE (:Case {
+id: {{id}},
+url: '{{url}}',
+name: '{{name}}',
+court_id: {{court_id}},
+court: '{{court}}',
+decision_year: {{decision_year}},
+citation_count: {{citation_count}}
+}) $$) as (v agtype);

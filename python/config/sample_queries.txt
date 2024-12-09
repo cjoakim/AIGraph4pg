@@ -1,0 +1,231 @@
+# This file defines the set of common queries used in the UI and is
+# optimized for query editing, especially for multi-line query text values.
+# Each query contains a --name, --text (n-lines), and --end marker.
+# The --name value should be prefixed with either SQL: or CYPHER:.
+# At runtime this file is read by class SampleQueries.
+
+--name ADMIN: PostgreSQL Active Extensions
+--text
+select oid, extname, extversion
+ from  pg_extension
+ order by extname, extversion;
+--end
+
+--name ADMIN: PostgreSQL Available Extensions
+--text
+select name, default_version, installed_version, comment
+ from  pg_available_extensions
+ where installed_version is null
+ order by name;
+--end
+
+--name ADMIN: Display the pg_settings
+--text
+select name, setting, category, short_desc
+ from  pg_settings
+ order by name;
+--end
+
+--name ADMIN: Display the legal_cases table columns
+--text
+select  ordinal_position, table_catalog, table_name, column_name, data_type, character_maximum_length
+  from  information_schema.columns
+  where table_name = 'legal_cases'
+  order by ordinal_position;
+--end
+
+--name ADMIN: List the AGE graphs
+--text
+select graphid, name, namespace
+ from  ag_catalog.ag_graph 
+ order by graphid;
+--end
+
+--name ADMIN: List the AGE graph labels
+--text
+select name, graph, id, kind, relation, seq_name
+ from  ag_catalog.ag_label
+ order by name;
+--end
+
+
+--name SQL: Count legal_cases rows
+--text
+select count(*) from legal_cases;
+--end
+
+--name SQL: Show the several seed legal_cases
+--text
+select id, name_abbreviation, case_url, to_char(decision_date, 'YYYY-MM-DD'), court_name, citation_count
+ from  legal_cases
+ where id in (999494, 996526, 807253, 762307, 568326, 660528, 1283434, 4978096)
+ order by id asc
+ limit 10;
+--end
+
+--name SQL: Show top 10 legal_cases by citation count
+--text
+select id, citation_count, name_abbreviation, case_url, to_char(decision_date, 'YYYY-MM-DD'), court_name
+ from  legal_cases
+ order by citation_count desc
+ limit 10;
+--end
+
+--name SQL: Fuzzy match on legal_case name
+--text
+select id, name from legal_cases
+ where name like '%Clothing Company%'
+ order by name
+ limit 5
+--end
+
+--name SQL: Legal Case counts by decision_date
+--text
+select count(decision_date) as count, to_char(decision_date, 'YYYY-MM-DD')
+ from  legal_cases
+ group by decision_date
+ having count(decision_date) > 4
+ order by count(decision_date) desc
+--end
+
+# JSONB links
+# https://www.postgresql.org/docs/9.5/functions-json.html
+# https://hashrocket.com/blog/posts/dealing-with-nested-json-objects-in-postgresql
+# https://neon.tech/docs/functions/json_array_elements
+
+--name SQL: Show the json_data (JSONB column) for a case
+--text
+select id, json_data
+ from  legal_cases
+ where id = 594079
+--end
+
+--name SQL: Fuzzy match on case name, get JSONB id
+--text
+select json_data->'id'
+ from  legal_cases
+ where name like '%Clothing Company%'
+ limit 5;
+--end
+
+--name SQL: JSONB nested query where jurisdiction is not Washington
+--text
+select id, json_data ->> 'id' as json_id, json_data -> 'jurisdiction' ->> 'name_long' as jname
+ from  legal_cases
+ where json_data -> 'jurisdiction' ->> 'name_long'  not like 'Washington'
+ limit 10;
+--end
+
+--name SQL: JSONB nested query on decision_date
+--text
+select id, json_data
+ from  legal_cases
+ where json_data @> '{"decision_date": "1967-04-13"}'
+ limit 5;
+--end
+
+
+--name SQL: Match on a deeply nested JSONB citation value
+--text
+select id, name, json_data
+ from  legal_cases
+ where jsonb_path_exists(json_data, '$.cites_to ? (@.cite == "232 P.2d 262")')
+ limit 5;
+--end
+
+
+--name CYPHER: Count all vertices in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (n) RETURN count(n) as count $$)
+  as (v agtype);
+--end
+
+--name CYPHER: Count Case vertices in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (lib:Case) RETURN count(*) $$)
+  as (v agtype);
+--end
+
+--name CYPHER: Count all edges in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH ()-[r]->() RETURN count(r) as count $$)
+  as (e agtype);
+--end
+
+--name CYPHER: Count all the 'cites' edges in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH ()-[r:cites]->() RETURN count(r) as count $$)
+  as (e agtype);
+--end
+
+--name CYPHER: Match a Case
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c:Case {id:594079}) RETURN c $$)
+  as (c agtype);
+--end
+
+--name CYPHER: Show 5 Case vertices in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c:Case) RETURN c limit 5 $$)
+  as (v agtype);
+--end
+
+--name CYPHER: Show 5 'cites' edges in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c1:Case)-[r:cites]-(c2:Case) RETURN r limit 5 $$)
+  as (v agtype);
+--end
+
+--name CYPHER: Show 5 Cases in court_id 9029
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (v:Case {court_id:9029}) RETURN v limit 5 $$)
+  as (v agtype);
+--end
+
+--name CYPHER: List n-number of Cases and their IDs, ordered
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c:Case) RETURN c.id as id, c.name as name ORDER BY c.id limit 5 $$)
+  as (id agtype, name agtype);
+--end
+
+--name CYPHER: Show 3 'Case-citation-Case-citation-Case' paths in graph
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c1:Case)-[r1:cites]->(c2:Case)-[r2:cites]->() RETURN r1, r2 limit 3 $$)
+  as (r1 agtype, r2 agtype);
+--end
+
+--name CYPHER: Show citations for a Case  (visualized)
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c:Case {id: 999494})-[r:cites]->() RETURN c,r limit 50 $$)
+  as (c agtype, r agtype);
+--end
+
+--name CYPHER: Traverse citations for a Case  (visualized)
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c:Case {id: 999494})-[r:cites*1..2]->(c2:Case) RETURN c,r limit 100 $$)
+  as (c agtype, r agtype);
+--end
+
+--name CYPHER: Show citation paths to a Case
+--note https://maxdemarzi.com/2017/11/17/bill-of-materials-in-neo4j/
+--text
+select * from ag_catalog.cypher('legal_cases',
+  $$ MATCH (c1:Case {id:594079})-[r:citation*]-(c2:Case) RETURN * $$)
+  as (c1 agtype, r agtype, c2 agtype);
+--end
+
+
+
+# Seeds ['999494', '996526', '807253', '762307', '568326', '660528', '1283434', '4978096']
