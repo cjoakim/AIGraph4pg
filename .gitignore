@@ -23,6 +23,7 @@ data/legal_cases/legal_cases.sql
 data/legal_cases/case_url_dict.json
 data/legal_cases/data/
 data/qrp/
+docs/developer*
 docs/roadmap*
 python/dev*
 
