@@ -121,7 +121,7 @@ if (cli_arg_present $args "provision") {
         --server-name $pg_server_name `
         --subscription $azure_subscription `
         --name azure.extensions `
-        --value AGE,VECTOR > .\tmp\az_pg_flex_enable_extensions.json
+        --value AGE,VECTOR,AZURE_AI > .\tmp\az_pg_flex_enable_extensions.json
 
     # You can later reset the password with:
     # az postgres flexible-server update -n gbbcjpggraph1server -g gbbcjpggraph1 -p <new-password>
