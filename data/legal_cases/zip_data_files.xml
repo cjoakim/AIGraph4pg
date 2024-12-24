@@ -28,6 +28,11 @@
              basedir="."
              update="true" />
 
+        <zip destfile="pg_dump_legal_cases.zip"
+             includes="pg_dump_legal_cases.sql"
+             basedir="."
+             update="true" />
+
         <echo message="done." />
 
     </target>

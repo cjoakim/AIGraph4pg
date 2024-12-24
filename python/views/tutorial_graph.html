@@ -2,10 +2,42 @@
 {% block title %} AIGraph4pg : Tutorial Info {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container w-75">
   <h5>Tutorial : Graphs, Apache AGE, and openCypher</h5>
   <p></p>
+  <hr>
+
+  <h5>Graph Terminology</h5>
+  <p></p>
+  There are several types of <strong>graph databases</strong>.
+  <p></p>
+  One of the most common is called <strong>Labeled Property Graph</strong> or
+  <strong>LPG</strong>.
+  <p></p>
+  With LPG graphs, you compose the graph of <strong>nodes</strong> and <strong>edges</strong>.
+  <p></p>
+  Nodes represent the <strong>entities</strong> in the graph and the 
+  edges represent the <strong>relationships</strong> between the nodes or entities.
+  <p></p>
+  These relationships or edges are "first class citizens" within graph databases,
+  and the relationships are often more important than the nodes themselves.
+  While relational databases offer foreign key constraints, the edges
+  in a graph database are more nuanced and expressive.
+  <p></p>
+
+  <p>
+    <ul>
+      <li>Graph : A collection of nodes and edges</li>
+      <li>Node : A vertex in a graph</li>
+      <li>Edge : A connection between two nodes</li>
+      <li>Property : Key-value pair associated with a node or edge</li>
+      <li>Label : A tag attached to a node or edge</li>
+    </ul>
+  <p align="center">
+    <img src="static/img/sample-graph.png" width="80%">
+  </p>
 </div>
+
 
 {% endblock %}
 

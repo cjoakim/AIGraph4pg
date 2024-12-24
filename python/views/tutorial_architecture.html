@@ -1,0 +1,236 @@
+{% extends "layout.html" %}
+{% block title %} AIGraph4pg : Tutorial Info {% endblock %}
+
+{% block content %}
+<div class="container w-75">
+  <h5>Tutorial : Solution Architecture</h5>
+  <p></p>
+  <hr>
+
+  <h5>Python</h5>
+  <p></p>
+  This reference implementation was developed with the <strong>Python</strong>
+  programming language, but this isn't required.  There are PostgreSQL driver
+  libraries in multiple programming languages such as Java, C#, Node.js/TypeScript,
+  and others.  Your solution can be built with your choice of a programming
+  language that supports PostgreSQL.
+  <p></p>
+
+  This Python implementation makes use of the following primary libraries, which are available
+  at the <a href="https://pypi.org/" target="_blank">Python Package Index (PyPI)</a>.
+
+  <ul>
+    <li>
+      <a href="https://pypi.org/project/psycopg/" target="_blank">psycopg</a>
+      PostgreSQL driver supporting both Synchronous and Asynchronous calls
+    </li>
+    <li>
+      <a href="https://pypi.org/project/fastapi/" target="_blank">fastapi</a>
+      Modern Asynchronous Web Framework
+    </li>
+    <li>
+      <a href="https://pypi.org/project/openai/" target="_blank">openai</a>
+      Provides convenient access to the Azure OpenAI REST API
+    </li>
+    <li> 
+      <a href="https://pypi.org/project/ageqrp/" target="_blank">ageqrp</a>
+      Small library used to parse the results of Apache AGE queries with psycopg
+    </li>
+    <li> 
+      <a href="https://pypi.org/project/Hypercorn/" target="_blank">hypercorn</a>
+      Web server which runs your fastapi python module
+    </li>
+  </ul>
+
+  So as to focus on the PostgreSQL and Apache AGE aspects of the solution,
+  the codebase intentionally doesn't use an Object-Relational Manager (ORM) such as 
+  <a href="https://pypi.org/project/SQLAlchemy/" target="_blank">SQLAlchemy</a>.
+  You are free, of course, to use any programming language and set of libraries
+  for your implementation.
+  <p></p>
+
+  <hr>
+
+  <h5>Development Environment</h5>
+  <p></p>
+
+  This solution was developed with the following recommended development tools:
+  <p></p>
+
+  <ul>
+    <li>
+      <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code (VSC)</a>
+      VSC is a lightweight yet extensible and full featured text editor and
+      Integrated Development Environment (IDE).
+      It is produced by Microsoft and free of charge.
+      It is available for Windows, Linux, and MacOS.
+    </li>
+    <li>
+      <a href="https://github.com/features/copilot" target="_blank">GitHub Copilot</a>
+      AI-assisted code completion tool that works with VSC.
+    </li>
+    <li>
+      <a href="https://www.postgresql.org/docs/current/app-psql.html" target="_blank">psql</a>
+      A terminal-based front-end to PostgreSQL.
+      You can execute psql from within Windows PowerShell or Linux/macOS terminal
+      to interact with your Azure PostgreSQL database.
+    </li>
+    <li>
+      <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop</a>
+      and <a href="https://docs.docker.com/compose/" target="_blank">Docker Compose</a>
+      are recommended tools for creating and testing container-based applications.
+
+      The use of these tools, however, is not further discussed in this tutorial
+      as they aren't necessary to execute the solution from your development computer.
+
+      See the Deployment Environment section, below, that lists two execellent Azure PaaS
+      services where your Docker containers can be deployed to.
+    </li>
+  </ul>
+  <p></p>
+
+  <hr>
+
+  <h5>Deployment Environment</h5>
+  <p></p>
+
+  The following Azure Platform as a Service (PaaS) services are required
+  for this solution:
+  <p></p>
+  <ul>
+    <li>
+      <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/overview" target="_blank">Azure Database for PostgreSQL - Flexible Server</a>
+      Azure Database for PostgreSQL is a fully managed database service that provides
+      Enterprise functionality over open-source PostgreSQL.
+
+      The PostgreSQL open ecosystem supports <strong>extensions</strong> to the database;
+      this is one of the compelling features of PostgreSQL. For example, the 
+      <strong>postgis</strong> extension supports GPS and spatial applications while <thead>
+      <strong>pg_cron</strong> supports job schedling similar to linux.
+      <p></p>
+      This reference implementation uses the following extensions:
+      <ul>
+        <li>
+          <a href="https://learn.microsoft.com/en-us/azure/postgresql/extensions/concepts-extensions-versions#age" target="_blank">age</a>
+          Apache AGE project for graph database functionality with openCypher.
+        </li>
+        <li>
+          <a href="https://learn.microsoft.com/en-us/azure/postgresql/extensions/concepts-extensions-versions#vector" target="_blank">vector</a>
+          Standard vector search functionality (but not DiskANN vector search)
+        </li>
+        <li>
+          <a href="https://learn.microsoft.com/en-us/azure/postgresql/extensions/concepts-extensions-versions#azure_ai" target="_blank">azure_ai</a>
+          Provides Azure AI and ML Services integration for PostgreSQL.
+        </li>
+      </ul>
+      <p></p>
+      See the <a href="https://learn.microsoft.com/en-us/azure/postgresql/extensions/concepts-extensions-versions" target="_blank">complete list</a>
+      of supported extensions for Azure Database for PostgreSQL.
+      <p></p>
+      This reference implementation uses one relational table, named <strong>legal_cases</strong>,
+      which has the following structure as shown in the following psql output.
+      Note that there is a <strong>jsonb</strong> column as well as a 
+      <strong>vector(1536)</strong> for the embeddings generated by the Azure OpenAI 
+      text-embedding-ada-002 model described later on this page.
+      <pre>
+dev=> \d legal_cases
+Table "public.legal_cases"
+Column              |          Type           | Collation | Nullable |                 Default
+--------------------+-------------------------+-----------+----------+-----------------------------------------
+  id                | bigint                  |           | not null | nextval('legal_cases_id_seq'::regclass)
+  name              | character varying(1024) |           |          |
+  name_abbreviation | character varying(1024) |           |          |
+  case_url          | character varying(1024) |           |          |
+  decision_date     | date                    |           |          |
+  court_name        | character varying(1024) |           |          |
+  citation_count    | integer                 |           |          |
+  text_data         | text                    |           |          |
+  json_data         | jsonb                   |           |          |
+  embedding         | vector(1536)            |           |          |
+Indexes:
+  "legal_cases_pkey" PRIMARY KEY, btree (id)
+  "idx_legal_cases_citation_count" btree (citation_count)
+  "idx_legal_cases_court_name" btree (court_name)
+  "idx_legal_cases_decision_date" btree (decision_date)
+  "idx_legal_cases_ivfflat_embedding" ivfflat (embedding vector_cosine_ops) WITH (lists='50')
+  "idx_legal_cases_json_data_gin" gin (json_data)
+  "idx_legal_cases_name_abbreviation" btree (name_abbreviation)
+      </pre>
+      <p></p>
+      This reference implementation also uses one <strong>Apache AGE graph</strong>,
+      which is also named <strong>legal_cases</strong>.  This name does not have to 
+      correspond to the above relational table name, as they are two distinct objects
+      in PostgreSQL.  They are populated separately.
+      <p></p>
+      The graph is described in the Graph Queries page of this application.
+    </li>
+    <li>
+      <a href="https://azure.microsoft.com/en-us/products/ai-services/openai-service/" target="_blank">Azure OpenAI</a>
+      PaaS service to access and invoke, via a Python library, the Artificial Intelligence (AI)
+      models implemented by OpenAI.
+
+      Witnin your Azure OpenAI service, these two model deployments are required:
+
+      <ul>
+        <li>
+          <a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions#embeddings" target="_blank">text-embedding-ada-002</a>
+          Used for generating <strong>embeddings</strong> from text input.
+          In the case of this model the embedding values contain 1,536 dimensions,
+          meaning that each embedding is an array of 1,536 floating point numbers
+          which capture the semantic meaning of the given text.
+
+          The embeddings are used in <strong>vector search</strong> to search the
+          database for rows with similar semantic meaning to the given vector or embedding.
+        </li>
+        <li>
+          <a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions#gpt-4" target="_blank">gpt-4o</a>
+          This model is used in this reference application for <strong>Generative AI</strong>
+          to generate openCypher queries from natural language. 
+          This GenAI functionality is currently under development in this repo.
+        </li>
+      </ul>
+      <p></p>
+    </li>
+    <li>
+      <a href="https://azure.microsoft.com/en-us/products/machine-learning" target="_blank">Azure Machine Learning (AML)</a>
+      Enterprise-grade AI PaaS service for the end-to-end machine learning (ML) lifecycle
+      including model deployments.
+
+      AML is not yet used by this reference implementation, as 
+      <a href="https://techcommunity.microsoft.com/blog/adforpostgresql/introducing-the-semantic-ranking-solution-for-azure-database-for-postgresql/4298781" target="_blank">semantic ranking</a>
+      of vector search results is not yet implemented in this repo.
+      <p></p>
+    </li>
+
+    <li>
+      Either <a href="" target="_blank">Azure Container Apps (ACA)</a>
+      or <a href="" target="_blank">Azure Kubernetes Service (AKS)</a>
+      are recommended for hosting your deployed <strong>web application</strong>
+      Docker containers in Azure.
+      <p></p>
+      Deployment of the web application, however, is out-of-scope for this
+      reference implementation as the web app is intended to run from 
+      your development computer.
+      <p></p>
+      You will use a <a href="https://learn.microsoft.com/en-us/azure/container-registry/" target="_blank">Azure Container Registry (ACR)</a>
+      to store your Docker images for deployment to ACA or AKS.
+      Likewise, in an Azure deployment, you should use an <a href="https://learn.microsoft.com/en-us/azure/key-vault/" target="_blank">Azure Key Vault (AKV)</a>
+      to store your secrets and connection strings.
+      <p></p>
+      ACR and AKV are not used in this reference implementation.
+    </li>
+  </ul>
+</div>
+
+<pre>
+
+
+</pre>
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

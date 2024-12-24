@@ -206,12 +206,7 @@ async def get_tutorial(req: Request):
     view_data["project_version"] = ConfigService.project_version()
     if "topic" in params.keys():
         topic = params["topic"]
-        if topic == "home":
-            template_name = "home.html"  # non-tutorial page
-        elif topic == "architecture":
-            template_name = "architecture.html"  # non-tutorial page
-        else:
-            template_name = "tutorial_{}.html".format(topic)
+        template_name = "tutorial_{}.html".format(topic)
     logging.info("get_tutorial - {} {}".format(topic, template_name))
 
     return views.TemplateResponse(request=req, name=template_name, context=view_data)
