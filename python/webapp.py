@@ -181,14 +181,20 @@ async def get_health(req: Request, resp: Response) -> HealthModel:
 @app.get("/")
 async def get_home(req: Request):
     view_data = dict()
-    view_data["tutorial_topic"] = "?topic=home"
+    view_data["tutorial_href"] = "/tutorial?topic=home"
+    return views.TemplateResponse(request=req, name="home.html", context=view_data)
+
+@app.get("/home")
+async def get_home_explicit(req: Request):
+    view_data = dict()
+    view_data["tutorial_href"] = "/tutorial?topic=home"
     return views.TemplateResponse(request=req, name="home.html", context=view_data)
 
 
 @app.get("/architecture")
 async def get_architecture(req: Request):
     view_data = dict()
-    view_data["tutorial_topic"] = "?topic=architecture"
+    view_data["tutorial_href"] = "/tutorial?topic=architecture"
     view_data["project_version"] = ConfigService.project_version()
     return views.TemplateResponse(request=req, name="architecture.html", context=view_data)
 
@@ -200,21 +206,32 @@ async def get_sample_queries(req: Request):
 @app.get("/tutorial")
 async def get_tutorial(req: Request):
     params = req.query_params
-    topic, template_name = "", "architecture.html"
+    topic, template_name = "", ""
     view_data = dict()
-    view_data["tutorial_topic"] = ""
     view_data["project_version"] = ConfigService.project_version()
+
+    # provide links back to the functional page by clicking the library icon
+    view_data["tutorial_href"] = ""
+    if "home" == topic:
+        view_data["tutorial_href"] = "/"
+    else:
+        view_data["tutorial_href"] = topic
+
     if "topic" in params.keys():
         topic = params["topic"]
         template_name = "tutorial_{}.html".format(topic)
-    logging.info("get_tutorial - {} {}".format(topic, template_name))
+        view_data["tutorial_href"] = topic
+
+
+    logging.info("get_tutorial - {} {} {}".format(
+        topic, template_name, view_data["tutorial_href"]))
 
     return views.TemplateResponse(request=req, name=template_name, context=view_data)
 
 
 # ---
 
-@app.get("/pg_admin_queries")
+@app.get("/pg_admin")
 async def get_pg_admin_queries(req: Request):
     query_type = "ADMIN"
     view_data = queries_view_data("", query_type)
@@ -222,18 +239,18 @@ async def get_pg_admin_queries(req: Request):
         request=req, name="queries.html", context=view_data
     )
 
-@app.post("/pg_admin_queries")
+@app.post("/pg_admin")
 async def post_pg_admin_queries(req: Request):
     query_type = "ADMIN"
     form_data = await req.form()
-    logging.info("/pg_admin_queries form_data: {}".format(form_data))
+    logging.info("/pg_admin form_data: {}".format(form_data))
     view_data = await post_query(req, query_type)
     return views.TemplateResponse(
         request=req, name="queries.html", context=view_data
     )
 
 
-@app.get("/relational_queries")
+@app.get("/relational")
 async def get_pg_admin_queries(req: Request):
     query_type = "SQL"
     view_data = queries_view_data("", query_type)
@@ -242,29 +259,29 @@ async def get_pg_admin_queries(req: Request):
     )
 
 
-@app.post("/relational_queries")
+@app.post("/relational")
 async def post_pg_admin_queries(req: Request):
     query_type = "SQL"
     form_data = await req.form()
-    logging.info("/relational_queries form_data: {}".format(form_data))
+    logging.info("/relational form_data: {}".format(form_data))
     view_data = await post_query(req, query_type)
     return views.TemplateResponse(
         request=req, name="queries.html", context=view_data
     )
 
 
-@app.get("/graph_queries")
+@app.get("/graph")
 async def get_pg_admin_queries(req: Request):
     query_type = "CYPHER"
     view_data = queries_view_data("", query_type)
     return views.TemplateResponse(
         request=req, name="queries.html", context=view_data
     )
-@app.post("/graph_queries")
+@app.post("/graph")
 async def post_pg_admin_queries(req: Request):
     query_type = "CYPHER"
     form_data = await req.form()
-    logging.info("/graph_queries form_data: {}".format(form_data))
+    logging.info("/graph form_data: {}".format(form_data))
     view_data = await post_query(req, query_type)
     return views.TemplateResponse(
         request=req, name="queries.html", context=view_data
@@ -373,15 +390,15 @@ def queries_view_data(query_text="", query_type="SQL"):
     view_data = dict()
     if query_type == "ADMIN":
         view_data["query_type"] = "PG Admin Queries"
-        view_data["tutorial_topic"] = "?topic=pg_admin"
+        view_data["tutorial_href"] = "/tutorial?topic=pg_admin"
         queries = SampleQueries.admin_queries()
     elif query_type == "SQL":
         view_data["query_type"] = "Relational Queries"
-        view_data["tutorial_topic"] = "?topic=relational"
+        view_data["tutorial_href"] = "/tutorial?topic=relational"
         queries = SampleQueries.sql_queries()
     else:
         view_data["query_type"] = "Graph Queries"
-        view_data["tutorial_topic"] = "?topic=graph"
+        view_data["tutorial_href"] = "/tutorial?topic=graph"
         queries = SampleQueries.cypher_queries()
 
     view_data["sample_queries"] = queries
@@ -552,7 +569,7 @@ def vector_search_view_data(search_text=""):
     vector_search.html view.
     """
     view_data = dict()
-    view_data["tutorial_topic"] = "?topic=vector_search"
+    view_data["tutorial_href"] = "/tutorial?topic=vector_search"
     view_data["search_text"] = search_text
     view_data["case_message"] = "" 
     view_data["results_message"] = ""
@@ -647,7 +664,7 @@ def opencypher_gen_view_data(query_text=""):
     opencypher_gen.html view.
     """
     view_data = dict()
-    view_data["tutorial_topic"] = "?topic=cypher_gen_ai"
+    view_data["tutorial_href"] = "/tutorial?topic=opencypher_gen"
     view_data["natural_language"] = ""
     view_data["cypher"] = ""
     view_data["results_message"] = ""

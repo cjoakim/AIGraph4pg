@@ -3,17 +3,22 @@
 
 {% block content %}
 <div class="container w-75">
-  <h5>Tutorial : Solution Architecture</h5>
+  <h5>Tutorial : Solution Architecture and Implementation</h5>
   <p></p>
   <hr>
 
-  <h5>Python</h5>
+  <h5>Implementation Language: Python</h5>
   <p></p>
   This reference implementation was developed with the <strong>Python</strong>
-  programming language, but this isn't required.  There are PostgreSQL driver
-  libraries in multiple programming languages such as Java, C#, Node.js/TypeScript,
-  and others.  Your solution can be built with your choice of a programming
-  language that supports PostgreSQL.
+  programming language, but Python isn't required for your implementation.
+  There are PostgreSQL driver libraries in multiple programming languages
+  such as <strong>Java, C#, Node.js/TypeScript, Ruby, Go, R</strong>, and others.
+  Your solution can be built with your choice of a programming language
+  that supports PostgreSQL.
+
+  The complete list of <a href="https://wiki.postgresql.org/wiki/List_of_drivers" target="_blank">PostgreSQL drivers</a>
+  is listed here.
+
   <p></p>
 
   This Python implementation makes use of the following primary libraries, which are available
@@ -94,7 +99,7 @@
   <h5>Deployment Environment</h5>
   <p></p>
 
-  The following Azure Platform as a Service (PaaS) services are required
+  The following <strong>Azure Platform as a Service (PaaS) services</strong> are required
   for this solution:
   <p></p>
   <ul>
@@ -163,6 +168,7 @@ Indexes:
       in PostgreSQL.  They are populated separately.
       <p></p>
       The graph is described in the Graph Queries page of this application.
+      <p></p>
     </li>
     <li>
       <a href="https://azure.microsoft.com/en-us/products/ai-services/openai-service/" target="_blank">Azure OpenAI</a>
@@ -208,16 +214,14 @@ Indexes:
       are recommended for hosting your deployed <strong>web application</strong>
       Docker containers in Azure.
       <p></p>
-      Deployment of the web application, however, is out-of-scope for this
-      reference implementation as the web app is intended to run from 
-      your development computer.
-      <p></p>
       You will use a <a href="https://learn.microsoft.com/en-us/azure/container-registry/" target="_blank">Azure Container Registry (ACR)</a>
       to store your Docker images for deployment to ACA or AKS.
       Likewise, in an Azure deployment, you should use an <a href="https://learn.microsoft.com/en-us/azure/key-vault/" target="_blank">Azure Key Vault (AKV)</a>
       to store your secrets and connection strings.
       <p></p>
-      ACR and AKV are not used in this reference implementation.
+      <strong>Deployment of the web application, however, is out-of-scope for this reference implementation</strong>
+      as the web app is intended to run from your development computer.
+      Thus, ACA, AKS, ACR, and AKV are not used in this reference implementation.
     </li>
   </ul>
 </div>
