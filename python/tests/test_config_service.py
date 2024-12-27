@@ -62,17 +62,21 @@ def test_boolean_arg():
 
 
 def test_project_version():
-    assert ConfigService.project_version() == "0.9.0, 2024/11/10"
+    assert ConfigService.project_version() == "1.0.0, 2025/01/01"
 
 
 def test_defined_and_sample_environment_variables():
-    ConfigService.print_defined_env_vars()
+    ConfigService.log_defined_env_vars()
     defined = ConfigService.defined_environment_variables()
     samples = ConfigService.sample_environment_variable_values()
     assert "AIG4PG_LOG_LEVEL" in defined.keys()
     assert "AIG4PG_LOG_LEVEL" in samples.keys()
     assert len(defined.keys()) == 16
     assert len(samples.keys()) == 13
+
+
+def test_specific_env_var_methods():
+    assert ConfigService.age_graph_name() == "legal_cases"
 
 
 def test_log_defined_env_vars():
@@ -121,4 +125,3 @@ def test_epoch():
     print(e)
     assert e > 1730061780  # 2024-10-27
     assert e < 1800000000
-

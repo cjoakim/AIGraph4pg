@@ -37,7 +37,8 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s", level=LoggingLevelService.get_level()
 )
 
-VECTOR_QUERY_LOGGED_LENGTH=140
+VECTOR_QUERY_LOGGED_LENGTH = 140
+
 
 def print_options(msg):
     """
@@ -183,11 +184,18 @@ def quoted_attr_value(doc, attr, jsonb=False):
 
 
 async def relational_search_case_id(
-    pool: psycopg_pool.AsyncConnectionPool, case_id: str):
-    sql = """
+    pool: psycopg_pool.AsyncConnectionPool, case_id: str
+):
+    sql = (
+        """
 select id, name, name_abbreviation, case_url, decision_date, court_name, citation_count
  from legal_cases where id = {}
- offset 0 limit 1""".format(case_id).replace("\n", " ").replace("  ", " ")
+ offset 0 limit 1""".format(
+            case_id
+        )
+        .replace("\n", " ")
+        .replace("  ", " ")
+    )
 
     results = await execute_query(pool, sql)
     if (results is not None) and (len(results) > 0):
@@ -206,6 +214,7 @@ select id, name, name_abbreviation, case_url, decision_date, court_name, citatio
     else:
         logging.info("No results found for case id: {}".format(case_id))
 
+
 async def vector_search_similar_cases(
     pool: psycopg_pool.AsyncConnectionPool, case_id: str, count: int
 ):
@@ -215,15 +224,13 @@ async def vector_search_similar_cases(
     via a vector search query.
     """
     logging.info(
-        "vector_search_similar_cases, id: {}, count: {}".format(
-            case_id, count
-        )
+        "vector_search_similar_cases, id: {}, count: {}".format(case_id, count)
     )
     sql = "select id, name_abbreviation, embedding from legal_cases where id = {} limit {};".format(
         case_id, count
     )
     logging.info("sql1: {} ...".format(sql))
-    
+
     results = await execute_query(pool, sql)
     if (results is not None) and (len(results) > 0):
         embedding = results[0][2]
@@ -237,14 +244,20 @@ async def vector_search_similar_cases(
 
 
 def vector_query_sql(embedding, count):
-    return """
+    return (
+        """
 select id, name_abbreviation, case_url, decision_date
  from  legal_cases
  order by embedding <-> '{}'
  limit {};
     """.format(
-        embedding, count
-    ).strip().replace("\n", " ").replace("  ", " ")
+            embedding, count
+        )
+        .strip()
+        .replace("\n", " ")
+        .replace("  ", " ")
+    )
+
 
 async def vector_search_words(pool: psycopg_pool.AsyncConnectionPool):
 
@@ -265,7 +278,7 @@ async def vector_search_words(pool: psycopg_pool.AsyncConnectionPool):
                 logging.info(row)
     except Exception as e:
         logging.critical(str(e))
-        
+
 
 async def example_async_method(pool: psycopg_pool.AsyncConnectionPool):
     """This method is intended a sample for creating new async methods."""

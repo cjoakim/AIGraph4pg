@@ -16,8 +16,8 @@ def test_read_queries():
         assert len(q["text"]) > 10
         logging.info(q)
 
-        if q["name"] == "PG: PostgreSQL Extensions":
+        if q["name"] == "ADMIN: PostgreSQL Active Extensions":
             found_pg_extensions_query = True
-            assert q["text"] == "SELECT oid, extname, extversion FROM pg_extension;"
+            assert q["text"].startswith("select oid, extname, extversion") == True
 
     assert found_pg_extensions_query == True

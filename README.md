@@ -42,6 +42,9 @@ Each page in the web application demonstrates specific topics (i.e. -
 Administrative queries, SQL queries, SQL JSONB queries, Graph queries,
 Vector Search, etc.).  Each page contains a Library icon that can be clicked
 to display **context-sensitive tutorial content** on that topic.
+You can then click the Library icon again to return to the functional
+non-tutorial page.
+
 These topics are presented in a **left-to-right** manner in the Top Navigation
 area of each page, with each topic building on the previous page.
 

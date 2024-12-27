@@ -1,4 +1,5 @@
 import logging
+import os
 
 import tiktoken
 
@@ -6,6 +7,7 @@ from openai import AzureOpenAI
 
 from src.services.config_service import ConfigService
 from src.services.ai_completion import AiCompletion
+from src.util.template import Template
 
 # Instances of this class are used to execute AzureOpenAI functionality.
 # Chris Joakim, Microsoft
@@ -98,3 +100,92 @@ class AiService:
         if current_chunk:
             chunks.append(current_chunk.strip())
         return chunks
+
+    def generate_cypher_from_user_prompt(self, resp_obj):
+        """
+        Generate a Cypher query from the user's prompt.
+        """
+        try:
+            natural_language = resp_obj["natural_language"]
+            system_prompt = self.generate_cypher_system_prompt(natural_language)
+            logging.info("system_prompt: {}".format(system_prompt))
+            resp_obj["system_prompt1"] = system_prompt
+
+            completion = self.aoai_client.chat.completions.create(
+                model=self.completions_deployment,
+                temperature=ConfigService.cypher_temperature(),
+                response_format={"type": "text"},
+                messages=[{"role": "system", "content": system_prompt}],
+            )
+            cypher = completion.choices[0].message.content.strip()
+            resp_obj["cypher"] = cypher
+        except Exception as e:
+            logging.critical(
+                "Exception in AiService#generate_cypher_from_user_prompt: {}".format(
+                    str(e)
+                )
+            )
+            logging.exception(e, stack_info=True, exc_info=True)
+            return None
+        return resp_obj
+
+    def wrap_opencypher_in_age_sql(self, resp_obj):
+        """
+        Generate a Cypher query from the user's prompt.
+
+        The above generate_cypher_from_user_prompt() method generates an openCypher query.
+        This method takes that generated openCypher query and wraps it in an AGE SQL query.
+        """
+        try:
+            open_cypher = resp_obj["cypher"]
+            graph_name = resp_obj["graph_name"]
+            system_prompt = self.wrap_opencypher_in_age_sql_system_prompt(
+                graph_name, open_cypher
+            )
+            logging.info("system_prompt: {}".format(system_prompt))
+            resp_obj["system_prompt"] = system_prompt
+
+            completion = self.aoai_client.chat.completions.create(
+                model=self.completions_deployment,
+                temperature=ConfigService.cypher_temperature(),
+                response_format={"type": "text"},
+                messages=[{"role": "system", "content": system_prompt}],
+            )
+            query_text = completion.choices[0].message.content.strip()
+            resp_obj["query_text"] = query_text
+        except Exception as e:
+            logging.critical(
+                "Exception in AiService#wrap_opencypher_in_age_sql: {}".format(str(e))
+            )
+            logging.exception(e, stack_info=True, exc_info=True)
+            return None
+        return resp_obj
+
+    def generate_cypher_system_prompt(self, natural_language) -> str:
+        """
+        Generate and return the system prompt for the LLM, given the natural language.
+
+        The actual prompt is a Jinja2 text template so as to enable easier editing of it,
+        and altering it at runtime without causing the webapp to restart.
+        """
+        t = Template.get_template(os.getcwd(), "cypher_gen_llm_prompt.txt")
+        assert t != None
+        values = dict()
+        values["natural_language"] = str(natural_language).strip()
+        return Template.render(t, values)
+
+    def wrap_opencypher_in_age_sql_system_prompt(
+        self, graph_name: str, open_cypher: str
+    ) -> str:
+        """
+        Generate and return the system prompt for the LLM, given the open_cypher text.
+
+        The actual prompt is a Jinja2 text template so as to enable easier editing of it,
+        and altering it at runtime without causing the webapp to restart.
+        """
+        t = Template.get_template(os.getcwd(), "wrap_opencypher_in_age_sql.txt")
+        assert t != None
+        values = dict()
+        values["graph_name"] = str(graph_name).strip()
+        values["open_cypher"] = str(open_cypher).strip()
+        return Template.render(t, values)

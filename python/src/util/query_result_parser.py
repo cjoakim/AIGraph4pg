@@ -21,7 +21,7 @@ class QueryResultParser:
         """
         psycopg cursor.execute() returns a tuple of tuples, which this method
         parses into a list of parsed objects.
-        
+
         The Apache AGE query result tuples contain odd string that contain string
         values like '::vertex' and '::edge' that are removed here then parsed into
         JSON objects.
@@ -33,15 +33,18 @@ class QueryResultParser:
             if isinstance(query_result, tuple):
                 row_values = list()
                 for elem_idx, elem in enumerate(query_result):
-                    #print("QueryResultParser#parse - elem: {} {} {}".format(elem_idx, str(type(elem)), elem))
+                    # print("QueryResultParser#parse - elem: {} {} {}".format(elem_idx, str(type(elem)), elem))
                     if isinstance(elem, str):
                         scrubbed = self.scrub_colonpair_str_values(elem)
                         if self.is_json_string(scrubbed):
                             try:
                                 row_values.append(json.loads(scrubbed))
                             except Exception as e:
-                                logging.error("QueryResultParser#parse json parse exception: {} {}".format(
-                                    str(e), elem))
+                                logging.error(
+                                    "QueryResultParser#parse json parse exception: {} {}".format(
+                                        str(e), elem
+                                    )
+                                )
                                 row_values.append(scrubbed)
                         else:
                             row_values.append(scrubbed)
@@ -61,12 +64,12 @@ class QueryResultParser:
         """
         Use the re standard library to remove the '::vertex' and '::edge' strings.
         """
-        if '::' in s:
-            s1 = re.sub('::vertex', '', s)
-            return re.sub('::edge', '', s1).strip()
+        if "::" in s:
+            s1 = re.sub("::vertex", "", s)
+            return re.sub("::edge", "", s1).strip()
         else:
             return s.strip()
-        
+
     def is_json_string(self, s):
         """
         Return a boolean indicating whether the given string is a JSON string.

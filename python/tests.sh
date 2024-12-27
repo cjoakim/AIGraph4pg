@@ -12,5 +12,8 @@ rm tmp/*.*
 
 source bin/activate
 
+echo 'reformatting source code with black ...'
+black .
+
 echo 'executing unit tests with code coverage ...'
 pytest -v --cov=src/ --cov-report html tests/

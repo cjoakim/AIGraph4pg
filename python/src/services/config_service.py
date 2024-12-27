@@ -1,10 +1,9 @@
-import base64
+
 import json
 import logging
 import os
 import sys
 import time
-import traceback
 
 # This class is used to define and obtain all configuration values
 # in this solution.  These are typically obtained at runtime via
@@ -92,7 +91,7 @@ class ConfigService:
 
     @classmethod
     def project_version(cls) -> str:
-        return "0.8.0, 2024/12/01"
+        return "1.0.0, 2025/01/01"
 
     @classmethod
     def defined_environment_variables(cls) -> dict:
@@ -111,12 +110,13 @@ class ConfigService:
         d["AIG4PG_OPENAI_EMBEDDINGS_DEP"] = (
             "The name of your Azure OpenAI embeddings deployment"
         )
-        d["AIG4PG_TRUNCATE_LLM_CONTEXT_MAX_NTOKENS"] = ""
+        d["AIG4PG_LLM_CONTEXT_MAX_NTOKENS"] = ""
         d["AIG4PG_PG_FLEX_SERVER"] = "Azure PostgreSQL Flex Server hostname"
         d["AIG4PG_PG_FLEX_PORT"] = "Azure PostgreSQL Flex Server port"
         d["AIG4PG_PG_FLEX_DB"] = "Azure PostgreSQL Flex Server database"
         d["AIG4PG_PG_FLEX_USER"] = "Azure PostgreSQL Flex Server user"
         d["AIG4PG_PG_FLEX_PASS"] = "Azure PostgreSQL Flex Server user password"
+        d["AIG4PG_PG_AGE_GRAPH_NAME"] = "The name of the PostgreSQL AGE graph"
 
         # Optional environment variables.  Cosmos DB PostgreSQL is not used in this project.
         d["LOCAL_PG_PASS"] = (
@@ -141,12 +141,13 @@ class ConfigService:
         d["AIG4PG_OPENAI_KEY"] = ""
         d["AIG4PG_OPENAI_COMPLETIONS_DEP"] = "gpt4"
         d["AIG4PG_OPENAI_EMBEDDINGS_DEP"] = "embeddings"
-        d["AIG4PG_TRUNCATE_LLM_CONTEXT_MAX_NTOKENS"] = "0"
+        d["AIG4PG_LLM_CONTEXT_MAX_NTOKENS"] = "0"
         d["AIG4PG_PG_FLEX_SERVER"] = ""
         d["AIG4PG_PG_FLEX_PORT"] = "5432"
         d["AIG4PG_PG_FLEX_DB"] = ""
         d["AIG4PG_PG_FLEX_USER"] = ""
         d["AIG4PG_PG_FLEX_PASS"] = ""
+        d["AIG4PG_PG_AGE_GRAPH_NAME"] = "legal_cases"
         d["LOCAL_PG_PASS"] = ""
         return d
 
@@ -156,27 +157,15 @@ class ConfigService:
         keys = sorted(cls.defined_environment_variables().keys())
         selected = dict()
         for key in keys:
-            value = cls.envvar(key)
-            selected[key] = value
-        logging.info(
+            if key.startswith("AIG4PG_"):
+                value = cls.envvar(key)
+                selected[key] = value
+        logging.error(
             "log_defined_env_vars: {}".format(
                 json.dumps(selected, sort_keys=True, indent=2)
             )
         )
 
-    @classmethod
-    def print_defined_env_vars(cls):
-        """print() the defined AIG4PG_ environment variables as JSON"""
-        keys = sorted(cls.defined_environment_variables().keys())
-        selected = dict()
-        for key in keys:
-            value = cls.envvar(key)
-            selected[key] = value
-        print(
-            "print_defined_env_vars: {}".format(
-                json.dumps(selected, sort_keys=True, indent=2)
-            )
-        )
 
     @classmethod
     def postgresql_server(cls) -> str:
@@ -197,6 +186,10 @@ class ConfigService:
     @classmethod
     def postgresql_password(cls) -> str:
         return cls.envvar("AIG4PG_PG_FLEX_PASS", None)
+
+    @classmethod
+    def age_graph_name(cls) -> str:
+        return cls.envvar("AIG4PG_PG_AGE_GRAPH_NAME", "legal_cases")
 
     @classmethod
     def azure_openai_url(cls) -> str:
@@ -224,7 +217,11 @@ class ConfigService:
         Zero indicates no truncation.
         A positive integer is the max number of tokens.
         """
-        return cls.int_envvar("AIG4PG_TRUNCATE_LLM_CONTEXT_MAX_NTOKENS", 0)
+        return cls.int_envvar("AIG4PG_LLM_CONTEXT_MAX_NTOKENS", 0)
+
+    @classmethod
+    def cypher_temperature(cls) -> str:
+        return cls.float_envvar("AIG4PG_CYPHER_TEMPERATURE", 0.0)
 
     @classmethod
     def epoch(cls) -> float:
@@ -241,7 +238,6 @@ class ConfigService:
                 if arg == flag:
                     return True
         return False
-
 
     @classmethod
     def set_standard_unit_test_env_vars(cls):

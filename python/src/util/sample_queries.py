@@ -33,7 +33,7 @@ class SampleQueries:
             if query["name"].strip().startswith("SQL"):
                 type_queries.append(query)
         return type_queries
-    
+
     @classmethod
     def cypher_queries(cls) -> list[SampleQuery]:
         all_queries, type_queries = cls.read_queries(), list()
@@ -41,7 +41,7 @@ class SampleQueries:
             if query["name"].strip().startswith("CYPHER"):
                 type_queries.append(query)
         return type_queries
-    
+
     @classmethod
     def read_queries(cls, filename="config/sample_queries.txt") -> list[SampleQuery]:
         """
@@ -81,7 +81,9 @@ class SampleQueries:
                 elif in_text > 0:
                     curr_query.append_to_text(rstripped)
         except Exception as e:
-            logging.error("SampleQueries#read_queries error on file: {}".format(filename))
+            logging.error(
+                "SampleQueries#read_queries error on file: {}".format(filename)
+            )
             logging.info(str(e))
             logging.error("Stack trace:\n%s", traceback.format_exc())
 

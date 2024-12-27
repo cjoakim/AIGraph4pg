@@ -204,6 +204,7 @@ AIG4PG_OPENAI_COMPLETIONS_DEP  <your-completions-deployment-name>
 AIG4PG_OPENAI_EMBEDDINGS_DEP   <your-embeddings-deployment-name>
 AIG4PG_OPENAI_KEY              <your-azure-openai-key>
 AIG4PG_OPENAI_URL              https://<your-azure-openai-account-name>.openai.azure.com/
+AIG4PG_PG_AGE_GRAPH_NAME       legal_cases
 AIG4PG_PG_FLEX_DB              dev
 AIG4PG_PG_FLEX_PASS            <your-azure-postgresql-key>
 AIG4PG_PG_FLEX_PORT            5432
@@ -589,6 +590,27 @@ you'll see the running web application similar to the following image:
   <img src="img/ui-home-page.png" width="80%">
 </p>
 
+#### Docker Alternative
+
+Alternatively, rather than execute the Web UI as a Python process
+on your desktop computer, you can execute **docker compose**
+in **Docker Desktop**.  See file python/docker-compose.yml.
+
+The Web UI application can be started and stopped as follows with docker compose.
+
+```
+docker compose -f docker-compose.yml up
+
+docker compose -f docker-compose.yml down  (in a second PowerShell window)
+```
+
+These docker commands should both be executed in the python\ directory
+within this repo.
+
+For macOS users on Apple Silicon you will need to rebuild the image
+for your platform.  Execute the Dockerfile in the python\ directory.
+
+
 ### Notes on Using the Web UI
 
 The UI is intentionally primitive and simple.  It is designed as a learning
@@ -628,6 +650,8 @@ from user specified "natural langage".
 
 - **Important Note: Tutorial content** is available for each page
 by **clicking the books icon** at on the right side of the **Top-Navigation**.
+Once you're in the tutorial content you can click the books icon again
+to go back to the functional non-turorial page.
 
 ### Graph Visualizations
 

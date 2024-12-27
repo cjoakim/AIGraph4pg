@@ -5,6 +5,145 @@
 <div class="container w-75">
   <h5>Tutorial : Vector Search</h5>
   <p></p>
+  <h5>Coming Soon: Advanced Vector Search with DiskANN and Semantic Ranking</h5>
+  <p></p>
+  This reference application does not yet implement vector search with DiskANN,
+  and augmented with Semantic Ranking.  This functionality is expected to be 
+  added to this project in January/February 2025.
+  <p></p>
+  <a href="https://www.microsoft.com/en-us/research/project/project-akupara-approximate-nearest-neighbor-search-for-large-scale-semantic-search/" target="_blank">
+  DiskANN</a> is a set of advanced algorithms for vector search and semantic ranking developed by 
+  Microsoft Research.  It enables high-scalability, high-performance as well as lower costs.
+  <p></p>
+  DiskANN is being integrated into several Microsoft products.
+  It is currently available in preview mode for 
+  <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgdiskann" target="_blank">
+  Azure Database for PostgreSQL - Flexible Server</a>.
+  <p></p>
+  <a href="https://techcommunity.microsoft.com/blog/adforpostgresql/introducing-the-semantic-ranking-solution-for-azure-database-for-postgresql/4298781" target="_blank">
+  Semantic Ranking</a> functionality is also being integrated into Azure Database for PostgreSQL.
+  It can be used to improve vector search result quality by using semantic ranking models
+  to rerank vector search results.
+
+  <p></p>
+  <hr>
+  <p></p>
+  <h5>Vector Search Concepts</h5>
+  <p></p>
+  <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#concepts" target="_blank">
+  Vector Search</a> is the functionality in modern databases to search by the
+  <strong>semantic meaning</strong> of data rather than just precice or fuzzy value matching.
+  Vector search is typically used in Generative AI applications, where RAG data 
+  is passed to a Large Language Model (LLM) to augment the knowledge base of the model.
+  Vector search is used to identify this RAG data to be passed to the LLM.
+  <p></p>
+  Vector search works by first <strong>"vectorizing"</strong> your text data, such as a 
+  product description or summary or a legal case.  To create a vector, you invoke an 
+  optimized model in the LLM and pass in your text data to be vectorized.  The LLM responds
+  with a vector of floating-point values of n-dimensions that represents the semantic meaning
+  of your text data. A vector is alternatively called an <strong>embedding</strong>.
+  <p></p>
+  You then populate this vector data in your database, and index it with a vector index
+  so as to make it searchable.
+  <p></p>
+  To query your database using vector search, you pass in a vector of floating-point values
+  as a search parameter.  You will often have to generate this vector at runtime, by calling
+  the same LLM text embedding model, given the user natural language query.
+  Some databases, including Azure Database for PostgreSQL, support
+  <strong>filtered vector search</strong>, meaning a search that uses both traditonal
+  WHERE clause logic as well as vector search logic.
+  <p></p>
+
+  <hr>
+  <p></p>
+  <h5>Vector Search Implementation in this Reference Application with pg_vector</h5>
+  <p></p>
+  This initial implementation of this reference application uses the 
+  <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#vector-operators" target="_blank">
+  pgvector</a> open-source PostgreSQL extension.  Please visit this linked page as it provides 
+  excellent documentation and examples.
+  <p></p>
+  As described in the 
+  <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#vector-operators" target="_blank">
+  Quick Start</a> documentation in this repo, you have to first enable this extension
+  in your Azure Database for PostgreSQL server.
+  <p></p>
+  You'll need a database table with a column of type <strong>vector</strong> to store your
+  vectors/embeddings.  The DDL for the legal_cases table in this project is shown below.
+  Note the presence of the <strong>embedding</strong> column of type <strong>vector(1536)</strong>.
+  <p></p>
+  <pre>
+CREATE TABLE legal_cases (
+  id                   bigserial primary key,
+  name                 VARCHAR(1024),
+  name_abbreviation    VARCHAR(1024),
+  case_url             VARCHAR(1024),
+  decision_date        DATE,
+  court_name           VARCHAR(1024),
+  citation_count       INTEGER,
+  text_data            TEXT,
+  json_data            JSONB,
+  embedding            vector(1536)      
+);
+  </pre>
+  <p></p>
+  This vector(1536) column is populated with embeddings produced by the Azure OpenAI 
+  <a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions#embeddings" target="_blank">
+  text-embedding-ada-002</a> model.  This model produces 1536-dimensional embeddings,
+  meaning it returns an array of 1536 floating-point values.
+  Therefore, the corresponding PostgreSQL column type is <strong>vector(1536)</strong>.
+  <p></p>
+  To enable the vector column to be queried efficiently, you need to create an 
+  <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector#indexing" target="_blank">
+  index</a> for the column.  There are three supported index types:
+  <ul>
+    <li>Inverted File with Flat Compression (IVVFlat)</li>
+    <li>Hierarchical Navigable Small Worlds (HNSW)</li>
+    <li>Disk Approximate Nearest Neighbor (DiskANN)</li>
+  </ul>
+  <p></p>
+  This reference application uses the <strong>IVFFlat</strong> index type.
+  The DDL for this index in the legal_cases table is shown below:
+  <p></p>
+  <pre>
+DROP INDEX IF EXISTS idx_legal_cases_ivfflat_embedding;
+CREATE INDEX idx_legal_cases_ivfflat_embedding
+ON     legal_cases
+USING  ivfflat (embedding vector_cosine_ops)
+WITH  (lists = 50);
+  </pre>
+  <p></p>
+  Once the data is populated and the column indexed, you can now execute 
+  a vector search vs that column with the <strong>"embedding <->"</strong> SQL syntax.
+  Please see the web application code in this repository, file python/webapp.py,
+  where the vector search SQL is created in method "legal_cases_vector_search_sql()"
+  as shown below:
+  <p></p>
+  <pre>
+def legal_cases_vector_search_sql(embeddings, limit=10):
+    return (
+        """
+select id, name_abbreviation, to_char(decision_date, 'YYYY-MM-DD')
+ from legal_cases
+ order by embedding <-> '{}'
+ offset 0 limit 10;
+    """.format(
+            embeddings
+        )
+        .replace("\n", " ")
+        .strip()
+    )
+  </pre>
+  <p></p>
+  This query returns the legal case name abbreviation and the date of
+  the legal case decision for the 10 legal cases that are most similar
+  to the given embedding value.  This is very powerful search functionality.
+  <pre>
+
+
+
+
+  </pre>
 </div>
 
 {% endblock %}

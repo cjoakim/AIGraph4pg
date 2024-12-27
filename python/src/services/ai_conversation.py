@@ -62,7 +62,9 @@ class AiConversation:
                     self.ai_config = self.current_ai_configuration()
             else:
                 self.created_at = time.time()
-                self.created_date = str(datetime.datetime.fromtimestamp(self.created_at))
+                self.created_date = str(
+                    datetime.datetime.fromtimestamp(self.created_at)
+                )
                 self.updated_at = self.created_at
                 self.conversation_id = str(uuid.uuid4())
                 self.pk = self.conversation_id
@@ -157,7 +159,9 @@ class AiConversation:
         try:
             return self.chat_history.add_message(message, encoding, metadata)
         except Exception as e:
-            logging.critical("Exception in AiConversation#add_message: {}".format(str(e)))
+            logging.critical(
+                "Exception in AiConversation#add_message: {}".format(str(e))
+            )
             logging.exception(e, stack_info=True, exc_info=True)
 
     def add_completion(self, completion: AiCompletion):
@@ -190,16 +194,22 @@ class AiConversation:
         config["invoke_kernel_temperature"] = ConfigService.invoke_kernel_temperature()
         config["invoke_kernel_top_p"] = ConfigService.invoke_kernel_top_p()
         config["html_summarize_max_tokens"] = ConfigService.html_summarize_max_tokens()
-        config["html_summarize_temperature"] = ConfigService.html_summarize_temperature()
+        config["html_summarize_temperature"] = (
+            ConfigService.html_summarize_temperature()
+        )
         config["html_summarize_top_p"] = ConfigService.html_summarize_top_p()
-        config["get_completion_temperature"] = ConfigService.get_completion_temperature()
+        config["get_completion_temperature"] = (
+            ConfigService.get_completion_temperature()
+        )
         config["optimize_context_and_history_max_tokens"] = (
             ConfigService.optimize_context_and_history_max_tokens()
         )
         config["truncate_llm_context_max_ntokens"] = (
             ConfigService.truncate_llm_context_max_ntokens()
         )
-        config["generate_graph_temperature"] = ConfigService.generate_graph_temperature()
+        config["generate_graph_temperature"] = (
+            ConfigService.generate_graph_temperature()
+        )
         return config
 
     def serialize(self) -> str:

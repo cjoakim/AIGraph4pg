@@ -5,6 +5,122 @@
 <div class="container w-75">
   <h5>Tutorial : Azure PostgreSQL Administration</h5>
   <p></p>
+  <h5>PostgreSQL Documentation</h5>
+  <p></p>
+  There is a vast amount of documentation available for PostgreSQL, including:
+  <p></p>
+  <ul>
+    <li>
+      <a href="https://www.postgresql.org/docs/current/" target="_blank">
+        Official documentation in HTML format</a>. 
+    </li>
+    <li>
+      <a href="https://www.postgresql.org/docs/" target="_blank">
+        Official documentation in PDF format</a>. 
+        The PDF file alone is over 3100 pages long
+    </li>
+    <li>
+      <a href="https://learn.microsoft.com/en-us/azure/postgresql/" target="_blank">
+        Azure Database for PostgreSQL - Flexible Server documentation</a>
+    </li>
+  </ul>
+  This tutorial can't possibly cover the entire breadth and depth of PostgreSQL,
+  and therefore just focuses on the following topics related to this reference application - 
+  PostgreSQL Settings, PostgreSQL Catalog, and Apache AGE.
+  <p></p>
+
+  <hr>
+  <h5>PostgreSQL Settings</h5>
+  <p></p>
+  PostgreSQL is highly configurable via a large set of <strong>Server Parameters</strong>
+  and some of these may be optimized for performance tuning.
+  <p></p>
+  These can be viewed and administered in <strong>Azure Portal</strong> as shown below:
+  <p></p>
+  <p align="center">
+    <img src="static/img/server-parameters.png" width="90%">
+  </p>
+
+  Likewise, these parameters may be queried in a client program 
+  such as psql with the following SQL:  
+  <p></p>
+  <pre>
+    select name, setting, category, short_desc
+    from  pg_settings
+    order by name;
+  </pre>
+
+  <p></p>
+  This SQL is one of the items in the drop-down list of queries 
+  for the <strong>PG Admin Queries</strong> page of this reference 
+  application, thus you can execute it in the web UI.
+
+  <p></p>
+  All of the SQL queries in this reference application UI are defined
+  in file <strong>python/config/sample_queries.txt</strong> in this repo.
+  You can edit and customize this file as necessary for your needs.
+
+  <p></p>
+  Azure Database for PostgreSQL offers <strong>automated intelligent tuning</strong> 
+  of these parameters for your workload.  This feature is described here:
+  <a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-intelligent-tuning" target="_blank">
+    Configure intelligent tuning for Azure Database for PostgreSQL</a>.
+
+  <p></p>
+  <hr>
+  <h5>PostgreSQL Catalog</h5>
+  <p></p>
+  As with the server parameters, the catalog of schemas, tables, indexes, and other objects
+  is queryable with SQL.  A few example queries are shown below:
+  <p></p>
+  Display the columns in a given relational table (i.e. - legal_cases):
+  <p></p>
+  <pre>
+    select  ordinal_position, table_catalog, table_name, column_name, data_type, character_maximum_length
+    from  information_schema.columns
+    where table_name = 'legal_cases'
+    order by ordinal_position;
+  </pre>
+
+  <p></p>
+  <hr>
+  <h5>PostgreSQL Extensions</h5>
+  <p></p>
+  <p></p>
+  List of Available Extensions:
+  <p></p>
+  <pre>
+    select name, default_version, installed_version, comment
+    from  pg_available_extensions
+    where installed_version is null
+    order by name;
+  </pre>
+  <p></p>
+  List of Installed Extensions:
+  <p></p>
+  <pre>
+    select oid, extname, extversion
+    from  pg_extension
+    order by extname, extversion;
+  </pre>
+
+  <hr>
+  <h5>Apache AGE</h5>
+  <p></p>
+  List the Apache AGE Graphs:
+  <p></p>
+  <pre>
+    select graphid, name, namespace
+    from  ag_catalog.ag_graph
+    order by graphid;
+  </pre>
+  List the Apache AGE Graph Labels - the Vertex and Edge types:
+  <p></p>
+  <pre>
+    select name, graph, id, kind, relation, seq_name
+    from  ag_catalog.ag_label
+    order by name;
+  </pre>
 </div>
 
 {% endblock %}

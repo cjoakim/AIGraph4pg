@@ -31,7 +31,8 @@ from src.services.ai_service import AiService
 from src.services.config_service import ConfigService
 from src.services.logging_level_service import LoggingLevelService
 from src.util.fs import FS
-#from src.util.query_result_parser import QueryResultParser
+
+# from src.util.query_result_parser import QueryResultParser
 from src.util.sample_queries import SampleQueries
 
 # standard initialization
@@ -39,15 +40,15 @@ load_dotenv(override=True)
 logging.basicConfig(
     format="%(asctime)s - %(message)s", level=LoggingLevelService.get_level()
 )
-ConfigService.print_defined_env_vars()
-logging.error("project_version: {}".format(ConfigService.project_version()))
 
 if sys.platform == "win32":
     logging.warning("Windows platform detected, setting WindowsSelectorEventLoopPolicy")
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 else:
     logging.warning(
-        "platform is {}, not Windows.  Not setting event_loop_policy".format(sys.platform)
+        "platform is {}, not Windows.  Not setting event_loop_policy".format(
+            sys.platform
+        )
     )
 
 
@@ -77,6 +78,9 @@ async def lifespan(app: FastAPI):
     """
     conn_pool_max_size = 1
     try:
+        ConfigService.log_defined_env_vars()
+        logging.error("project_version: {}".format(ConfigService.project_version()))
+
         # Initialize the AiService used for embeddings and cypher generation.
         app.ai_svc = AiService()
 
@@ -84,7 +88,8 @@ async def lifespan(app: FastAPI):
         # execute some initial queries to check connectivity.
         conn_str = get_database_connection_string()
         app.async_pool = psycopg_pool.AsyncConnectionPool(
-            conninfo=conn_str, open=False, min_size=1, max_size=conn_pool_max_size)
+            conninfo=conn_str, open=False, min_size=1, max_size=conn_pool_max_size
+        )
         logging.info("FastAPI lifespan, pool created: {}".format(app.async_pool))
         await app.async_pool.open()
         logging.info("FastAPI lifespan, pool opened")
@@ -99,7 +104,11 @@ async def lifespan(app: FastAPI):
                     async with conn.cursor() as cursor:
                         try:
                             await cursor.execute(set_search_path_stmt)
-                            logging.info("FastAPI lifespan, executed: {}".format(set_search_path_stmt))
+                            logging.info(
+                                "FastAPI lifespan, executed: {}".format(
+                                    set_search_path_stmt
+                                )
+                            )
                         except:
                             pass
             except:
@@ -111,12 +120,18 @@ async def lifespan(app: FastAPI):
                         try:
                             query = "SELECT * FROM ag_catalog.cypher('legal_cases', $$ MATCH (c:Case) RETURN c limit 10 $$) as (v agtype);"
                             await cursor.execute(query)
-                            logging.debug("FastAPI lifespan, executed {}".format(set_search_path_stmt))
+                            logging.debug(
+                                "FastAPI lifespan, executed {}".format(
+                                    set_search_path_stmt
+                                )
+                            )
                         except Exception as e0:
                             pass  # exception is expected on initial query?
             except Exception as e0:
                 pass
-        logging.info("FastAPI lifespan, pool stats: {}".format(app.async_pool.get_stats()))
+        logging.info(
+            "FastAPI lifespan, pool stats: {}".format(app.async_pool.get_stats())
+        )
     except Exception as e:
         logging.error("FastAPI lifespan exception: {}".format(str(e)))
         logging.error(traceback.format_exc())
@@ -126,6 +141,7 @@ async def lifespan(app: FastAPI):
     logging.info("FastAPI lifespan, shutting down...")
     await app.async_pool.close()
     logging.info("FastAPI lifespan, pool closed")
+
 
 app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -156,7 +172,7 @@ async def get_health(req: Request, resp: Response) -> HealthModel:
     try:
         async with req.app.async_pool.connection() as conn:
             async with conn.cursor() as cursor:
-                try:   
+                try:
                     sql = "select count(*) from legal_cases"
                     await asyncio.wait_for(cursor.execute(sql), timeout=5.0)
                     query_results = await cursor.fetchall()
@@ -184,6 +200,7 @@ async def get_home(req: Request):
     view_data["tutorial_href"] = "/tutorial?topic=home"
     return views.TemplateResponse(request=req, name="home.html", context=view_data)
 
+
 @app.get("/home")
 async def get_home_explicit(req: Request):
     view_data = dict()
@@ -196,20 +213,22 @@ async def get_architecture(req: Request):
     view_data = dict()
     view_data["tutorial_href"] = "/tutorial?topic=architecture"
     view_data["project_version"] = ConfigService.project_version()
-    return views.TemplateResponse(request=req, name="architecture.html", context=view_data)
+    return views.TemplateResponse(
+        request=req, name="architecture.html", context=view_data
+    )
+
 
 @app.get("/sample_queries")
 async def get_sample_queries(req: Request):
-    """ This endpoint is used by JavaScript in the UI."""
+    """This endpoint is used by JavaScript in the UI."""
     return SampleQueries.read_queries()
+
 
 @app.get("/tutorial")
 async def get_tutorial(req: Request):
     params = req.query_params
     topic, template_name = "", ""
     view_data = dict()
-    view_data["project_version"] = ConfigService.project_version()
-
     # provide links back to the functional page by clicking the library icon
     view_data["tutorial_href"] = ""
     if "home" == topic:
@@ -222,22 +241,24 @@ async def get_tutorial(req: Request):
         template_name = "tutorial_{}.html".format(topic)
         view_data["tutorial_href"] = topic
 
-
-    logging.info("get_tutorial - {} {} {}".format(
-        topic, template_name, view_data["tutorial_href"]))
+    logging.info(
+        "get_tutorial - topic: {} template: {} href: {}".format(
+            topic, template_name, view_data["tutorial_href"]
+        )
+    )
 
     return views.TemplateResponse(request=req, name=template_name, context=view_data)
 
 
 # ---
 
+
 @app.get("/pg_admin")
 async def get_pg_admin_queries(req: Request):
     query_type = "ADMIN"
     view_data = queries_view_data("", query_type)
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
+
 
 @app.post("/pg_admin")
 async def post_pg_admin_queries(req: Request):
@@ -245,18 +266,14 @@ async def post_pg_admin_queries(req: Request):
     form_data = await req.form()
     logging.info("/pg_admin form_data: {}".format(form_data))
     view_data = await post_query(req, query_type)
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
 
 
 @app.get("/relational")
 async def get_pg_admin_queries(req: Request):
     query_type = "SQL"
     view_data = queries_view_data("", query_type)
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
 
 
 @app.post("/relational")
@@ -265,35 +282,29 @@ async def post_pg_admin_queries(req: Request):
     form_data = await req.form()
     logging.info("/relational form_data: {}".format(form_data))
     view_data = await post_query(req, query_type)
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
 
 
 @app.get("/graph")
 async def get_pg_admin_queries(req: Request):
     query_type = "CYPHER"
     view_data = queries_view_data("", query_type)
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
+
+
 @app.post("/graph")
 async def post_pg_admin_queries(req: Request):
     query_type = "CYPHER"
     form_data = await req.form()
     logging.info("/graph form_data: {}".format(form_data))
     view_data = await post_query(req, query_type)
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
 
 
 @app.get("/queries")
 async def get_queries(req: Request):
     view_data = queries_view_data()
-    return views.TemplateResponse(
-        request=req, name="queries.html", context=view_data
-    )
+    return views.TemplateResponse(request=req, name="queries.html", context=view_data)
 
 
 async def post_query(req: Request, query_type):
@@ -317,20 +328,26 @@ async def post_query(req: Request, query_type):
                 logging.info("queries - stmt: {}".format(stmt))
                 async with conn.cursor() as cursor:
                     try:
-                        await asyncio.wait_for(cursor.execute(stmt), timeout=30.0)  # timeout in seconds
+                        await asyncio.wait_for(
+                            cursor.execute(stmt), timeout=30.0
+                        )  # timeout in seconds
                         results = await cursor.fetchall()
-                        view_data["elapsed_seconds"] = "elapsed_seconds: {}".format(time.time() - start_time)
+                        view_data["elapsed_seconds"] = "elapsed_seconds: {}".format(
+                            time.time() - start_time
+                        )
                         for row in results:
-                            #logging.warning("row for qrp: {}".format(row))
+                            # logging.warning("row for qrp: {}".format(row))
                             result_objects.append(qrp.parse(row))
                             results_tuples.append(str(row))
-                        
+
                         view_data["tuples_results_message"] = results_message(
-                            "Results as Python Tuples", results_tuples)
+                            "Results as Python Tuples", results_tuples
+                        )
                         view_data["tuples_results"] = "\n".join(results_tuples)
                         view_data["query_text"] = query_text
                         view_data["json_results_message"] = results_message(
-                            "Results as JSON", result_objects)
+                            "Results as JSON", result_objects
+                        )
                         view_data["json_results"] = json.dumps(
                             result_objects, sort_keys=False, indent=2
                         )
@@ -338,7 +355,9 @@ async def post_query(req: Request, query_type):
                         view_data["inline_graph_json"] = graph_data
                         if len(graph_data) > 0:
                             view_data["vis_message"] = "Legal Case Citation Graph"
-                        write_query_results_to_file(view_data, result_objects, graph_data)
+                        write_query_results_to_file(
+                            view_data, result_objects, graph_data
+                        )
                     except asyncio.TimeoutError:
                         view_data["error_message"] = "Error: query timeout"
                     except Exception as e:
@@ -348,6 +367,7 @@ async def post_query(req: Request, query_type):
             logging.critical((str(e)))
             view_data["error_message"] = "Error: {}".format(str(e))
     return view_data
+
 
 def results_message(prefix, results_list_object):
     """
@@ -360,6 +380,7 @@ def results_message(prefix, results_list_object):
     else:
         return "{} ({} rows):".format(prefix, count)
 
+
 def write_query_results_to_file(view_data, result_objects, graph_data):
     """
     Write the query results to a JSON file for visual inspection.
@@ -369,7 +390,7 @@ def write_query_results_to_file(view_data, result_objects, graph_data):
         data["view_data"] = dict()
         for key in sorted(view_data.keys()):
             include = True
-            if key == 'sample_queries':
+            if key == "sample_queries":
                 include = False
             if include == True:
                 data["view_data"][key] = view_data[key]
@@ -411,6 +432,7 @@ def queries_view_data(query_text="", query_type="SQL"):
     view_data["inline_graph_json"] = "{}"
     return view_data
 
+
 def inline_graph_data(query_text, result_objects):
     wrapper, data = dict(), dict()
     if "$$" in query_text:
@@ -427,7 +449,9 @@ def inline_graph_data(query_text, result_objects):
                             label = elem["label"]
                             if label == "Case":
                                 node = dict()
-                                row_id, case_id = str(elem["id"]), str(elem["properties"]["id"])
+                                row_id, case_id = str(elem["id"]), str(
+                                    elem["properties"]["id"]
+                                )
                                 node["rowid"] = row_id
                                 node["type"] = label
                                 node["id"] = case_id
@@ -438,14 +462,16 @@ def inline_graph_data(query_text, result_objects):
                             elif label == "cites":
                                 edge = dict()
                                 start_id = str(elem["properties"]["case_id"])
-                                end_id   = str(elem["properties"]["cited_case_id"])
+                                end_id = str(elem["properties"]["cited_case_id"])
                                 edge["source"] = start_id
                                 edge["target"] = end_id
                                 edge["case_name"] = str(elem["properties"]["case_name"])
-                                edge["cited_case_name"] = str(elem["properties"]["cited_case_name"])
+                                edge["cited_case_name"] = str(
+                                    elem["properties"]["cited_case_name"]
+                                )
                                 edge["rel"] = label
                                 edge["weight"] = 1
-                                key = '-'.join(sorted([start_id, end_id]))
+                                key = "-".join(sorted([start_id, end_id]))
                                 edges_dict[key] = edge
                         elif isinstance(elem, list):
                             for list_elem in elem:
@@ -453,14 +479,20 @@ def inline_graph_data(query_text, result_objects):
                                 if label == "cites":
                                     edge = dict()
                                     start_id = str(list_elem["properties"]["case_id"])
-                                    end_id   = str(list_elem["properties"]["cited_case_id"])
+                                    end_id = str(
+                                        list_elem["properties"]["cited_case_id"]
+                                    )
                                     edge["source"] = start_id
                                     edge["target"] = end_id
-                                    edge["case_name"] = str(list_elem["properties"]["case_name"])
-                                    edge["cited_case_name"] = str(list_elem["properties"]["cited_case_name"])
+                                    edge["case_name"] = str(
+                                        list_elem["properties"]["case_name"]
+                                    )
+                                    edge["cited_case_name"] = str(
+                                        list_elem["properties"]["cited_case_name"]
+                                    )
                                     edge["rel"] = label
                                     edge["weight"] = 1
-                                    key = '-'.join(sorted([start_id, end_id]))
+                                    key = "-".join(sorted([start_id, end_id]))
                                     edges_dict[key] = edge
 
             for key in nodes_dict.keys():
@@ -470,10 +502,10 @@ def inline_graph_data(query_text, result_objects):
                 edge = edges_dict[key]
                 data["edges"].append(edge)
                 start_id = edge["source"]
-                end_id   = edge["target"]
+                end_id = edge["target"]
                 if start_id in nodes_dict.keys():
                     if end_id in nodes_dict.keys():
-                        pass # No need to create a new/dummy node
+                        pass  # No need to create a new/dummy node
                     else:
                         new_node = dict()
                         new_node["id"] = end_id
@@ -531,16 +563,17 @@ async def post_vector_search(req: Request):
         try:
             # Lookup the given legal_case ID in the relational table, and get its embedding
             case_name, embedding = await lookup_legal_case_name_and_embedding(
-                req, search_words[0])
+                req, search_words[0]
+            )
             view_data["case_message"] = "Legal Case ID: {}, Name: {}".format(
-                search_words[0], case_name)
+                search_words[0], case_name
+            )
         except Exception as e:
             view_data["error_message"] = "Error reading the database; {}".format(str(e))
             logging.critical((str(e)))
             logging.exception(e, stack_info=True, exc_info=True)
     else:
         try:
-            #ai_svc = AiService()
             ai_svc_resp = req.app.ai_svc.generate_embeddings(search_text)
             embedding = ai_svc_resp.data[0].embedding
         except Exception as e:
@@ -571,7 +604,7 @@ def vector_search_view_data(search_text=""):
     view_data = dict()
     view_data["tutorial_href"] = "/tutorial?topic=vector_search"
     view_data["search_text"] = search_text
-    view_data["case_message"] = "" 
+    view_data["case_message"] = ""
     view_data["results_message"] = ""
     view_data["results"] = ""
     return view_data
@@ -585,7 +618,9 @@ async def lookup_legal_case_name_and_embedding(req: Request, id) -> list[float] 
     case_name = None
     embedding = None
     try:
-        sql = "select id, name_abbreviation, embedding from legal_cases where id = {} offset 0 limit 1".format(id)
+        sql = "select id, name_abbreviation, embedding from legal_cases where id = {} offset 0 limit 1".format(
+            id
+        )
         logging.info("lookup_legal_case_name_and_embedding - sql: {}".format(sql))
         async with req.app.async_pool.connection() as conn:
             async with conn.cursor() as cursor:
@@ -613,6 +648,7 @@ select id, name_abbreviation, to_char(decision_date, 'YYYY-MM-DD')
         .strip()
     )
 
+
 async def execute_vector_search(req: Request, embedding) -> list:
     """Execute a vector search with the given embedding value."""
     result_list = list()
@@ -632,6 +668,7 @@ async def execute_vector_search(req: Request, embedding) -> list:
 @app.get("/opencypher_gen")
 async def get_opencypher_gen(req: Request):
     view_data = opencypher_gen_view_data()
+    view_data["natural_language"] = "Lookup Case id 594079"
     return views.TemplateResponse(
         request=req, name="opencypher_gen.html", context=view_data
     )
@@ -642,16 +679,57 @@ async def post_opencypher_gen(req: Request):
     form_data = await req.form()
     logging.info("/opencypher_gen form_data: {}".format(form_data))
     view_data = opencypher_gen_view_data()
-    natural_language = form_data.get("natural_language")
-    cypher = form_data.get("cypher")
+    natural_language = str(form_data.get("natural_language"))
+    query_text = str(form_data.get("query_text")).strip()
 
-    if natural_language is not None:
+    resp_obj = dict()
+    resp_obj["session_id"] = ""
+    resp_obj["natural_language"] = natural_language
+    resp_obj["completion_id"] = ""
+    resp_obj["completion_model"] = ""
+    resp_obj["prompt_tokens"] = -1
+    resp_obj["completion_tokens"] = -1
+    resp_obj["total_tokens"] = -1
+    resp_obj["cypher"] = ""
+    resp_obj["query_text"] = query_text
+    resp_obj["error"] = ""
+
+    # Seed the UI form if the input is simply "lookup" or "traverse"
+    if natural_language.lower() == "lookup":
+        view_data["natural_language"] = "Lookup Case id 594079"
+    elif natural_language.lower() == "traverse":
+        view_data["natural_language"] = (
+            "Traverse the cites edges from Case id 594079 to a depth of two cases. Return the Edge pairs."
+        )
+    elif len(query_text) > 10:
+        view_data["query_text"] = query_text
+        if "$$" in query_text:
+            view_data["error_message"] = "Error: SQL contains '$$' characters"
+            query_type = "CYPHER"
+            view_data = await post_query(req, query_type)
+
+    elif len(natural_language) > 10:
         view_data["natural_language"] = natural_language
-        # TODO - call the AI service to generate the Cypher
+        try:
+            # First LLM call - generate the cypher from the natural language
+            resp_obj = req.app.ai_svc.generate_cypher_from_user_prompt(resp_obj)
+            resp_obj["graph_name"] = ConfigService.age_graph_name()
+            FS.write_json(resp_obj, "tmp/opencypher_gen_resp_obj1.json")
 
-    elif cypher is not None:
-        view_data["cypher"] = cypher
-        # TODO - execute the given cypher query
+            # Second LLM call - wrap the opencypher in Apache AGE SQL
+            req.app.ai_svc.wrap_opencypher_in_age_sql(resp_obj)
+            FS.write_json(resp_obj, "tmp/opencypher_gen_resp_obj2.json")
+
+            view_data["cypher"] = resp_obj["cypher"]
+            view_data["query_text"] = resp_obj["query_text"]
+        except Exception as e:
+            view_data["error_message"] = "Error calling the AiService: {}".format(
+                str(e)
+            )
+            logging.critical((str(e)))
+            logging.exception(e, stack_info=True, exc_info=True)
+    else:
+        view_data["error_message"] = "No input provided"
 
     return views.TemplateResponse(
         request=req, name="opencypher_gen.html", context=view_data
@@ -665,12 +743,15 @@ def opencypher_gen_view_data(query_text=""):
     """
     view_data = dict()
     view_data["tutorial_href"] = "/tutorial?topic=opencypher_gen"
+    view_data["graph_name"] = ConfigService.age_graph_name()
     view_data["natural_language"] = ""
     view_data["cypher"] = ""
+    view_data["sql"] = ""
     view_data["results_message"] = ""
     view_data["results"] = ""
     view_data["elapsed_seconds"] = ""
     return view_data
+
 
 def checkbox_checked(form_data, html_id):
     try:

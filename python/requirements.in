@@ -8,13 +8,14 @@ Jinja2
 
 ageqrp
 black
-cryptography
+# cryptography
 docopt
 fastapi
 hypercorn
 itsdangerous
 multidict
 nltk
+numpy==2.2.1
 openai
 psycopg[binary,pool]
 pytest-asyncio
@@ -22,5 +23,6 @@ pytest-cov
 pytest
 python-dotenv
 python-multipart
-semantic-kernel
+semantic-kernel==1.17.1
 tiktoken
+uvicorn

@@ -6,7 +6,7 @@
   <h5>Generative AI for openCypher</h5>
   <p></p>
 
-  <form method="post" id="generate_form" name="generate_form">
+  <form method="post" id="generate_sql_form" name="generate_sql_form">
     <div class="mb-3">
       <label for="natural_language" class="form-label">Enter a Natural Language Query:</label>
       <textarea rows='1' class="form-control" id="natural_language" name="natural_language" value="{{ natural_language }}">{{ natural_language }}</textarea>
@@ -22,10 +22,10 @@
 
 <div class="container">
     <p></p>
-    <form method="post" id="execute_form" name="execute_form">
+    <form method="post" id="execute_sql_form" name="execute_sql_form">
         <div class="mb-3">
-            <label for="cypher" class="form-label">openCypher query:</label>
-            <textarea rows='8' class="form-control" id="cypher" name="cypher" value="{{ cypher }}">{{ cypher }}</textarea>
+            <label for="query_text" class="form-label">Apache AGE SQL query:</label>
+            <textarea rows='8' class="form-control" id="query_text" name="query_text" value="{{ query_text }}">{{ query_text }}</textarea>
         </div>
         <div class="mb-6">
             <button type="submit" id="execute_button" name="execute_button" class="btn btn-outline-primary mb-3">Execute openCypher Query</button>
@@ -36,25 +36,40 @@
 
 <hr>
 
-<div class="container" id="results_div" name="results_div">
-  <h5>{{ results_message }}</h5>
+<hr>
+
+<div class="container fs-5" id="results_div" name="results_div">
+
+  <h5>{{ tuples_results_message }}</h5>
   <pre>
   <code>
-{{ results }}
+{{ tuples_results }}
   </code>
   </pre>
-</div>
+  
+  <hr>
 
-<hr>
+  <h5>{{ json_results_message }}</h5>
+  <pre>
+  <code>
+{{ json_results }}
+  </code>
+  <code>
+{{ elapsed }}
+  </code>
+  </pre>
+  <br>
+  <br>
+</div>
 
 {% endblock %}
 
 {% block js %}
 <script>
-const generate_form = document.getElementById("generate_form");
+const generate_sql_form = document.getElementById("generate_sql_form");
 const generate_button = document.getElementById("generate_button");
 
-const execute_form = document.getElementById("execute_form");
+const execute_sql_form = document.getElementById("execute_sql_form");
 const execute_button = document.getElementById("execute_button");
 
 generate_button.addEventListener('click', 
@@ -63,7 +78,7 @@ generate_button.addEventListener('click',
       generate_button.disabled = true;
       generate_button.textContent = "Processing...";
       execute_button.disabled = true;
-      generate_form.submit();
+      generate_sql_form.submit();
     }
 );
 
@@ -73,7 +88,7 @@ execute_button.addEventListener('click',
       execute_button.disabled = true;
       execute_button.textContent = "Processing...";
       generate_button.disabled = true;
-      execute_form.submit();
+      execute_sql_form.submit();
     }
 );
 
