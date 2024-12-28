@@ -104,7 +104,7 @@ Directory/File             Description
     ├── sql                Miscellaneous SQL, DDL, indexing scripts
     ├── src                The primary Python source code
     ├── static             Static assets used in the Web app
-    ├── templates          Jinga2 templates used in text generation
+    ├── templates          Jinja2 templates used in text generation
     ├── tests              Unit tests
     ├── views              Web app HTML views/templates, including tutorial_<topic>.html pages
     ├── main.py            The "console app" part of this application
