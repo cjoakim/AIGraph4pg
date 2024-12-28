@@ -101,7 +101,6 @@ Directory/File             Description
 ├── docs                   User documentation
 └── python                 The Python-based implementation
     ├── config             Contains file sample_queries.txt, used by the Web UI
-    ├── docker             Dockerfile and docker-compose.yml for local desktop execution
     ├── sql                Miscellaneous SQL, DDL, indexing scripts
     ├── src                The primary Python source code
     ├── static             Static assets used in the Web app
