@@ -73,6 +73,17 @@ The context-sensitive **tutorial content** is embedded into the
 web application that runs locally on your workstation/laptop.
 See it by clicking the books icon on the Top-Nav.
 
+The following are the markdown versions of the **tutorials**
+that are embedded into the Web Application UI:
+
+- [Home Page](docs/tutorial_home.md)
+- [Architecture](docs/tutorial_architecture.md)
+- [PostgreSQL Administration](docs/tutorial_pg_admin.md)
+- [Relational](docs/tutorial_relational.md)
+- [Graphs with Apache AGE](docs/tutorial_graph.md)
+- [Vector Search](docs/tutorial_vector_search.md)
+- [Generative AI of openCypher queries](docs/tutorial_opencypher_gen.md)
+
 The [Frequently Asked Questions (FAQ)](docs/faq.md) page may
 answer some of your questions about Azure PostgreSQL
 and this reference application.
