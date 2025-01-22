@@ -40,6 +40,4 @@ Directory/File             Description
     ├── webapp.py          The Web application, built with the FastAPI framework
     ├── webapp.ps1         Windows PowerShell script to start the Web app
     └── webapp.sh          Linux/macOS script to start the Web app
-└── mkdocs*                Files related to html documentation generation with mkdocs
-                           published to GitHub pages site https://cjoakim.github.io/AIGraph4pg/
 ```

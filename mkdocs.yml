@@ -39,12 +39,18 @@ plugins:
 # in an alphanumeric order.
 nav:
   - index.md
-  - tutorial_architecture.md
-  - tutorial_pg_admin.md
-  - tutorial_relational.md
-  - tutorial_graph.md
-  - tutorial_vector_search.md
-  - tutorial_opencypher_gen.md
+  - Setup:
+    - environment_variables.md
+    - pg_local_installation.md
+  - Tutorial:
+    - tutorial_architecture.md
+    - tutorial_pg_admin.md
+    - tutorial_relational.md
+    - tutorial_graph.md
+    - tutorial_vector_search.md
+    - tutorial_opencypher_gen.md
+  - Reference:
+    - psql_commands.md
   - faq.md
 
 markdown_extensions:

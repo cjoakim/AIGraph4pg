@@ -1,4 +1,4 @@
-# AIGraph4pg - Local PostgreSQL Installation
+# AIGraph4pg : Local PostgreSQL Installation
 
 It is recommended that you install the latest version of PostgreSQL
 on your workstation/laptop both as a learning tool, and also
