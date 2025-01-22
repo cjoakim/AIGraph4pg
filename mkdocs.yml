@@ -1,5 +1,6 @@
 site_name: AIGraph4pg
-site_url: https://github.com/cjoakim/AIGraph4pg
+repo_url: https://github.com/cjoakim/AIGraph4pg
+#site_url: https://cjoakim.github.io/AIGraph4pg/
 theme:
   name: material
   custom_dir: mkdocs_overrides
@@ -37,7 +38,7 @@ plugins:
 # navigation UI, and their sequence.  Default is all *.md files
 # in an alphanumeric order.
 nav:
-  - readme.md
+  - index.md
   - tutorial_architecture.md
   - tutorial_pg_admin.md
   - tutorial_relational.md
