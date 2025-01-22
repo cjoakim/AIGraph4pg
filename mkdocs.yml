@@ -1,0 +1,68 @@
+site_name: AIGraph4pg
+site_url: https://github.com/cjoakim/mkdocs-github-actions-101
+theme:
+  name: material
+  custom_dir: mkdocs_overrides
+  # see https://squidfunk.github.io/mkdocs-material/customization/
+  # see overrides/partials/footer.html as an example override of mkdocs-material
+  features:
+    - navigation.expand
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline 
+        name: Switch to dark mode
+      primary: blue
+      accent: purple 
+    - scheme: slate 
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode    
+      primary: teal
+      accent: lime
+
+plugins:
+  - search
+
+# nav: controls which docs/*.md files are included in the
+# navigation UI, and their sequence.  Default is all *.md files
+# in an alphanumeric order.
+nav:
+  - readme.md
+  - tutorial_architecture.md
+  - tutorial_pg_admin.md
+  - tutorial_relational.md
+  - tutorial_graph.md
+  - tutorial_vector_search.md
+  - tutorial_opencypher_gen.md
+  - faq.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+# This content can appear in the default footer of each page.
+# copyright: |
+#   &copy; 2025 <a href="https://github.com/cjoakim/mkdocs-github-actions-101"  target="_blank" rel="noopener">Microsoft</a>

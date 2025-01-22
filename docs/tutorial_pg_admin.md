@@ -21,7 +21,7 @@ PostgreSQL Settings, PostgreSQL Catalog, and Apache AGE.
 PostgreSQL is highly configurable via a large set of **Server Parameters**
 and some of these may be optimized for performance tuning.These can be viewed and administered in **Azure Portal** as shown below:
 
-![](static/img/server-parameters.png)
+![](img/server-parameters.png)
 
 Likewise, these parameters may be queried in a client program
 such as psql with the following SQL:

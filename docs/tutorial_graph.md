@@ -23,7 +23,7 @@ Definitions:
 * **Property** : Key-value pair associated with a node or edge
 * **Label** : A tag attached to a node or edge, such as "Case" in the following diagram
 
-![](static/img/sample-graph.png)
+![](img/sample-graph.png)
 
 In the above visualization, the Nodes are represented as named **circles**
 while the Edges are represented as named **lines**.The edges are **directed** and don't imply or require a
