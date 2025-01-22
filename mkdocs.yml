@@ -1,5 +1,5 @@
 site_name: AIGraph4pg
-site_url: https://github.com/cjoakim/mkdocs-github-actions-101
+site_url: https://github.com/cjoakim/AIGraph4pg
 theme:
   name: material
   custom_dir: mkdocs_overrides

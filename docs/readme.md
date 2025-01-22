@@ -1,7 +1,7 @@
 # Introduction
 
 <p align="center">
-  <img src="python/static/img/AIGraph4pg.png" width="99%">
+  <img src="img/AIGraph4pg.png" width="99%">
 </p>
 
 **AIGraph4pg** is a tutorial and reference application, implemented with
@@ -53,7 +53,7 @@ area of each page, with each topic building on the previous page.
 The following image shows this **Top Navigation UI**, along with the Library icon.
 
 <p align="center">
-  <img src="docs/img/top-nav.png" width="70%">
+  <img src="img/top-nav.png" width="70%">
 </p>
 
 ---
@@ -61,7 +61,7 @@ The following image shows this **Top Navigation UI**, along with the Library ico
 ## Architecture
 
 <p align="center">
-  <img src="docs/img/AIGraph4pg-architecture.jpg" width="90%">
+  <img src="img/AIGraph4pg-architecture.jpg" width="90%">
 </p>
 
 ---
