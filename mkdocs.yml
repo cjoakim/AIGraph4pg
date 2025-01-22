@@ -35,8 +35,8 @@ plugins:
   - search
 
 # nav: controls which docs/*.md files are included in the
-# navigation UI, and their sequence.  Default is all *.md files
-# in an alphanumeric order.
+# navigation UI, and their sequence.
+# Default is all *.md files in an alphanumeric order.
 nav:
   - index.md
   - Setup:
@@ -73,3 +73,11 @@ markdown_extensions:
 # This content can appear in the default footer of each page.
 # copyright: |
 #   &copy; 2025 <a href="https://github.com/cjoakim/mkdocs-github-actions-101"  target="_blank" rel="noopener">Microsoft</a>
+
+
+# Notes - common usage of mkdocs from the command-line:
+#   mkdocs --help
+#   mkdocs build --help
+#   mkdocs build
+#   mkdocs serve
+#   mkdocs gh-deploy
