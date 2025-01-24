@@ -9,10 +9,6 @@
       
       
       
-        <link rel="prev" href="..">
-      
-      
-        <link rel="next" href="../pg_local_installation/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +16,7 @@
     
     
       
-        <title>AIGraph4pg Implementation 1 : Environment Variables - AIGraph4pg</title>
+        <title>AIGraph4pg - The Apache Age Extension - AIGraph4pg</title>
       
     
     
@@ -72,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aigraph4pg-implementation-1-environment-variables" class="md-skip">
+        <a href="#aigraph4pg-the-apache-age-extension" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              AIGraph4pg Implementation 1 : Environment Variables
+              AIGraph4pg - The Apache Age Extension
             
           </span>
         </div>
@@ -272,8 +268,6 @@
       
   
   
-    
-  
   
   
     
@@ -285,11 +279,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -303,100 +299,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Setup
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    AIGraph4pg Implementation 1 : Environment Variables
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    AIGraph4pg Implementation 1 : Environment Variables
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#defined-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Defined Variables
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-these-environment-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setting these Environment Variables
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#python-dotenv" class="md-nav__link">
-    <span class="md-ellipsis">
-      python-dotenv
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
             
               
                 
@@ -410,6 +318,48 @@
   
   <span class="md-ellipsis">
     AIGraph4pg : Local PostgreSQL Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick_start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AIGraph4pg - Quick Start Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pg_extensions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AIGraph4pg - Configuring and Using PostgreSQL Extensions
   </span>
   
 
@@ -709,39 +659,42 @@
   
 
 
-<h1 id="aigraph4pg-implementation-1-environment-variables">AIGraph4pg Implementation 1 : Environment Variables</h1>
-<p>Per the <a href="https://12factor.net/config">Twelve-Factor App methodology</a>,
-configuration is stored in environment variables.  </p>
-<h2 id="defined-variables">Defined Variables</h2>
-<p>This reference implementation uses the following environment variables.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>AIG4PG_LLM_CONTEXT_MAX_NTOKENS   
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>AIG4PG_LOG_LEVEL                   See values in class LoggingLevelService - 
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                                   notset, debug, info, warning, error, or critical 
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>AIG4PG_OPENAI_COMPLETIONS_DEP      The name of your Azure OpenAI completions deployment 
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>AIG4PG_OPENAI_EMBEDDINGS_DEP       The name of your Azure OpenAI embeddings deployment 
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>AIG4PG_OPENAI_KEY                  The Key of your Azure OpenAI account 
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>AIG4PG_OPENAI_URL                  The URL of your Azure OpenAI account 
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>AIG4PG_PG_AGE_GRAPH_NAME           The name of the PostgreSQL AGE graph 
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>AIG4PG_PG_FLEX_DB                  Azure PostgreSQL Flex Server database 
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>AIG4PG_PG_FLEX_PASS                Azure PostgreSQL Flex Server user password 
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>AIG4PG_PG_FLEX_PORT                Azure PostgreSQL Flex Server port 
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>AIG4PG_PG_FLEX_SERVER              Azure PostgreSQL Flex Server hostname 
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>AIG4PG_PG_FLEX_USER                Azure PostgreSQL Flex Server user 
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>LOCAL_PG_PASS                      Optional.  Used by the psql.ps1/psql.sh scripts
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                                   for local PostgreSQL access 
+<h1 id="aigraph4pg-the-apache-age-extension">AIGraph4pg - The Apache Age Extension</h1>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://age.apache.org/">Apache Age Home Page</a></li>
+<li><a href="https://age.apache.org/getstarted/quickstart/">Apache Age Quick Start</a></li>
+<li><a href="https://age.apache.org/age-manual/master/intro/overview.html">Apache Age Manual</a></li>
+<li><a href="https://techcommunity.microsoft.com/t5/azure-database-for-postgresql/introducing-support-for-graph-data-in-azure-database-for/ba-p/4275628">Introducing support for Graph data in Azure Database for PostgreSQL</a></li>
+<li><a href="https://age.apache.org/age-manual/master/intro/types.html">AGE types</a></li>
+</ul>
+<h3 id="more-links">More Links</h3>
+<ul>
+<li><a href="https://s3.amazonaws.com/artifacts.opencypher.org/openCypher9.pdf">Cypher Query Language Reference,v9</a></li>
+<li>https://matheusfarias03.github.io/AGE-quick-guide/</li>
+<li>https://stackoverflow.com/questions/75178525/is-it-possible-to-create-a-graph-in-age-using-existing-table-in-the-database</li>
+<li>https://age.apache.org/age-manual/master/advanced/plpgsql.html</li>
+<li>https://age.apache.org/age-manual/master/advanced/sql_in_cypher.html</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dev=&gt; CREATE EXTENSION IF NOT EXISTS age CASCADE;
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>CREATE EXTENSION
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>dev=&gt; SELECT * FROM pg_extension;
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  oid  | extname | extowner | extnamespace | extrelocatable | extversion |   extconfig   | extcondition
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>-------+---------+----------+--------------+----------------+------------+---------------+--------------
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a> 14258 | plpgsql |       10 |           11 | f              | 1.0        |               |
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a> 45797 | age     |       10 |        45796 | f              | 1.5.0      | {45798,45810} | {&quot;&quot;,&quot;&quot;}
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>(2 rows)
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>aigraph=&gt; SELECT * FROM pg_extension;
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  oid  | extname | extowner | extnamespace | extrelocatable | extversion |   extconfig   | extcondition
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>-------+---------+----------+--------------+----------------+------------+---------------+--------------
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a> 14258 | plpgsql |       10 |           11 | f              | 1.0        |               |
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a> 24759 | vector  |       10 |         2200 | t              | 0.7.0      |               |
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a> 25080 | age     |       10 |        25079 | f              | 1.5.0      | {25081,25093} | {&quot;&quot;,&quot;&quot;}
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>(3 rows)
 </code></pre></div>
-<h2 id="setting-these-environment-variables">Setting these Environment Variables</h2>
-<p>The repo contains generated PowerShell script <strong>set-env-vars-sample.ps1</strong>
-which sets all of these AIG4PG_ environment values.
-You may find it useful to edit and execute this script rather than set them manually on your system</p>
-<h2 id="python-dotenv">python-dotenv</h2>
-<p>The <a href="https://pypi.org/project/python-dotenv/">python-dotenv</a> library is used
-in each subapplication of this implementation.
-It allows you to define environment variables in a file named <strong><code>.env</code></strong>
-and thus can make it easier to use this project during local development.</p>
-<p>Please see the <strong>dotenv_example</strong> files in each subapplication for examples.</p>
-<p>It is important for you to have a <strong>.gitignore</strong> entry for the <strong>.env</strong> file
-so that application secrets don't get leaked into your source control system.</p>
 
 
 
