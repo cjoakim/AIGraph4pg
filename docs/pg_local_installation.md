@@ -22,25 +22,22 @@ Simply download the installer program and double-click it to execute it.
 You'll be guided through several screens in the installer program that look
 like the following.
 
-<p align="center">
-  <img src="img/local-pg-setup-1.png" width="70%">
-</p>
+![](img/local-pg-setup-1.png){ align=center, width=70% }
+
 
 Select all four checkboxes and click Next.
 
 ---
 
-<p align="center">
-  <img src="img/local-pg-setup-2.png" width="70%">
-</p>
+![](img/local-pg-setup-2.png){ align=center, width=70% }
+
 
 Note the location of the installation path and click Next.
 
 ---
 
-<p align="center">
-  <img src="img/local-pg-setup-3.png" width="70%">
-</p>
+![](img/local-pg-setup-3.png){ align=center, width=70% }
+
 
 The Stack Builder step is optional; it is not necessary
 for this reference application.
