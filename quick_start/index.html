@@ -408,6 +408,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Azure PaaS Services to Deploy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#azure-postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      Azure PostgreSQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-openai" class="md-nav__link">
+    <span class="md-ellipsis">
+      Azure OpenAI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -922,109 +946,40 @@ run this reference application on your workstation.</p>
 <h2 id="recommended-skills">Recommended Skills</h2>
 <ul>
 <li>Some programming language experience, especially with Python 3</li>
-<li>
-<p>See https://www.python.org/</p>
-</li>
-<li>
-<p>Some understanding of Python virtual environments</p>
-</li>
-<li>
-<p>See https://realpython.com/python-virtual-environments-a-primer/</p>
-</li>
-<li>
-<p>Some understanding of Environment Variables</p>
-</li>
-<li>
-<p>Some command-line experience, Windows PowerShell or linux/macOS bash shell</p>
-</li>
-<li>https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.4 </li>
-<li>https://support.apple.com/guide/terminal/welcome/mac</li>
+<li>Some understanding of Python virtual environments</li>
+<li>Some understanding of Environment Variables</li>
+<li>Some command-line experience, Windows PowerShell or linux/macOS bash shell</li>
 </ul>
 <p>There will be several steps to execute in this Quick Start,
 <strong>it is not a "one-click" deploy</strong>.</p>
 <hr />
 <h2 id="workstation-requirements">Workstation Requirements</h2>
 <ul>
-<li><strong>Windows 11</strong> or recent <strong>linux or macOS</strong> desktop operating system</li>
-<li>This solution is mostly Windows and PowerShell oriented, with *.ps1 scripts</li>
-<li>
-<p>But the *.sh scripts have been tested on macOS with the bash shell</p>
-</li>
-<li>
-<p>The <strong>git</strong> source-control system</p>
-</li>
-<li>Used here only to clone the public repository</li>
-<li>
-<p>See https://git-scm.com/</p>
-</li>
-<li>
-<p>The <strong>Azure CLI</strong> (i.e. - az)</p>
-</li>
-<li>
-<p>See https://learn.microsoft.com/en-us/cli/azure/</p>
-</li>
-<li>
-<p>An <strong>Azure Subscription</strong></p>
-</li>
-<li>
-<p><strong>Standard Python 3.12.x</strong></p>
-</li>
-<li>See https://www.python.org/downloads/</li>
-<li>
-<p>Not Conda or other distributions</p>
-</li>
-<li>
-<p><strong>Visual Studio Code (VSC)</strong> or similar IDE/editor</p>
-</li>
-<li>
-<p>See https://code.visualstudio.com/</p>
-</li>
-<li>
-<p><strong>A PostgreSQL client program, such as psql</strong></p>
-</li>
-<li>
-<p>See https://www.postgresql.org/docs/current/app-psql.html</p>
-</li>
-<li>
-<p><strong>A local/desktop PostgreSQL database installation</strong></p>
-</li>
-<li>
-<p>This is optional, but useful for learning the basics of PostgreSQL</p>
-</li>
-<li>
-<p><strong>Docker Desktop</strong></p>
-</li>
-<li>This is optional, used only for executing the public DockerHub image</li>
-<li>macOS users on Apple Silicon (i.e. - m1 to m4) will have to build the Docker image for that platform</li>
+<li><strong>Windows 11</strong> or recent <strong>Linux</strong> or <strong>macOS</strong> desktop operating system</li>
+<li>The <strong>git</strong> source-control system. See https://git-scm.com/</li>
+<li>The <strong>Azure CLI</strong> (i.e. - az).  See https://learn.microsoft.com/en-us/cli/azure/</li>
+<li>An <strong>Azure Subscription</strong></li>
+<li><strong>Standard Python 3.12.x</strong>; not Conda or other distributions.  See https://www.python.org/downloads/</li>
+<li><strong>Visual Studio Code (VSC)</strong> or similar IDE/editor.  See https://code.visualstudio.com/</li>
+<li><strong>A PostgreSQL client program, such as psql</strong>.  See https://www.postgresql.org/docs/current/app-psql.html</li>
+<li><strong>A local/desktop PostgreSQL database installation</strong>.  This is optional, but useful for learning the basics of PostgreSQL</li>
+<li><strong>Docker Desktop</strong>.  Optional, used only for executing the public DockerHub image.</li>
 </ul>
 <hr />
 <h2 id="azure-paas-services-to-deploy">Azure PaaS Services to Deploy</h2>
+<h3 id="azure-postgresql">Azure PostgreSQL</h3>
 <ul>
-<li><strong>Azure PostgreSQL</strong></li>
 <li>See the <strong>az/</strong> directory in this repo</li>
-<li>Copy file <strong>az/provision-config-example.json</strong> to <strong>az/provision-config.json</strong><ul>
-<li>az/provision-config.json is not in git source control, it is git-ignored for security purposes</li>
-</ul>
-</li>
-<li>Edit the <strong>az/provision-config.json</strong> per your subscription<ul>
-<li>The entry names are self-explanatory</li>
-</ul>
-</li>
-<li>Execute <strong>az login</strong><ul>
-<li>See https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli</li>
-</ul>
-</li>
+<li>Copy file <strong>az/provision-config-example.json</strong> to <strong>az/provision-config.json</strong></li>
+<li>Edit the <strong>az/provision-config.json</strong> per your subscription.  The entry names are self-explanatory</li>
+<li>Execute <strong>az login</strong>.  See https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli</li>
 <li>Execute the <strong>az/provision.ps1</strong> script to provision your Azure PostgreSQL server</li>
-<li>
-<p>Alternatively, provision this manually in Azure Portal</p>
-<ul>
-<li>Enable the VECTOR and AGE extensions</li>
-<li>See https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions</li>
+<li>Alternatively, provision this manually in Azure Portal.
+Enable the VECTOR and AGE extensions.
+See https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions</li>
 </ul>
-</li>
-<li>
-<p><strong>Azure OpenAI</strong></p>
-</li>
+<h3 id="azure-openai">Azure OpenAI</h3>
+<ul>
 <li>Recommended, for this project, to provision this manually in Azure Portal</li>
 <li>Create a <strong>text-embedding-ada-002</strong> model deployment, for embeddings and vector search</li>
 <li>Create a <strong>gpt-4o</strong> model deployment, for generative AI of openCypher queries</li>
@@ -1082,8 +1037,8 @@ They begin with the prefix <strong>AIG4PG_</strong>.</p>
 </thead>
 <tbody>
 <tr>
-<td>AIG4PG_ENCRYPTION_SYMMETRIC_KEY</td>
-<td>optional symmetric key for encryption/decryption</td>
+<td>AIG4PG_LLM_CONTEXT_MAX_NTOKENS</td>
+<td>Optional.  Defaults to 0, no truncation.</td>
 </tr>
 <tr>
 <td>AIG4PG_LOG_LEVEL</td>
@@ -1106,6 +1061,10 @@ They begin with the prefix <strong>AIG4PG_</strong>.</p>
 <td>The URL of your Azure OpenAI account</td>
 </tr>
 <tr>
+<td>AIG4PG_PG_AGE_GRAPH_NAME</td>
+<td>The name of the PostgreSQL AGE graph</td>
+</tr>
+<tr>
 <td>AIG4PG_PG_FLEX_DB</td>
 <td>Azure PostgreSQL Flex Server database</td>
 </tr>
@@ -1124,6 +1083,10 @@ They begin with the prefix <strong>AIG4PG_</strong>.</p>
 <tr>
 <td>AIG4PG_PG_FLEX_USER</td>
 <td>Azure PostgreSQL Flex Server user</td>
+</tr>
+<tr>
+<td>LOCAL_PG_PASS</td>
+<td>Optional.  Used by the psql.ps1/psql.sh scripts for local PostgreSQL access</td>
 </tr>
 </tbody>
 </table>
