@@ -63,10 +63,10 @@ when you are in the **root directory** of the GitHub project you'll
 see instructions like this:
 
 ```
-aigraph4pg> some command in the root directory
+AIGraph4pg> some command in the root directory
 ```
 
-Likewise, when you're in the **python directory** beneath the aigraph4pg 
+Likewise, when you're in the **python directory** beneath the AIGraph4pg 
 directory, the instructions will look like this:
 
 ```
@@ -158,7 +158,7 @@ This will copy the code, scripts, and curated data files to your computer.
 
 > git clone https://github.com/cjoakim/aigraph4pg.git
 
-> cd aigraph4pg    <-- this is the project root directory
+> cd AIGraph4pg    <-- this is the project root directory
 ```
 
 ### Create the Python Virtual Environment
@@ -172,7 +172,7 @@ This is conceptually similar to NuGet (DotNet ecosystem), MavenCentral (Java eco
 NPM (Node.js and JavaScript ecosystem), etc..
 
 ```
-aigraph4pg> cd python       
+AIGraph4pg> cd python       
 
 python>                   <-- You'll primarily use this directory in this project
 
@@ -317,9 +317,9 @@ PS ...\python> .\venv\Scripts\Activate.ps1
 #### macOS bash shell
 
 ```
-[~/aigraph4pg]$ cd python
-[~/aigraph4pg/python]$ source venv/bin/activate
-(venv) [~/aigraph4pg/python]$
+[~/AIGraph4pg]$ cd python
+[~/AIGraph4pg/python]$ source venv/bin/activate
+(venv) [~/AIGraph4pg/python]$
 ```
 
 ---
