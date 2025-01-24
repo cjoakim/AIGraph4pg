@@ -129,9 +129,13 @@ The project directory structure looks like this:
 
 ## Set the Environment Variables for this project
 
-These generally begin with the previx **AIG4PG_** or **AZURE_**.
+Per the [Twelve-Factor App methodology](https://12factor.net/config),
+configuration is stored in environment variables.  
 
-TODO - refine
+### List of enviroment variables
+
+This reference implementation uses the following environment variables.
+They begin with the prefix **AIG4PG_**.
 
 | Name | Description |
 | --------------------------------- | --------------------------------- |
@@ -146,6 +150,24 @@ TODO - refine
 | AIG4PG_PG_FLEX_PORT | Azure PostgreSQL Flex Server port |
 | AIG4PG_PG_FLEX_SERVER | Azure PostgreSQL Flex Server hostname |
 | AIG4PG_PG_FLEX_USER | Azure PostgreSQL Flex Server user |
+
+### Setting these Environment Variables
+
+The repo contains generated PowerShell script **set-env-vars-sample.ps1**
+which sets all of these AIG4PG_ environment values.
+You may find it useful to edit and execute this script rather than set them manually on your system
+
+
+### python-dotenv
+
+The [python-dotenv](https://pypi.org/project/python-dotenv/) library is used
+in  this implementation.  It allows you to define environment variables in a
+file named **`.env`** and thus can make it easier to use this project during local development.
+
+Please see the **dotenv_example** files in each subapplication for examples.
+
+It is important for you to have a **.gitignore** entry for the **.env** file
+so that application secrets don't get leaked into your source control system.
 
 --- 
 

@@ -40,8 +40,9 @@ plugins:
 nav:
   - index.md
   - Setup:
-    - environment_variables.md
     - pg_local_installation.md
+    - quick_start.md
+    - pg_extensions.md
   - Tutorial:
     - tutorial_architecture.md
     - tutorial_pg_admin.md

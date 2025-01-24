@@ -6,24 +6,22 @@ configuration is stored in environment variables.
 ## Defined Variables
 
 This reference implementation uses the following environment variables.
+They begin with the prefix **AIG4PG_**.
 
-```
-AIG4PG_LLM_CONTEXT_MAX_NTOKENS   
-AIG4PG_LOG_LEVEL                   See values in class LoggingLevelService - 
-                                   notset, debug, info, warning, error, or critical 
-AIG4PG_OPENAI_COMPLETIONS_DEP      The name of your Azure OpenAI completions deployment 
-AIG4PG_OPENAI_EMBEDDINGS_DEP       The name of your Azure OpenAI embeddings deployment 
-AIG4PG_OPENAI_KEY                  The Key of your Azure OpenAI account 
-AIG4PG_OPENAI_URL                  The URL of your Azure OpenAI account 
-AIG4PG_PG_AGE_GRAPH_NAME           The name of the PostgreSQL AGE graph 
-AIG4PG_PG_FLEX_DB                  Azure PostgreSQL Flex Server database 
-AIG4PG_PG_FLEX_PASS                Azure PostgreSQL Flex Server user password 
-AIG4PG_PG_FLEX_PORT                Azure PostgreSQL Flex Server port 
-AIG4PG_PG_FLEX_SERVER              Azure PostgreSQL Flex Server hostname 
-AIG4PG_PG_FLEX_USER                Azure PostgreSQL Flex Server user 
-LOCAL_PG_PASS                      Optional.  Used by the psql.ps1/psql.sh scripts
-                                   for local PostgreSQL access 
-```
+| Name | Description |
+| --------------------------------- | --------------------------------- |
+| AIG4PG_ENCRYPTION_SYMMETRIC_KEY | optional symmetric key for encryption/decryption |
+| AIG4PG_LOG_LEVEL | See values in class LoggingLevelService - notset, debug, info, warning, error, or critical |
+| AIG4PG_OPENAI_COMPLETIONS_DEP | The name of your Azure OpenAI completions deployment |
+| AIG4PG_OPENAI_EMBEDDINGS_DEP | The name of your Azure OpenAI embeddings deployment |
+| AIG4PG_OPENAI_KEY | The Key of your Azure OpenAI account |
+| AIG4PG_OPENAI_URL | The URL of your Azure OpenAI account |
+| AIG4PG_PG_FLEX_DB | Azure PostgreSQL Flex Server database |
+| AIG4PG_PG_FLEX_PASS | Azure PostgreSQL Flex Server user password |
+| AIG4PG_PG_FLEX_PORT | Azure PostgreSQL Flex Server port |
+| AIG4PG_PG_FLEX_SERVER | Azure PostgreSQL Flex Server hostname |
+| AIG4PG_PG_FLEX_USER | Azure PostgreSQL Flex Server user |
+
 
 ## Setting these Environment Variables
 
