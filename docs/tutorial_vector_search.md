@@ -1,4 +1,3 @@
-
 ## AIGraph4pg Tutorial : Vector Search
 
 ##### Coming Soon: Advanced Vector Search with DiskANN and Semantic Ranking
@@ -105,3 +104,13 @@ select id, name_abbreviation, to_char(decision_date, 'YYYY-MM-DD')
 This query returns the legal case name abbreviation and the date of
 the legal case decision for the 10 legal cases that are most similar
 to the given embedding value. This is very powerful search functionality.
+```
+
+
+
+
+
+  
+```
+
+

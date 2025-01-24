@@ -1,4 +1,3 @@
-
 ## AIGraph4pg Tutorial : Relational Functionality
 
 ##### PostgreSQL Documentation
@@ -645,3 +644,5 @@ for schemaless and variable data in PostgreSQL.
     }
   
 ```
+
+

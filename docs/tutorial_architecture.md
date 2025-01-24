@@ -1,4 +1,3 @@
-
 ## AIGraph4pg Tutorial : Solution Architecture and Implementation
 
 ---
@@ -152,3 +151,10 @@ for this solution:
   to store your secrets and connection strings.**Deployment of the web application, however, is out-of-scope for this reference implementation**
   as the web app is intended to run from your development computer.
   Thus, ACA, AKS, ACR, and AKV are not used in this reference implementation.
+```
+
+
+
+
+```
+

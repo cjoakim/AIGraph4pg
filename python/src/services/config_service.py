@@ -1,4 +1,3 @@
-
 import json
 import logging
 import os
@@ -122,15 +121,6 @@ class ConfigService:
         d["LOCAL_PG_PASS"] = (
             "Optional.  Used by the psql.ps1/psql.sh scripts for local PostgreSQL access"
         )
-        d["AZURE_COSMOSDB_PG_SERVER"] = (
-            "Optional.  Used by the psql.ps1/psql.sh scripts for Cosmos DB PostgreSQL"
-        )
-        d["AZURE_COSMOSDB_PG_USER"] = (
-            "Optional.  Used by the psql.ps1/psql.sh scripts for Cosmos DB PostgreSQL"
-        )
-        d["AZURE_COSMOSDB_PG_PASS"] = (
-            "Optional.  Used by the psql.ps1/psql.sh scripts for Cosmos DB PostgreSQL"
-        )
         return d
 
     @classmethod
@@ -165,7 +155,6 @@ class ConfigService:
                 json.dumps(selected, sort_keys=True, indent=2)
             )
         )
-
 
     @classmethod
     def postgresql_server(cls) -> str:

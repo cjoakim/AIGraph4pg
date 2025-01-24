@@ -1,4 +1,3 @@
-
 ## AIGraph4pg Tutorial : Azure PostgreSQL Administration
 
 ##### PostgreSQL Documentation
@@ -97,4 +96,5 @@ List the Apache AGE Graph Labels - the Vertex and Edge types:
     order by name;
   
 ```
+
 

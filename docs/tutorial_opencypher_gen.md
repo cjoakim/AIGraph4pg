@@ -1,4 +1,3 @@
-
 ## AIGraph4pg Tutorial : Generative AI for openCypher
 
 ##### Generative AI
@@ -160,3 +159,13 @@ dynamic values (i.e. - natural\_language, graph\_name, and open\_cypher) at runt
 These two prompts are files "python/templates/cypher\_gen\_llm\_prompt.txt" and
 "python/templates/wrap\_opencypher\_in\_age\_sql.txt" in the repository source code.Please feel free to modify these prompts to suit your own application needs.
 The of [Prompt Engineering](https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-retrieval-augmented-generation-rag) is fast evolving.
+```
+
+
+
+
+
+  
+```
+
+
