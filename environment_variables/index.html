@@ -9,10 +9,6 @@
       
       
       
-        <link rel="prev" href="../tutorial_graph/">
-      
-      
-        <link rel="next" href="../tutorial_opencypher_gen/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +16,7 @@
     
     
       
-        <title>Tutorial vector search - AIGraph4pg</title>
+        <title>AIGraph4pg Implementation 1 : Environment Variables - AIGraph4pg</title>
       
     
     
@@ -72,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aigraph4pg-tutorial-vector-search" class="md-skip">
+        <a href="#aigraph4pg-implementation-1-environment-variables" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tutorial vector search
+              AIGraph4pg Implementation 1 : Environment Variables
             
           </span>
         </div>
@@ -384,8 +380,6 @@
       
   
   
-    
-  
   
   
     
@@ -397,11 +391,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -415,7 +411,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Tutorial
@@ -510,28 +506,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Tutorial vector search
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../tutorial_vector_search/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -540,66 +518,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#aigraph4pg-tutorial-vector-search" class="md-nav__link">
-    <span class="md-ellipsis">
-      AIGraph4pg Tutorial : Vector Search
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="AIGraph4pg Tutorial : Vector Search">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#coming-soon-advanced-vector-search-with-diskann-and-semantic-ranking" class="md-nav__link">
-    <span class="md-ellipsis">
-      Coming Soon: Advanced Vector Search with DiskANN and Semantic Ranking
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vector-search-concepts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vector Search Concepts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vector-search-implementation-in-this-reference-application-with-pg_vector" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vector Search Implementation in this Reference Application with pg_vector
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -741,99 +659,38 @@
   
 
 
-  <h1>Tutorial vector search</h1>
-
-<h2 id="aigraph4pg-tutorial-vector-search">AIGraph4pg Tutorial : Vector Search</h2>
-<h5 id="coming-soon-advanced-vector-search-with-diskann-and-semantic-ranking">Coming Soon: Advanced Vector Search with DiskANN and Semantic Ranking</h5>
-<p>This reference application does not yet implement vector search with DiskANN,
-and augmented with Semantic Ranking. This functionality is expected to be
-added to this project in January/February 2025.<a href="https://www.microsoft.com/en-us/research/project/project-akupara-approximate-nearest-neighbor-search-for-large-scale-semantic-search/">DiskANN</a> is a set of advanced algorithms for vector search and semantic ranking developed by
-Microsoft Research. It enables high-scalability, high-performance as well as lower costs.DiskANN is being integrated into several Microsoft products.
-It is currently available in preview mode for
-<a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgdiskann">Azure Database for PostgreSQL - Flexible Server</a>.<a href="https://techcommunity.microsoft.com/blog/adforpostgresql/introducing-the-semantic-ranking-solution-for-azure-database-for-postgresql/4298781">Semantic Ranking</a> functionality is also being integrated into Azure Database for PostgreSQL.
-It can be used to improve vector search result quality by using semantic ranking models
-to rerank vector search results.</p>
-<hr />
-<h5 id="vector-search-concepts">Vector Search Concepts</h5>
-<p><a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#concepts">Vector Search</a> is the functionality in modern databases to search by the
-<strong>semantic meaning</strong> of data rather than just precice or fuzzy value matching.
-Vector search is typically used in Generative AI applications, where RAG data
-is passed to a Large Language Model (LLM) to augment the knowledge base of the model.
-Vector search is used to identify this RAG data to be passed to the LLM.Vector search works by first <strong>"vectorizing"</strong> your text data, such as a
-product description or summary or a legal case. To create a vector, you invoke an
-optimized model in the LLM and pass in your text data to be vectorized. The LLM responds
-with a vector of floating-point values of n-dimensions that represents the semantic meaning
-of your text data. A vector is alternatively called an <strong>embedding</strong>.You then populate this vector data in your database, and index it with a vector index
-so as to make it searchable.To query your database using vector search, you pass in a vector of floating-point values
-as a search parameter. You will often have to generate this vector at runtime, by calling
-the same LLM text embedding model, given the user natural language query.
-Some databases, including Azure Database for PostgreSQL, support
-<strong>filtered vector search</strong>, meaning a search that uses both traditonal
-WHERE clause logic as well as vector search logic.</p>
-<hr />
-<h5 id="vector-search-implementation-in-this-reference-application-with-pg_vector">Vector Search Implementation in this Reference Application with pg_vector</h5>
-<p>This initial implementation of this reference application uses the
-<a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#vector-operators">pgvector</a> open-source PostgreSQL extension. Please visit this linked page as it provides
-excellent documentation and examples.As described in the
-<a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#vector-operators">Quick Start</a> documentation in this repo, you have to first enable this extension
-in your Azure Database for PostgreSQL server.You'll need a database table with a column of type <strong>vector</strong> to store your
-vectors/embeddings. The DDL for the legal_cases table in this project is shown below.
-Note the presence of the <strong>embedding</strong> column of type <strong>vector(1536)</strong>.
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>CREATE TABLE legal_cases (
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  id                   bigserial primary key,
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  name                 VARCHAR(1024),
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  name_abbreviation    VARCHAR(1024),
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  case_url             VARCHAR(1024),
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  decision_date        DATE,
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  court_name           VARCHAR(1024),
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  citation_count       INTEGER,
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  text_data            TEXT,
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  json_data            JSONB,
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  embedding            vector(1536)      
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>);
-</code></pre></div>
-This vector(1536) column is populated with embeddings produced by the Azure OpenAI
-<a href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions#embeddings">text-embedding-ada-002</a> model. This model produces 1536-dimensional embeddings,
-meaning it returns an array of 1536 floating-point values.
-Therefore, the corresponding PostgreSQL column type is <strong>vector(1536)</strong>.To enable the vector column to be queried efficiently, you need to create an
-<a href="https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector#indexing">index</a> for the column. There are three supported index types:</p>
-<ul>
-<li>Inverted File with Flat Compression (IVVFlat)</li>
-<li>Hierarchical Navigable Small Worlds (HNSW)</li>
-<li>Disk Approximate Nearest Neighbor (DiskANN)</li>
-</ul>
-<p>This reference application uses the <strong>IVFFlat</strong> index type.
-The DDL for this index in the legal_cases table is shown below:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DROP INDEX IF EXISTS idx_legal_cases_ivfflat_embedding;
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>CREATE INDEX idx_legal_cases_ivfflat_embedding
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>ON     legal_cases
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>USING  ivfflat (embedding vector_cosine_ops)
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>WITH  (lists = 50);
-</code></pre></div>
-Once the data is populated and the column indexed, you can now execute
-a vector search vs that column with the <strong>"embedding &lt;-&gt;"</strong> SQL syntax.
-Please see the web application code in this repository, file python/webapp.py,
-where the vector search SQL is created in method "legal_cases_vector_search_sql()"
-as shown below:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>def legal_cases_vector_search_sql(embeddings, limit=10):
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    return (
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        &quot;&quot;&quot;
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>select id, name_abbreviation, to_char(decision_date, &#39;YYYY-MM-DD&#39;)
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a> from legal_cases
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a> order by embedding &lt;-&gt; &#39;{}&#39;
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a> offset 0 limit 10;
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    &quot;&quot;&quot;.format(
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>            embeddings
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        )
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        .replace(&quot;\n&quot;, &quot; &quot;)
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        .strip()
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    )
-</code></pre></div>
-This query returns the legal case name abbreviation and the date of
-the legal case decision for the 10 legal cases that are most similar
-to the given embedding value. This is very powerful search functionality.
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>
-</code></pre></div></p>
+<h1 id="aigraph4pg-implementation-1-environment-variables">AIGraph4pg Implementation 1 : Environment Variables</h1>
+<p>Per the <a href="https://12factor.net/config">Twelve-Factor App methodology</a>,
+configuration is stored in environment variables.  </p>
+<h2 id="defined-variables">Defined Variables</h2>
+<p>This reference implementation uses the following environment variables.
+| Name | Description |
+| --------------------------------- | --------------------------------- |
+| AIG4PG_LLM_CONTEXT_MAX_NTOKENS |  |
+| AIG4PG_LOG_LEVEL | See values in class LoggingLevelService - notset, debug, info, warning, error, or critical |
+| AIG4PG_OPENAI_COMPLETIONS_DEP | The name of your Azure OpenAI completions deployment |
+| AIG4PG_OPENAI_EMBEDDINGS_DEP | The name of your Azure OpenAI embeddings deployment |
+| AIG4PG_OPENAI_KEY | The Key of your Azure OpenAI account |
+| AIG4PG_OPENAI_URL | The URL of your Azure OpenAI account |
+| AIG4PG_PG_AGE_GRAPH_NAME | The name of the PostgreSQL AGE graph |
+| AIG4PG_PG_FLEX_DB | Azure PostgreSQL Flex Server database |
+| AIG4PG_PG_FLEX_PASS | Azure PostgreSQL Flex Server user password |
+| AIG4PG_PG_FLEX_PORT | Azure PostgreSQL Flex Server port |
+| AIG4PG_PG_FLEX_SERVER | Azure PostgreSQL Flex Server hostname |
+| AIG4PG_PG_FLEX_USER | Azure PostgreSQL Flex Server user |
+| LOCAL_PG_PASS | Optional.  Used by the psql.ps1/psql.sh scripts for local PostgreSQL access |</p>
+<h2 id="setting-these-environment-variables">Setting these Environment Variables</h2>
+<p>The repo contains generated PowerShell script <strong>set-env-vars-sample.ps1</strong>
+which sets all of these AIG4PG_ environment values.
+You may find it useful to edit and execute this script rather than set them manually on your system</p>
+<h2 id="python-dotenv">python-dotenv</h2>
+<p>The <a href="https://pypi.org/project/python-dotenv/">python-dotenv</a> library is used
+in each subapplication of this implementation.
+It allows you to define environment variables in a file named <strong><code>.env</code></strong>
+and thus can make it easier to use this project during local development.</p>
+<p>Please see the <strong>dotenv_example</strong> files in each subapplication for examples.</p>
+<p>It is important for you to have a <strong>.gitignore</strong> entry for the <strong>.env</strong> file
+so that application secrets don't get leaked into your source control system.</p>
 
 
 
