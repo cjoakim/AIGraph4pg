@@ -109,7 +109,7 @@ class ConfigService:
         d["AIG4PG_OPENAI_EMBEDDINGS_DEP"] = (
             "The name of your Azure OpenAI embeddings deployment"
         )
-        d["AIG4PG_LLM_CONTEXT_MAX_NTOKENS"] = ""
+        d["AIG4PG_LLM_CONTEXT_MAX_NTOKENS"] = "Optional.  Defaults to 0, no truncation."
         d["AIG4PG_PG_FLEX_SERVER"] = "Azure PostgreSQL Flex Server hostname"
         d["AIG4PG_PG_FLEX_PORT"] = "Azure PostgreSQL Flex Server port"
         d["AIG4PG_PG_FLEX_DB"] = "Azure PostgreSQL Flex Server database"

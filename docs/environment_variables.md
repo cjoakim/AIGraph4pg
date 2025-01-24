@@ -8,7 +8,7 @@ configuration is stored in environment variables.
 This reference implementation uses the following environment variables.
 | Name | Description |
 | --------------------------------- | --------------------------------- |
-| AIG4PG_LLM_CONTEXT_MAX_NTOKENS |  |
+| AIG4PG_LLM_CONTEXT_MAX_NTOKENS | Optional.  Defaults to 0, no truncation. |
 | AIG4PG_LOG_LEVEL | See values in class LoggingLevelService - notset, debug, info, warning, error, or critical |
 | AIG4PG_OPENAI_COMPLETIONS_DEP | The name of your Azure OpenAI completions deployment |
 | AIG4PG_OPENAI_EMBEDDINGS_DEP | The name of your Azure OpenAI embeddings deployment |

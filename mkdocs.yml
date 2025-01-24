@@ -52,6 +52,7 @@ nav:
   - faq.md
 
 markdown_extensions:
+  - def_list
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
