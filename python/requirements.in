@@ -6,6 +6,7 @@
 Faker
 Jinja2
 
+agefreighter>=0.7.5
 ageqrp
 black
 # cryptography
@@ -18,7 +19,7 @@ multidict
 nltk
 numpy==2.2.1
 openai
-psycopg[binary,pool]
+# psycopg[binary,pool]
 pytest-asyncio
 pytest-cov
 pytest
