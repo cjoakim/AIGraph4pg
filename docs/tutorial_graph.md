@@ -1,8 +1,8 @@
-## AIGraph4pg Tutorial : Graphs, Apache AGE, and openCypher
+### Tutorial : Graphs, Apache AGE, and openCypher
 
 ---
 
-##### Graph Terminology
+####  8.1 Graph Terminology
 
 There are several types of **graph databases**.
 One of the most common is called **Labeled Property Graph** or
@@ -35,7 +35,7 @@ Note Judges, Jurisdictions, and other edge types.
 
 ---
 
-##### openCypher
+####  8.2 openCypher
 
 [openCypher](https://opencypher.org) is the query language
 used by Apache AGE.
@@ -94,7 +94,7 @@ set the search path for a specific user, as shown below:
 
 ---
 
-##### Creating and Loading an AGE Graph
+####  8.3 Creating and Loading an AGE Graph
 
 Please revisit the **docs\readme.md page of the GitHub repository**
 where this process is documented.This section further explains the process.There are multiple ways to load an Apache AGE graph in Azure PostgreSQL.
@@ -137,7 +137,7 @@ with an arbitrary set of properties in JSON format.
 
 ---
 
-##### The Underlying Apache AGE Data Structures
+####  8.4 The Underlying Apache AGE Data Structures
 
 You can use the PostgreSQL **pg\_dump** utility, with the **--schema-only**
 option to dump the schema of your database to gain insight into how the AGE graph
@@ -172,7 +172,7 @@ and one table for each and Edge type in your graph.
 
 ---
 
-##### Interacting with your AGE graph in Azure PostgreSQL
+####  8.5 Interacting with your AGE graph in Azure PostgreSQL
 
 To execute [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)
 operations vs AGE you simply use the tools and software libraries that you already use with PostgreSQL.For example, the **psql** command line utility, the **pgAdmin** GUI,

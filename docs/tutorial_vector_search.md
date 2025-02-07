@@ -1,6 +1,6 @@
-## AIGraph4pg Tutorial : Vector Search
+### Tutorial : Vector Search
 
-##### Coming Soon: Advanced Vector Search with DiskANN and Semantic Ranking
+####  9.1 Coming Soon: Advanced Vector Search with DiskANN and Semantic Ranking
 
 This reference application does not yet implement vector search with DiskANN,
 and augmented with Semantic Ranking. This functionality is expected to be
@@ -13,7 +13,7 @@ to rerank vector search results.
 
 ---
 
-##### Vector Search Concepts
+####  9.2 Vector Search Concepts
 
 [Vector Search](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#concepts) is the functionality in modern databases to search by the
 **semantic meaning** of data rather than just precice or fuzzy value matching.
@@ -33,7 +33,7 @@ WHERE clause logic as well as vector search logic.
 
 ---
 
-##### Vector Search Implementation in this Reference Application with pg\_vector
+####  9.3 Vector Search Implementation in this Reference Application with pg\_vector
 
 This initial implementation of this reference application uses the
 [pgvector](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector#vector-operators) open-source PostgreSQL extension. Please visit this linked page as it provides

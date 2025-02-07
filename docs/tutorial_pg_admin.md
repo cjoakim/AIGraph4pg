@@ -1,6 +1,6 @@
-## AIGraph4pg Tutorial : Azure PostgreSQL Administration
+### Tutorial : Azure PostgreSQL Administration
 
-##### PostgreSQL Documentation
+####  6.1 PostgreSQL Documentation
 
 There is a vast amount of documentation available for PostgreSQL, including:
 
@@ -15,7 +15,7 @@ PostgreSQL Settings, PostgreSQL Catalog, and Apache AGE.
 
 ---
 
-##### PostgreSQL Settings
+####  6.2 PostgreSQL Settings
 
 PostgreSQL is highly configurable via a large set of **Server Parameters**
 and some of these may be optimized for performance tuning.These can be viewed and administered in **Azure Portal** as shown below:
@@ -41,7 +41,7 @@ of these parameters for your workload. This feature is described here:
 
 ---
 
-##### PostgreSQL Catalog
+####  6.3 PostgreSQL Catalog
 
 As with the server parameters, the catalog of schemas, tables, indexes, and other objects
 is queryable with SQL. A few example queries are shown below:Display the columns in a given relational table (i.e. - legal\_cases):
@@ -56,7 +56,7 @@ is queryable with SQL. A few example queries are shown below:Display the columns
 
 ---
 
-##### PostgreSQL Extensions
+####  6.4 PostgreSQL Extensions
 
 List of Available Extensions:
 ```
@@ -78,7 +78,7 @@ List of Installed Extensions:
 
 ---
 
-##### Apache AGE
+####  6.5 Apache AGE
 
 List the Apache AGE Graphs:
 ```

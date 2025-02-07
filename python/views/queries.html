@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  <h5>{{ query_type }}</h5>
+  <h3>{{ query_type }}</h3>
   <br>
   <form method="post" id="form" name="form">
     <div class="row align-items-center">
@@ -37,7 +37,7 @@
 
 <div class="container fs-5" id="results_div" name="results_div">
 
-  <h5>{{ tuples_results_message }}</h5>
+  <h4>{{ tuples_results_message }}</h4>
   <pre>
   <code>
 {{ tuples_results }}
@@ -46,7 +46,7 @@
   
   <hr>
 
-  <h5>{{ json_results_message }}</h5>
+  <h4>{{ json_results_message }}</h4>
   <pre>
   <code>
 {{ json_results }}

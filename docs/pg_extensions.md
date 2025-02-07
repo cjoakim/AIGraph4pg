@@ -1,22 +1,22 @@
-# AIGraph4pg - Configuring and Using PostgreSQL Extensions
+# 4.0 AIGraph4pg - Configuring and Using PostgreSQL Extensions
 
 In this project we'll use the **vector** and **age**.
 
 
-## Links
+## 4.1 Links
 
 - https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgvector
 - https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions
 - https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#extension-versions
 
-## Process
+## 4.2 Process
 
 - First **enable** the use of the extension(s) in Azure Portal
 - Then **create** the extension(s) in your database in a **psql** session
 
 These are shown below.
 
-### Enabling the PostgreSQL Extensions 
+### 4.2.1 Enabling the PostgreSQL Extensions 
 
 You can do this in **Azure Portal** as follows:
 
@@ -33,7 +33,7 @@ You can do this in **Azure Portal** as follows:
   <img src="img/portal-azure-extensions-2.png" width="95%">
 </p>
 
-### Creating the Extensions in a psql shell
+### 4.2.2 Creating the Extensions in a psql shell
 
 First, query the initial list of extensions.
 
@@ -75,7 +75,7 @@ aigraph=> SELECT * FROM pg_extension;
 (3 rows)
 ```
 
-#### Screen shot of the above psql session in Windows PowerShell
+### 4.2.3 Screen shot of the above psql session in Windows PowerShell
 
 <p align="center">
   <img src="img/powershell-create-extensions.png" width="95%">

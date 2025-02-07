@@ -1,8 +1,8 @@
-## AIGraph4pg Tutorial : Solution Architecture and Implementation
+### Tutorial : Solution Architecture and Implementation
 
 ---
 
-##### Implementation Language: Python
+####  5.1 Implementation Language: Python
 
 This reference implementation was developed with the **Python**
 programming language, but Python isn't required for your implementation.
@@ -33,7 +33,7 @@ for your implementation.
 
 ---
 
-##### Graph Visualization: D3.js
+####  5.2 Graph Visualization: D3.js
 
 This reference implementation uses the free and open-source
 [D3.js](https://d3js.org/) JavaScript library.
@@ -44,7 +44,7 @@ the best alternatives to D3.js.
 
 ---
 
-##### Development Environment
+####  5.3 Development Environment
 
 This solution was developed with the following recommended development tools:
 
@@ -69,7 +69,7 @@ This solution was developed with the following recommended development tools:
 
 ---
 
-##### Deployment Environment
+####  5.4 Deployment Environment
 
 The following **Azure Platform as a Service (PaaS) services** are required
 for this solution:

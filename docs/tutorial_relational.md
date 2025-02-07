@@ -1,6 +1,6 @@
-## AIGraph4pg Tutorial : Relational Functionality
+### Tutorial : Relational Functionality
 
-##### PostgreSQL Documentation
+####  7.1 PostgreSQL Documentation
 
 There is a vast amount of documentation available for PostgreSQL, including:
 
@@ -15,7 +15,7 @@ Table Inheritance, JSON data, and the JSONB datatype.
 
 ---
 
-##### Table Inheritance
+####  7.2 Table Inheritance
 
 You may already be familiar with the concept of
 **inheritance in object-oriented programming (OOP)**.
@@ -47,7 +47,7 @@ makes extensive use of table inheritance.
 
 ---
 
-##### JSON data and the JSONB datatype
+####  7.3 JSON data and the JSONB datatype
 
 PostgreSQL is one of the few relational databases that currently supports JSON data.
 This functionality is becoming increasingly important as JSON has become the standard

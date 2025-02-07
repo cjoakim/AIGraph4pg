@@ -1,6 +1,6 @@
-## AIGraph4pg Tutorial : Generative AI for openCypher
+### Tutorial : Generative AI for openCypher
 
-##### Generative AI
+####  10.1 Generative AI
 
 This reference application makes use of **Generative AI**
 to generate openCypher and AGE SQL queries from natural language queries
@@ -25,7 +25,7 @@ extension to connect to other (i.e. - "foreign") PostgreSQL databases.
 
 ---
 
-##### Generative AI Implementation in this Reference Application
+####  10.2 Generative AI Implementation in this Reference Application
 
 To generate the openCypher and AGE SQL queries from the user natural language,
 this reference application calles the **Azure OpenAI service**

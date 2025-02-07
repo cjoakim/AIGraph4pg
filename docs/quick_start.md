@@ -1,9 +1,9 @@
-# AIGraph4pg - Quick Start Documentation
+# 3.0 AIGraph4pg - Quick Start Documentation
 
 These instructions are intended to help you deploy Azure PaaS Services
 run this reference application on your workstation.
 
-## Recommended Skills
+## 3.1 Recommended Skills
 
 - Some programming language experience, especially with Python 3
 - Some understanding of Python virtual environments
@@ -15,7 +15,7 @@ There will be several steps to execute in this Quick Start,
 
 ---
 
-## Workstation Requirements
+## 3.2 Workstation Requirements
 
 - **Windows 11** or recent **Linux** or **macOS** desktop operating system
 - The **git** source-control system. See https://git-scm.com/
@@ -29,9 +29,9 @@ There will be several steps to execute in this Quick Start,
 
 ---
 
-## Azure PaaS Services to Deploy
+## 3.3 Azure PaaS Services to Deploy
 
-### Azure PostgreSQL
+### 3.3.1 Azure PostgreSQL
 
 - See the **az/** directory in this repo
 - Copy file **az/provision-config-example.json** to **az/provision-config.json**
@@ -42,7 +42,7 @@ There will be several steps to execute in this Quick Start,
 Enable the VECTOR and AGE extensions.
 See https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions
 
-### Azure OpenAI
+### 3.3.2 Azure OpenAI
 
 - Recommended, for this project, to provision this manually in Azure Portal
 - Create a **text-embedding-ada-002** model deployment, for embeddings and vector search
@@ -50,7 +50,7 @@ See https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-
 
 ---
 
-## A Note on Windows PowerShell and macOS bash Terminal
+## 3.4 A Note on Windows PowerShell and macOS bash Terminal
 
 The remaining instructions on this page describe how you should
 execute **command-line** commands in either Windows PowerShell
@@ -99,12 +99,12 @@ The project directory structure looks like this:
 
 ---
 
-## Set the Environment Variables for this project
+## 3.5 Set the Environment Variables for this project
 
 Per the [Twelve-Factor App methodology](https://12factor.net/config),
 configuration is stored in environment variables.  
 
-### List of enviroment variables
+### 3.5.1 List of enviroment variables
 
 This reference implementation uses the following environment variables.
 They begin with the prefix **AIG4PG_**.
@@ -125,14 +125,14 @@ They begin with the prefix **AIG4PG_**.
 | AIG4PG_PG_FLEX_USER | Azure PostgreSQL Flex Server user |
 | LOCAL_PG_PASS | Optional.  Used by the psql.ps1/psql.sh scripts for local PostgreSQL access |
 
-### Setting these Environment Variables
+### 3.5.2 Setting these Environment Variables
 
 The repo contains generated PowerShell script **set-env-vars-sample.ps1**
 which sets all of these AIG4PG_ environment values.
 You may find it useful to edit and execute this script rather than set them manually on your system
 
 
-### python-dotenv
+### 3.5.3 python-dotenv
 
 The [python-dotenv](https://pypi.org/project/python-dotenv/) library is used
 in  this implementation.  It allows you to define environment variables in a
@@ -145,11 +145,11 @@ so that application secrets don't get leaked into your source control system.
 
 --- 
 
-## Clone the GitHub repo and create the Python Virtual Environment
+## 3.6 Clone the GitHub repo and create the Python Virtual Environment
 
 These are one-time tasks in the use of this project.
 
-### Clone the Repo
+### 3.6.1 Clone the Repo
 
 This will copy the code, scripts, and curated data files to your computer.
 
@@ -161,7 +161,7 @@ This will copy the code, scripts, and curated data files to your computer.
 > cd AIGraph4pg    <-- this is the project root directory
 ```
 
-### Create the Python Virtual Environment
+### 3.6.2 Create the Python Virtual Environment
 
 A Python Virtual Environment is an isolated location on your computer
 containing a well-defined set of required libraries, defined in the 
@@ -296,7 +296,7 @@ xmlformatter              0.2.6
 yarl                      1.16.0
 ```
 
-### Activate the Python Virtual Environment (venv)
+### 3.6.3 Activate the Python Virtual Environment (venv)
 
 **Each time** you navigate to the python directory of this project
 and want to execute a python program you will need to **"activate"** the
@@ -306,7 +306,7 @@ Notice how when the Virtual Environment is activated your shell
 prompt changes to have the **(venv)** prefix.
 This is a useful visual cue.
 
-#### Windows 11 PowerShell
+### 3.6.4 Windows 11 PowerShell
 
 ```
 PS ...\python>
@@ -314,7 +314,7 @@ PS ...\python> .\venv\Scripts\Activate.ps1
 (venv) PS ...\python>
 ```
 
-#### macOS bash shell
+### 3.6.5 macOS bash shell
 
 ```
 [~/AIGraph4pg]$ cd python
@@ -324,13 +324,13 @@ PS ...\python> .\venv\Scripts\Activate.ps1
 
 ---
 
-## Prepare your Azure PostgreSQL Server
+## 3.7 Prepare your Azure PostgreSQL Server
 
 TODO
 
 ---
 
-## Load Azure PostgreSQL with the Python Libraries Dataset
+## 3.8 Load Azure PostgreSQL with the Python Libraries Dataset
 
 The dataset is a curated set of information on 10,000+ **Python Libraries**
 from web crawling and other tools.  This dataset provides a foundation to
@@ -344,7 +344,7 @@ can be traversed.  Likewise, Python library data has rich text fields
 It is hoped that this dataset is relatable to an IT audience, particularly
 application developers, and data scientists.
 
-### main.py
+### 3.8.1 main.py
 
 This is the Python program (i.e. - *.py suffix) that implements the
 **"console app"** in this project.  You can see its **help content**
@@ -369,25 +369,25 @@ Options:
   --version     Show version.
 ```
 
-### main.py - delete_define_libraries_table
+### 3.8.2 main.py - delete_define_libraries_table
 
 ```
 python> python .\main.py delete_define_libraries_table
 ```
 
-### main.py - load_libraries_table
+### 3.8.3 main.py - load_libraries_table
 
 ```
 python> python .\main.py load_libraries_table
 ```
 
-### main.py - vector_search_similar_libraries
+### 3.8.4 main.py - vector_search_similar_libraries
 
 ```
 python> python .\main.py vector_search_similar_libraries flask 10
 ```
 
-### main.py - vector_search_words
+### 3.8.5 main.py - vector_search_words
 
 ```
 python> python .\main.py vector_search_words web framework asynchronous swagger endpoints

@@ -21,12 +21,9 @@ Options:
 
 import logging
 import os
-import platform
 import sys
-import time
-import traceback
+import yaml
 
-from datetime import datetime
 from docopt import docopt
 from dotenv import load_dotenv
 
@@ -259,31 +256,77 @@ def convert_to_utf8(s):
 
 def tutorials_to_md():
     dirname = "views/"
-    for basename in sorted(FS.list_files_in_dir("views/")):
+    pages_list = read_mkdocs_yml()
+    for basename in sorted(FS.list_files_in_dir(dirname)):
         if basename.startswith("tutorial_"):
-            path = "{}{}".format(dirname, basename)
-            outfile = "tmp/{}.md".format(basename.replace(".html", ""))
-            html = FS.read(path)
-            markdown = md(html)
-            md_lines, pruned_lines = markdown.split("\n"), list()
-            for line in md_lines:
-                keep_line = True
-                if line.strip().startswith("{%"):
-                    keep_line = False
-                if line.strip().startswith("##### Tutorial : "):
-                    tokens = line.strip().split(":")
-                    line = "## AIGraph4pg Tutorial : {}".format(tokens[1].strip())
-                if keep_line == True:
-                    if line.startswith("![](static/img/"):
-                        line = line.replace("static/", "")
-                        print("image line: {}".format(line))
-                    pruned_lines.append(line)
-            FS.write_lines(pruned_lines, outfile)
+            page_index = lookup_page_index(pages_list, basename)
+            print("page: {} index: {}".format(basename, page_index))
+            if page_index > 0:
+                path = "{}{}".format(dirname, basename)
+                outfile = "tmp/{}.md".format(basename.replace(".html", ""))
+                html = FS.read(path)
+                markdown = md(html)  # convert html to md with markdownify
+                md_lines, pruned_lines = markdown.split("\n"), list()
+                for line in md_lines:
+                    keep_line = True
+                    if line.strip().startswith("{%"):
+                        keep_line = False
+                    # if line.strip().startswith("##### Tutorial : "):
+                    #     tokens = line.strip().split(":")
+                    #     line = "## AIGraph4pg Tutorial : {}".format(tokens[1].strip())
+                    if keep_line == True:
+                        if line.startswith("![](static/img/"):
+                            line = line.replace("static/", "")
+                            #print("image line: {}".format(line))
+                        pruned_lines.append(line)
+
+                new_lines = add_outline_sequence(pruned_lines, page_index)
+                FS.write_lines(new_lines, outfile)
+
+def read_mkdocs_yml():
+    # Read the mkdocs.yml file and extract a list of markdown pages
+    # from the "nav" section of the file.  Used for outline sequence.
+    pages = list()
+    with open("../mkdocs.yml", 'r') as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+        nav = data["nav"]
+        for item in nav:
+            if type(item) == dict:
+                for key in item.keys():
+                    docs = item[key]
+                    for doc in docs:
+                        pages.append(doc.split(".")[0])
+            else:
+                pages.append(item.split(".")[0])
+        FS.write_json(nav, "tmp/mkdocs_nav.json")
+    FS.write_json(pages, "tmp/mkdocs_pages.json")
+    return pages
+
+def lookup_page_index(pages, filename):
+    for page in pages:
+        if filename.startswith(page):
+            return pages.index(page) + 1
+    return -1
+
+def add_outline_sequence(pruned_lines, page_index):
+    new_lines, lev = list(), 0
+    for line in pruned_lines:
+        stripped = line.strip()
+        if stripped.startswith("#### "):
+            left, right = stripped[:5], stripped[5:]
+            lev = lev + 1
+            new_line = "{} {}.{} {}".format(left, page_index, lev, right)
+            print(new_line)
+            new_lines.append(new_line)
+        else:
+            new_lines.append(line)
+    return new_lines
 
 
 def ad_hoc_development():
     """Experimental code"""
-    pass
+    tutorials = read_mkdocs_yml()
+    print(tutorials)
 
 
 if __name__ == "__main__":

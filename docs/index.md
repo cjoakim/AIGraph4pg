@@ -1,4 +1,4 @@
-# Introduction
+# 1.0 Introduction
 
 <p align="center">
   <img src="img/AIGraph4pg.png" width="99%">
@@ -58,7 +58,7 @@ The following image shows this **Top Navigation UI**, along with the Library ico
 
 ---
 
-## Architecture
+## 1.1 Architecture
 
 <p align="center">
   <img src="img/AIGraph4pg-architecture.jpg" width="90%">
@@ -66,7 +66,7 @@ The following image shows this **Top Navigation UI**, along with the Library ico
 
 ---
 
-## Next Steps
+## 1.2 Next Steps
 
 The context-sensitive **tutorial content** is embedded into the
 web application that runs locally on your workstation/laptop.
@@ -81,7 +81,7 @@ and this reference application.
 
 ---
 
-## Directory Structure of this GitHub Repository
+## 1.3 Directory Structure of this GitHub Repository
 
 ```
 Directory/File             Description

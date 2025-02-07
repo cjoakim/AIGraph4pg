@@ -319,6 +319,7 @@ pywin32==308
     # via portalocker
 pyyaml==6.0.2
     # via
+    #   -r .\requirements.in
     #   jsonschema-path
     #   jsonschema-spec
 referencing==0.30.2

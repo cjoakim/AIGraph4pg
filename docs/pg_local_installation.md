@@ -1,4 +1,4 @@
-# AIGraph4pg : Local PostgreSQL Installation
+# 2.0 AIGraph4pg : Local PostgreSQL Installation
 
 It is recommended that you install the latest version of PostgreSQL
 on your workstation/laptop both as a learning tool, and also
@@ -56,7 +56,7 @@ following these steps:
 - Add the PostgreSQL bin path; C:\Program Files\PostgreSQL\16\bin
 - Click Ok to all three dialogs in sequence to save your changes
 
-### Verify the installation
+## 2.1 Verify the installation
 
 After the installer program completes, and you have updated your PATH
 environment variable, open a **new** PowerShell window and enter 
