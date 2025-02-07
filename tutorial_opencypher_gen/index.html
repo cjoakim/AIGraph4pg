@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.3">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.a40c8224.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.d7758b05.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aigraph4pg-tutorial-generative-ai-for-opencypher" class="md-skip">
+        <a href="#tutorial-generative-ai-for-opencypher" class="md-skip">
           Skip to content
         </a>
       
@@ -259,7 +259,8 @@
         
   
   <span class="md-ellipsis">
-    Introduction
+    1.0 Introduction
+    
   </span>
   
 
@@ -297,6 +298,7 @@
   
   <span class="md-ellipsis">
     Setup
+    
   </span>
   
 
@@ -321,7 +323,8 @@
         
   
   <span class="md-ellipsis">
-    AIGraph4pg : Local PostgreSQL Installation
+    2.0 AIGraph4pg : Local PostgreSQL Installation
+    
   </span>
   
 
@@ -342,7 +345,8 @@
         
   
   <span class="md-ellipsis">
-    AIGraph4pg - Quick Start Documentation
+    3.0 AIGraph4pg - Quick Start Documentation
+    
   </span>
   
 
@@ -363,7 +367,8 @@
         
   
   <span class="md-ellipsis">
-    AIGraph4pg - Configuring and Using PostgreSQL Extensions
+    4.0 AIGraph4pg - Configuring and Using PostgreSQL Extensions
+    
   </span>
   
 
@@ -409,6 +414,7 @@
   
   <span class="md-ellipsis">
     Tutorial
+    
   </span>
   
 
@@ -434,6 +440,7 @@
   
   <span class="md-ellipsis">
     Tutorial architecture
+    
   </span>
   
 
@@ -455,6 +462,7 @@
   
   <span class="md-ellipsis">
     Tutorial pg admin
+    
   </span>
   
 
@@ -476,6 +484,7 @@
   
   <span class="md-ellipsis">
     Tutorial relational
+    
   </span>
   
 
@@ -497,6 +506,7 @@
   
   <span class="md-ellipsis">
     Tutorial graph
+    
   </span>
   
 
@@ -518,6 +528,7 @@
   
   <span class="md-ellipsis">
     Tutorial vector search
+    
   </span>
   
 
@@ -546,6 +557,7 @@
   
   <span class="md-ellipsis">
     Tutorial opencypher gen
+    
   </span>
   
 
@@ -557,6 +569,7 @@
   
   <span class="md-ellipsis">
     Tutorial opencypher gen
+    
   </span>
   
 
@@ -576,28 +589,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#aigraph4pg-tutorial-generative-ai-for-opencypher" class="md-nav__link">
+  <a href="#tutorial-generative-ai-for-opencypher" class="md-nav__link">
     <span class="md-ellipsis">
-      AIGraph4pg Tutorial : Generative AI for openCypher
+      Tutorial : Generative AI for openCypher
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="AIGraph4pg Tutorial : Generative AI for openCypher">
+    <nav class="md-nav" aria-label="Tutorial : Generative AI for openCypher">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#generative-ai" class="md-nav__link">
+  <a href="#101-generative-ai" class="md-nav__link">
     <span class="md-ellipsis">
-      Generative AI
+      10.1 Generative AI
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#generative-ai-implementation-in-this-reference-application" class="md-nav__link">
+  <a href="#102-generative-ai-implementation-in-this-reference-application" class="md-nav__link">
     <span class="md-ellipsis">
-      Generative AI Implementation in this Reference Application
+      10.2 Generative AI Implementation in this Reference Application
     </span>
   </a>
   
@@ -653,6 +666,7 @@
   
   <span class="md-ellipsis">
     Reference
+    
   </span>
   
 
@@ -678,6 +692,7 @@
   
   <span class="md-ellipsis">
     AIGraph4pg : Common psql Commands
+    
   </span>
   
 
@@ -706,6 +721,7 @@
   
   <span class="md-ellipsis">
     AIGraph4pg - Frequently Asked Questions (FAQ)
+    
   </span>
   
 
@@ -728,14 +744,15 @@
                 
                   
 
+
   
   
 
 
   <h1>Tutorial opencypher gen</h1>
 
-<h2 id="aigraph4pg-tutorial-generative-ai-for-opencypher">AIGraph4pg Tutorial : Generative AI for openCypher</h2>
-<h5 id="generative-ai">Generative AI</h5>
+<h3 id="tutorial-generative-ai-for-opencypher">Tutorial : Generative AI for openCypher</h3>
+<h4 id="101-generative-ai">10.1 Generative AI</h4>
 <p>This reference application makes use of <strong>Generative AI</strong>
 to generate openCypher and AGE SQL queries from natural language queries
 provided by the user.This functionality enables the new class of
@@ -757,7 +774,7 @@ For example, Azure PostgreSQL supports the
 <a href="https://www.postgresql.org/docs/current/postgres-fdw.html">postgres_fdw</a>
 extension to connect to other (i.e. - "foreign") PostgreSQL databases.</p>
 <hr />
-<h5 id="generative-ai-implementation-in-this-reference-application">Generative AI Implementation in this Reference Application</h5>
+<h4 id="102-generative-ai-implementation-in-this-reference-application">10.2 Generative AI Implementation in this Reference Application</h4>
 <p>To generate the openCypher and AGE SQL queries from the user natural language,
 this reference application calles the <strong>Azure OpenAI service</strong>
 in two steps. Step one is to generate an openCypher query from the user natural language.
@@ -927,7 +944,7 @@ The of <a href="https://azure.microsoft.com/en-us/resources/cloud-computing-dict
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.60a45f97.min.js"></script>
+      <script src="../assets/javascripts/bundle.f1b6f286.min.js"></script>
       
     
   </body>
