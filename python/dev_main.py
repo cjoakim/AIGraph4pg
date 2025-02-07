@@ -9,7 +9,6 @@ Usage:
     python dev_main.py gen_docker_compose_fragment
     python dev_main.py gen_docker_requirements_txt
     python dev_main.py gen_environment_variables_md
-    python dev_main.py gen_pg_dump_script
     python dev_main.py tutorials_to_md
     python dev_main.py gen_all
 Options:
@@ -245,46 +244,11 @@ def gen_environment_variables_md():
     FS.write_lines(lines, "tmp/environment_variables.md")
 
 
-def gen_pg_dump_script():
-    lines = list()
-    lines.append("# PowerShell script to dump the PostgreSQL database")
-    lines.append("# Edit the generated values per your actual deployments.")
-    lines.append("")
-    lines.append("$server=$Env:AIG4PG_PG_FLEX_SERVER")
-    lines.append("$port=$Env:AIG4PG_PG_FLEX_PORT")
-    lines.append("$user=$Env:AIG4PG_PG_FLEX_USER")
-    lines.append("$db='dev'")
-    lines.append("$table='legal_cases'")
-    lines.append("")
-    lines.append("if (-not (Test-Path -Path .\\tmp\\dump)) {")
-    lines.append(" New-Item -ItemType Directory -Path .\\tmp\\dump")
-    lines.append("}")
-    lines.append("Set-Clipboard -value $Env:AIG4PG_PG_FLEX_PASS")
-    lines.append("")
-    lines.append("Write-Host 'dumping the --schema-only, enter password...'")
-    lines.append(
-        "pg_dump --schema-only --host $server --port $port --username $user --format plain --verbose --file 'tmp\\dump\\pg_dump_legal_cases_schema.sql' --dbname $db --table $table "
-    )
-    lines.append("")
-    lines.append("Write-Host 'dumping the --data-only, enter password...'")
-    lines.append(
-        "pg_dump --data-only --host $server --port $port --username $user --format plain --verbose --file 'tmp\\dump\\pg_dump_legal_cases_data.sql' --dbname $db --table $table "
-    )
-    lines.append("")
-    lines.append("Set-Clipboard -value 'done'")
-    lines.append("")
-    lines.append("Write-Host 'list of tmp\\dump files:'")
-    lines.append("Get-ChildItem tmp\\dump")
-    lines.append("")
-    FS.write_lines(lines, "pg_dump_script.ps1")
-
-
 def gen_all():
     gen_dotenv_examples()
     gen_ps1_env_var_script()
     gen_docker_compose_fragment()
     gen_docker_requirements_txt()
-    gen_pg_dump_script()
     gen_environment_variables_md()
     tutorials_to_md()
 
@@ -343,8 +307,6 @@ if __name__ == "__main__":
                 gen_docker_requirements_txt()
             elif func == "gen_environment_variables_md":
                 gen_environment_variables_md()
-            elif func == "gen_pg_dump_script":
-                gen_pg_dump_script()
             elif func == "gen_all":
                 gen_all()
             elif func == "tutorials_to_md":
