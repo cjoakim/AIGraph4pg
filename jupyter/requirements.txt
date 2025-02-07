@@ -1,0 +1,4 @@
+faker
+panda
+agefreighter
+python-dotenv
