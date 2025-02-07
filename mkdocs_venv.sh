@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Create a minimal python virtual environment for the purpose of running mkdocs.
+# THIS SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
 # Chris Joakim, Microsoft
 
 # delete previous venv directory

@@ -16,7 +16,7 @@ Options:
   --version     Show version.
 """
 
-# THIS PRIVATE SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
+# THIS SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
 # Chris Joakim, Microsoft
 
 import logging

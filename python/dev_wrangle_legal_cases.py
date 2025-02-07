@@ -3,7 +3,7 @@ Execute the four-step data wrangling process for the 'cases.sql' file
 to reduce it to a smaller set of legal cases that are linked and suitable
 for use in an Apache AGE graph.  This wrangling process retains the original
 embedding values for each identified legal case.
-THIS PRIVATE SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
+THIS SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
 Usage:
     python dev_wrangle_legal_cases.py step1_scan_sqlfile_for_citations <cases-sql-infile>
     python dev_wrangle_legal_cases.py step1_scan_sqlfile_for_citations /Users/chjoakim/Downloads/cases.sql
@@ -22,7 +22,7 @@ Options:
   --version     Show version.
 """
 
-# THIS PRIVATE SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
+# THIS SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
 # Chris Joakim, Microsoft
 
 import json
