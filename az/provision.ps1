@@ -124,6 +124,7 @@ if (cli_arg_present $args "provision") {
         --sku-name $pg_sku_name `
         --tier GeneralPurpose `
         --storage-size 512 `
+        --performance-tier P30 `
         --high-availability $pg_high_availability `
         --database-name $pg_database_name `
         --password-auth Enabled `

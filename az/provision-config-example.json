@@ -7,7 +7,7 @@
     "pg_database_name": "dev",
     "pg_admin_user_name": "your-id-or-admin-id",
     "pg_admin_user_pass": "<secret>",
-    "pg_high_availability": "Disabled or SameZone",
+    "pg_high_availability": "Disabled",
     "pg_extensions": "AGE,VECTOR,PG_DISKANN,AZURE_AI",
     "my_ip_address": "113.213.231.67",
     "az_verbose_flag": "--verbose"
