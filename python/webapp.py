@@ -635,11 +635,13 @@ async def lookup_legal_case_name_and_embedding(req: Request, id) -> list[float] 
 
 
 def legal_cases_vector_search_sql(embeddings, limit=10):
+    # https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-use-pgdiskann
+    # Note the use of the <-> operator for pgvector vs <=> for diskann.
     return (
         """
 select id, name_abbreviation, to_char(decision_date, 'YYYY-MM-DD')
  from legal_cases
- order by embedding <-> '{}'
+ order by embedding <=> '{}'
  offset 0 limit 10;
     """.format(
             embeddings
