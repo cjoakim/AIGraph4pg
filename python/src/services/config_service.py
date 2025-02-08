@@ -213,6 +213,20 @@ class ConfigService:
         return cls.float_envvar("AIG4PG_CYPHER_TEMPERATURE", 0.0)
 
     @classmethod
+    def pg_connection_str(cls):
+        """
+        Create and return the connection string for your Azure
+        PostgreSQL database per the AIG4PG_xxx environment variables.
+        """
+        return "host={} port={} dbname={} user={} password={} ".format(
+            cls.postgresql_server(), 
+            cls.postgresql_port(),
+            cls.postgresql_database(),
+            cls.postgresql_user(),
+            cls.postgresql_password()
+        )
+
+    @classmethod
     def epoch(cls) -> float:
         """Return the current epoch time, as time.time()"""
         return time.time()

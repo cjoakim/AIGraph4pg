@@ -6,6 +6,7 @@ Usage:
     python main.py relational_search_case_id 594079
     python main.py load_age_graph_with_agefreighter <graph-naame> <do-load-bool>
     python main.py load_age_graph_with_agefreighter legal_cases_af1 true
+    python main.py execute_graph_validation_queries legal_cases_af1
     python main.py vector_search_similar_cases 594079 10
     python main.py vector_search_words word1 word2 word3 etc
     python main.py vector_search_words Woolworth Co. v. City of Seattle
@@ -24,17 +25,17 @@ import os
 import sys
 import traceback
 
-import psycopg_pool
+#import psycopg_pool
 
 from docopt import docopt
 from dotenv import load_dotenv
-
-from agefreighter import Factory
 
 from src.services.ai_service import AiService
 from src.services.config_service import ConfigService
 from src.services.logging_level_service import LoggingLevelService
 
+from src.util.age_graph_loader import AGEGraphLoader
+from src.util.db_util import DBUtil
 from src.util.fs import FS
 
 logging.basicConfig(
@@ -63,57 +64,13 @@ def log_defined_env_vars():
     ConfigService.log_defined_env_vars()
 
 
-def get_pg_connection_str():
-    """
-    Create and return the connection string for your Azure
-    PostgreSQL database per the AIG4PG_xxx environment variables.
-    """
-    db = ConfigService.postgresql_database()
-    user = ConfigService.postgresql_user()
-    password = ConfigService.postgresql_password()
-    host = ConfigService.postgresql_server()
-    port = ConfigService.postgresql_port()
-    return "host={} port={} dbname={} user={} password={} ".format(
-        host, port, db, user, password
-    )
-
-
-async def initialze_pool() -> psycopg_pool.AsyncConnectionPool:
-    """
-    Create and open a psycopg_pool.AsyncConnectionPool
-    which is used throughout this module.
-    """
-    logging.info("initialze_pool...")
-    conn_str = get_pg_connection_str()
-    conn_str_tokens = conn_str.split("password")
-    logging.info(
-        "initialze_pool, conn_str: {} password=<omitted>".format(conn_str_tokens[0])
-    )
-    pool = psycopg_pool.AsyncConnectionPool(conninfo=conn_str, open=False)
-    logging.info("initialze_pool, pool created: {}".format(pool))
-    await pool.open()
-    await pool.check()
-    logging.info("initialze_pool, pool opened")
-    return pool
-
-
-async def close_pool(pool):
-    """
-    Close the psycopg_pool.AsyncConnectionPool.
-    """
-    if pool is not None:
-        logging.info("close_pool, closing...")
-        await pool.close()
-        logging.info("close_pool, closed")
-
-
-async def execute_query(pool, sql) -> list:
+async def execute_query(sql) -> list:
     """
     Execute the given SQL query and return the results
     as a list of tuples.
     """
     results_list = list()
-    async with pool.connection() as conn:
+    async with DBUtil.pool.connection() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute(sql)
             results = await cursor.fetchall()
@@ -122,7 +79,7 @@ async def execute_query(pool, sql) -> list:
     return results_list
 
 
-async def list_pg_extensions_and_settings(pool: psycopg_pool.AsyncConnectionPool):
+async def list_pg_extensions_and_settings():
     """
     Query several tables such as pg_extension, and
     pg_available_extensions and display the resulting rows.
@@ -135,7 +92,7 @@ async def list_pg_extensions_and_settings(pool: psycopg_pool.AsyncConnectionPool
     for query in queries:
         lines.append("---")
         lines.append(query)
-        rows = await execute_query(pool, query)
+        rows = await execute_query(query)
         for row in rows:
             logging.info(row)
             lines.append(str(row))
@@ -143,12 +100,11 @@ async def list_pg_extensions_and_settings(pool: psycopg_pool.AsyncConnectionPool
     FS.write_lines(lines, "tmp/pg_extensions_and_settings.txt")
 
 
-async def execute_ddl(
-    pool: psycopg_pool.AsyncConnectionPool, ddl_filename: str, tablename: str
+async def execute_ddl(ddl_filename: str, tablename: str
 ):
     ddl = FS.read(ddl_filename)
     logging.info(ddl)
-    async with pool.connection() as conn:
+    async with DBUtil.pool.connection() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute(ddl)
 
@@ -161,7 +117,7 @@ async def execute_ddl(
     for validation_query in validation_queries:
         logging.info("==========")
         logging.info("validation_query: {}".format(validation_query))
-        rows = await execute_query(pool, validation_query)
+        rows = await execute_query(validation_query)
         for row in rows:
             logging.info(row)
 
@@ -187,9 +143,7 @@ def quoted_attr_value(doc, attr, jsonb=False):
             return "'?'"
 
 
-async def relational_search_case_id(
-    pool: psycopg_pool.AsyncConnectionPool, case_id: str
-):
+async def relational_search_case_id(case_id: str):
     sql = (
         """
 select id, name, name_abbreviation, case_url, decision_date, court_name, citation_count
@@ -201,10 +155,10 @@ select id, name, name_abbreviation, case_url, decision_date, court_name, citatio
         .replace("  ", " ")
     )
 
-    results = await execute_query(pool, sql)
+    results = await execute_query(sql)
     if (results is not None) and (len(results) > 0):
         logging.info("sql: {}".format(sql))
-        results = await execute_query(pool, sql)
+        results = await execute_query(sql)
         for row in results:
             obj = dict()
             obj["id"] = row[0]
@@ -219,8 +173,7 @@ select id, name, name_abbreviation, case_url, decision_date, court_name, citatio
         logging.info("No results found for case id: {}".format(case_id))
 
 
-async def vector_search_similar_cases(
-    pool: psycopg_pool.AsyncConnectionPool, case_id: str, count: int
+async def vector_search_similar_cases(case_id: str, count: int
 ):
     """
     First execute a traditional SELECT to find the given case_id.
@@ -235,12 +188,12 @@ async def vector_search_similar_cases(
     )
     logging.info("sql1: {} ...".format(sql))
 
-    results = await execute_query(pool, sql)
+    results = await execute_query(sql)
     if (results is not None) and (len(results) > 0):
         embedding = results[0][2]
         sql = vector_query_sql(embedding, count)
         logging.info("sql2: {} ... ]".format(sql[0:VECTOR_QUERY_LOGGED_LENGTH]))
-        results = await execute_query(pool, sql)
+        results = await execute_query(sql)
         for row in results:
             logging.info(row)
     else:
@@ -263,7 +216,7 @@ select id, name_abbreviation, case_url, decision_date
     )
 
 
-async def vector_search_words(pool: psycopg_pool.AsyncConnectionPool):
+async def vector_search_words():
     words = sys.argv[2:]
     logging.info("vector_search_words: {}".format(words))
     await asyncio.sleep(0.1)
@@ -276,59 +229,22 @@ async def vector_search_words(pool: psycopg_pool.AsyncConnectionPool):
         if (embedding is not None) and (len(embedding) == 1536):
             sql = vector_query_sql(embedding, 10)
             logging.info("sql: {} ... ]".format(sql[0:VECTOR_QUERY_LOGGED_LENGTH]))
-            results = await execute_query(pool, sql)
+            results = await execute_query(sql)
             for row in results:
                 logging.info(row)
     except Exception as e:
         logging.critical(str(e))
 
 
-async def example_async_method(pool: psycopg_pool.AsyncConnectionPool):
-    """This method is intended a sample for creating new async methods."""
-    await asyncio.sleep(0.1)
-
-
 async def load_age_graph_with_agefreighter(graph_name: str, do_load: bool):
-    logging.info("load_age_graph_with_agefreighter: {} {}".format(graph_name, do_load))
-    try:
-        conn_str = get_pg_connection_str()
-        freighter = Factory.create_instance("MultiCSVFreighter")
-        print("freighter: {}".format(freighter))
+    loader = AGEGraphLoader()
+    await loader.load_legal_cases_dataset(graph_name, do_load)
+    if do_load == 9:
+        await loader.execute_validation_queries(graph_name)
 
-        await freighter.connect(
-            dsn=conn_str,
-            max_connections=64,
-        )
-        print("freighter connected: {}".format(freighter))
-
-        if do_load == True:
-            await freighter.load(
-                graph_name=graph_name,
-                vertex_csv_paths=[
-                    "../data/legal_cases/graph_csv/legal_cases_case_vertices.csv"
-                ],
-                vertex_labels=["Case"],
-                edge_csv_paths=[
-                    "../data/legal_cases/graph_csv/legal_cases_cites_edges.csv",
-                    "../data/legal_cases/graph_csv/legal_cases_cited_by_edges.csv",
-                ],
-                edge_types=["cites", "cited_by"],
-                use_copy=True,
-                drop_graph=True,
-                create_graph=True,
-            )
-            print("freighter loaded")
-    except Exception as e:
-        logging.critical(str(e))
-        logging.exception(e, stack_info=True, exc_info=True)
-
-    try:
-        logging.info("closing freighter...")
-        await freighter.close()
-        logging.info("closed")
-    except Exception as e:
-        logging.critical(str(e))
-        logging.exception(e, stack_info=True, exc_info=True)
+async def execute_graph_validation_queries(graph_name: str):
+    loader = AGEGraphLoader()
+    await loader.execute_validation_queries(graph_name)
 
 
 async def async_main():
@@ -341,7 +257,7 @@ async def async_main():
     and production-oriented.
     """
     try:
-        pool = await initialze_pool()
+        await DBUtil.initialze_pool(True)
         if len(sys.argv) < 2:
             print_options("- no command-line args given")
         else:
@@ -351,23 +267,26 @@ async def async_main():
             if func == "log_defined_env_vars":
                 log_defined_env_vars()
             elif func == "list_pg_extensions_and_settings":
-                await list_pg_extensions_and_settings(pool)
+                await list_pg_extensions_and_settings()
             elif func == "delete_define_legal_cases_table":
-                await execute_ddl(pool, "sql/legal_cases_ddl.sql", "legal_cases")
+                await execute_ddl("sql/legal_cases_ddl.sql", "legal_cases")
             elif func == "relational_search_case_id":
                 case_id = sys.argv[2]
-                await relational_search_case_id(pool, case_id)
+                await relational_search_case_id(case_id)
             elif func == "vector_search_similar_cases":
                 library_name = sys.argv[2].lower()
                 count = int(sys.argv[3])
-                await vector_search_similar_cases(pool, library_name, count)
+                await vector_search_similar_cases(library_name, count)
             elif func == "vector_search_words":
                 library_name = sys.argv[2].lower()
-                await vector_search_words(pool)
+                await vector_search_words()
             elif func == "load_age_graph_with_agefreighter":
                 graph_name = sys.argv[2].lower()
                 do_load = sys.argv[3].lower() == "true"
                 await load_age_graph_with_agefreighter(graph_name, do_load)
+            elif func == "execute_graph_validation_queries":
+                graph_name = sys.argv[2].lower()
+                await execute_graph_validation_queries(graph_name)
             else:
                 print_options("- unknown command-line arg: {}".format(func))
     except Exception as e:
@@ -376,10 +295,7 @@ async def async_main():
         logging.error("Stack trace:\n%s", traceback.format_exc())
 
     finally:
-        if pool is not None:
-            logging.info("closing pool...")
-            await pool.close()
-            logging.info("pool closed")
+        await DBUtil.close_pool()
 
 
 if __name__ == "__main__":
