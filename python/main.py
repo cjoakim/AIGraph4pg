@@ -4,6 +4,8 @@ Usage:
     python main.py list_pg_extensions_and_settings
     python main.py delete_define_legal_cases_table
     python main.py relational_search_case_id 594079
+    python main.py load_age_graph_with_agefreighter <graph-naame> <do-load-bool>
+    python main.py load_age_graph_with_agefreighter legal_cases_af1 true
     python main.py vector_search_similar_cases 594079 10
     python main.py vector_search_words word1 word2 word3 etc
     python main.py vector_search_words Woolworth Co. v. City of Seattle
@@ -26,6 +28,8 @@ import psycopg_pool
 
 from docopt import docopt
 from dotenv import load_dotenv
+
+from agefreighter import Factory
 
 from src.services.ai_service import AiService
 from src.services.config_service import ConfigService
@@ -260,7 +264,6 @@ select id, name_abbreviation, case_url, decision_date
 
 
 async def vector_search_words(pool: psycopg_pool.AsyncConnectionPool):
-
     words = sys.argv[2:]
     logging.info("vector_search_words: {}".format(words))
     await asyncio.sleep(0.1)
@@ -285,6 +288,49 @@ async def example_async_method(pool: psycopg_pool.AsyncConnectionPool):
     await asyncio.sleep(0.1)
 
 
+async def load_age_graph_with_agefreighter(graph_name: str, do_load: bool):
+    logging.info("load_age_graph_with_agefreighter: {} {}".format(graph_name, do_load))
+    try:
+        conn_str = get_pg_connection_str()
+        freighter = Factory.create_instance("MultiCSVFreighter")
+        print("freighter: {}".format(freighter))
+
+        await freighter.connect(
+            dsn=conn_str,
+            max_connections=64,
+        )
+        print("freighter connected: {}".format(freighter))
+
+        if do_load == True:
+            await freighter.load(
+                graph_name=graph_name,
+                vertex_csv_paths=[
+                    "../data/legal_cases/graph_csv/legal_cases_case_vertices.csv"
+                ],
+                vertex_labels=["Case"],
+                edge_csv_paths=[
+                    "../data/legal_cases/graph_csv/legal_cases_cites_edges.csv",
+                    "../data/legal_cases/graph_csv/legal_cases_cited_by_edges.csv",
+                ],
+                edge_types=["cites", "cited_by"],
+                use_copy=True,
+                drop_graph=True,
+                create_graph=True,
+            )
+            print("freighter loaded")
+    except Exception as e:
+        logging.critical(str(e))
+        logging.exception(e, stack_info=True, exc_info=True)
+
+    try:
+        logging.info("closing freighter...")
+        await freighter.close()
+        logging.info("closed")
+    except Exception as e:
+        logging.critical(str(e))
+        logging.exception(e, stack_info=True, exc_info=True)
+
+
 async def async_main():
     """
     This is the asyncronous main logic, called from the entry point
@@ -301,6 +347,7 @@ async def async_main():
         else:
             func = sys.argv[1].lower()
             logging.info("func: {}".format(func))
+
             if func == "log_defined_env_vars":
                 log_defined_env_vars()
             elif func == "list_pg_extensions_and_settings":
@@ -317,6 +364,10 @@ async def async_main():
             elif func == "vector_search_words":
                 library_name = sys.argv[2].lower()
                 await vector_search_words(pool)
+            elif func == "load_age_graph_with_agefreighter":
+                graph_name = sys.argv[2].lower()
+                do_load = sys.argv[3].lower() == "true"
+                await load_age_graph_with_agefreighter(graph_name, do_load)
             else:
                 print_options("- unknown command-line arg: {}".format(func))
     except Exception as e:
@@ -333,9 +384,10 @@ async def async_main():
 
 if __name__ == "__main__":
     load_dotenv(override=True)
-    if os.name.lower() != "nt":
-        logging.info("Not running on Windows")
-    else:
+    if sys.platform == "win32":
         logging.info("Running on Windows, setting WindowsSelectorEventLoopPolicy")
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    else:
+        logging.info("Not running on Windows")
+
     asyncio.run(async_main())
