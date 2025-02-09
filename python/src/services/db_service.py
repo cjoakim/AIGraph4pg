@@ -5,12 +5,11 @@ import psycopg_pool
 
 from src.services.config_service import ConfigService
 
-# Utility class for obtaining and closing psycopg database connection pools
-# as well as executing CRUD operations.
+# Service class for interacting with Azure PostgreSQL via psycopg.
 # Chris Joakim, Microsoft
 
 
-class DBUtil:
+class DBService:
 
     pool = None
 

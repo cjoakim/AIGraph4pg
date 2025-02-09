@@ -13,7 +13,7 @@ from agefreighter import Factory
 from src.services.config_service import ConfigService
 from src.services.logging_level_service import LoggingLevelService
 
-from src.util.db_util import DBUtil
+from src.services.db_service import DBService
 from src.util.fs import FS
 
 # This class is used to load specific CSV datasets into Apache AGE graphs
@@ -55,6 +55,7 @@ class AGEGraphLoader:
                     use_copy=True,
                     drop_graph=True,
                     create_graph=True,
+                    progress=True
                 )
                 logging.info("freighter loaded")
         except Exception as e:
@@ -72,17 +73,17 @@ class AGEGraphLoader:
     async def execute_validation_queries(self, graph_name) -> None:
         try:
             logging.info("AGEGraphLoader#execute_validation_queries: {}".format(graph_name))
-            await DBUtil.execute_query(self.list_age_graphs_sql())
-            await DBUtil.execute_query(self.count_vertices_in_graph_sql(graph_name))
+            await DBService.execute_query(self.list_age_graphs_sql())
+            await DBService.execute_query(self.count_vertices_in_graph_sql(graph_name))
         except Exception as e:
             logging.critical(str(e))
             logging.exception(e, stack_info=True, exc_info=True)
         finally:
-            await DBUtil.close_pool()
+            await DBService.close_pool()
 
     # async def execute_query(self, sql) -> list:
-    #     async with DBUtil.pool.connection() as conn:
-    #         await DBUtil.set_search_path(conn)
+    #     async with DBService.pool.connection() as conn:
+    #         await DBService.set_search_path(conn)
     #         async with conn.cursor() as cursor:
     #             logging.info("AGEGraphLoader#execute_query: {}".format(sql))
     #             await cursor.execute(sql)

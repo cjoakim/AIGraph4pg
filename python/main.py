@@ -35,7 +35,7 @@ from src.services.config_service import ConfigService
 from src.services.logging_level_service import LoggingLevelService
 
 from src.util.age_graph_loader import AGEGraphLoader
-from src.util.db_util import DBUtil
+from src.services.db_service import DBService
 from src.util.fs import FS
 
 logging.basicConfig(
@@ -70,7 +70,7 @@ async def execute_query(sql) -> list:
     as a list of tuples.
     """
     results_list = list()
-    async with DBUtil.pool.connection() as conn:
+    async with DBService.pool.connection() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute(sql)
             results = await cursor.fetchall()
@@ -104,7 +104,7 @@ async def execute_ddl(ddl_filename: str, tablename: str
 ):
     ddl = FS.read(ddl_filename)
     logging.info(ddl)
-    async with DBUtil.pool.connection() as conn:
+    async with DBService.pool.connection() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute(ddl)
 
@@ -257,7 +257,7 @@ async def async_main():
     and production-oriented.
     """
     try:
-        await DBUtil.initialze_pool(True)
+        await DBService.initialze_pool(True)
         if len(sys.argv) < 2:
             print_options("- no command-line args given")
         else:
@@ -295,7 +295,7 @@ async def async_main():
         logging.error("Stack trace:\n%s", traceback.format_exc())
 
     finally:
-        await DBUtil.close_pool()
+        await DBService.close_pool()
 
 
 if __name__ == "__main__":
