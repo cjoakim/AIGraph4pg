@@ -1,5 +1,7 @@
 -- Delete/Define the legal_cases table and its' related indexes.
 
+SET search_path TO public;
+
 DROP TABLE IF EXISTS legal_cases CASCADE;
 
 CREATE TABLE legal_cases (

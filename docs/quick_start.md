@@ -39,8 +39,11 @@ There will be several steps to execute in this Quick Start,
 - Execute **az login**.  See https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli
 - Execute the **az/provision.ps1** script to provision your Azure PostgreSQL server
 - Alternatively, provision this manually in Azure Portal.
-Enable the VECTOR and AGE extensions.
+- Enable the VECTOR and AGE extensions.
 See https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions
+
+This reference application assumes that the name of your database is **dev**.
+
 
 ### 3.3.2 Azure OpenAI
 
@@ -111,7 +114,7 @@ They begin with the prefix **AIG4PG_**.
 
 | Name | Description |
 | --------------------------------- | --------------------------------- |
-| AIG4PG_LLM_CONTEXT_MAX_NTOKENS | Optional.  Defaults to 0, no truncation.
+| AIG4PG_LLM_CONTEXT_MAX_NTOKENS | Optional.  Defaults to 0, no truncation. |
 | AIG4PG_LOG_LEVEL | See values in class LoggingLevelService - notset, debug, info, warning, error, or critical |
 | AIG4PG_OPENAI_COMPLETIONS_DEP | The name of your Azure OpenAI completions deployment |
 | AIG4PG_OPENAI_EMBEDDINGS_DEP | The name of your Azure OpenAI embeddings deployment |
@@ -158,7 +161,7 @@ This will copy the code, scripts, and curated data files to your computer.
 
 > git clone https://github.com/cjoakim/aigraph4pg.git
 
-> cd AIGraph4pg    <-- this is the project root directory
+> cd AIGraph4pg    <-- navigate into the project root directory
 ```
 
 ### 3.6.2 Create the Python Virtual Environment
@@ -180,11 +183,15 @@ python> .\venv.ps1
 
 python> pip list          <-- pip is the library installer program; you'll see smilar output below
 
-Package                   Version
-------------------------- -----------
-aiofiles                  23.2.1
-... many lines omitted here ...
-yarl                      1.16.0
+Package                              Version
+------------------------------------ -----------
+aenum                                3.1.15
+agefreighter                         0.7.5
+ageqrp                               0.1.0
+     ... many lines omitted here ...
+wsproto                              1.2.0
+yarl                                 1.16.0
+zipp                                 3.21.0
 ```
 
 ### 3.6.3 Activate the Python Virtual Environment (venv)
@@ -205,6 +212,18 @@ PS ...\python> .\venv\Scripts\Activate.ps1
 (venv) PS ...\python>
 ```
 
+If you find this tedious to type often, you can optionally create an alias
+in your **Microsoft.PowerShell_profile.ps1** file like the following.
+
+```
+New-Alias va .\venv\Scripts\activate
+```
+
+With this alias, you simply have to type **va** (i.e - virtualenv activate)
+instead of typing out ".\venv\Scripts\Activate.ps1".
+
+See https://learn.microsoft.com/en-us/powershell/scripting/learn/shell/creating-profiles?view=powershell-7.5
+
 ### 3.6.5 macOS bash shell
 
 ```
@@ -217,7 +236,188 @@ PS ...\python> .\venv\Scripts\Activate.ps1
 
 ## 3.7 Prepare your Azure PostgreSQL Server
 
-TODO
+In a **Windows PowerShell** window navigate to the python\ directory of this repo,
+execute the following command to connect to the **postgres**
+database in your Azure PostgreSQL server.
+
+```
+.\pg.ps1 flex postgres
+```
+
+This will put you into a **psql** terminal, connected to your Azure PostgreSQL
+server, per the several AIG4... environment variables you set above.
+Alternatively, you can use a desktop UI such as **pgAdmin4** for these commands,
+but the documentation here assumes psql.
+
+Your terminal prompt should now look like this, indicating that you are connected
+to the postgres database, and psql is awaiting a command.
+
+```
+postgres=>
+```
+
+Next, confirm the user, database, and host your psql terminal is connected to.
+
+```
+postgres=> \conninfo
+You are connected to database "postgres" as user "chjoakim" on host ...
+```
+
+You can see the list of users with the **\du** command:
+
+```
+postgres=> \du
+                                List of roles
+   Role name    |                         Attributes
+----------------+------------------------------------------------------------
+ azure_pg_admin | Cannot login
+ azuresu        | Superuser, Create role, Create DB, Replication, Bypass RLS
+ chjoakim       | Create role, Create DB, Bypass RLS
+ replication    | Replication
+```
+
+You can create and alter additional database users with these commands.
+In these examples, elsa is the user ID.
+
+```
+postgres=> create role elsa with createdb login password '<secret>';
+postgres=> alter user elsa with password '<new-password>';
+```
+
+Next, list the databases in the server.
+
+```
+postgres=> SELECT datname FROM pg_catalog.pg_database;
+      datname
+-------------------
+ azure_maintenance
+ template1
+ postgres
+ azure_sys
+ template0
+ dev
+(6 rows)
+```
+
+If the **dev** database is not present, create it as shown here.
+Replace chjoakim with your ID.
+
+```
+postgres=> create database dev owner chjoakim;
+```
+
+## 3.7.1 Configure the dev database
+
+First, switch to the dev database with this command.
+Notice how the prompt changes to 'dev->'/
+
+```
+postgres=> \connect dev
+You are now connected to database "dev" as user ...
+dev=>
+```
+
+Enable the four PostgreSQL extensions that we'll use in this application
+with the **CREATE EXTENSION** command.
+
+If you created your Azure PostgreSQL server manually, rather than
+with the az CLI script in this repo, you'll first have to enable
+these extensions as shown in this screen shot:
+
+TODO - screen shot
+
+```
+dev=> CREATE EXTENSION IF NOT EXISTS age CASCADE;
+CREATE EXTENSION
+
+dev=> CREATE EXTENSION IF NOT EXISTS vector CASCADE;
+CREATE EXTENSION
+
+dev=> CREATE EXTENSION IF NOT EXISTS PG_DISKANN CASCADE;
+CREATE EXTENSION
+
+dev=> CREATE EXTENSION IF NOT EXISTS AZURE_AI CASCADE;
+CREATE EXTENSION
+```
+
+Verify that these extensions are created with this query.
+You should see similar output.
+
+```
+dev=> SELECT oid, extname FROM pg_extension order by extname;
+  oid  |  extname
+-------+------------
+ 25081 | age
+ 25687 | azure_ai
+ 25668 | pg_diskann
+ 14258 | plpgsql
+ 24760 | vector
+(5 rows)
+```
+
+This is a similar query:
+
+```
+dev=> show azure.extensions;
+        azure.extensions
+--------------------------------
+ AGE,VECTOR,PG_DISKANN,AZURE_AI
+(1 row)
+```
+
+## 3.7.2 Configure the dev database for Apache AGE graphs
+
+To make AGE functionality easier to use for a given user,
+you can set their default **search_path** as shown below.
+Replace chjoakim with your ID.
+
+```
+dev=> alter user chjoakim set search_path='public','ag_catalog',"$user";
+ALTER ROLE
+```
+
+You can list the AGE graphs with this query.
+It should initially return zero rows.
+
+```
+dev=> SELECT * FROM ag_catalog.ag_graph;
+ graphid | name | namespace
+---------+------+-----------
+(0 rows)
+```
+
+Create the Apache AGE **legal_cases** graph, enter this command:
+
+```
+dev=> SELECT ag_catalog.create_graph('legal_cases');
+```
+
+List the AGE graphs again, and legal_cases should be in the list.
+
+```
+dev=> SELECT * FROM ag_catalog.ag_graph;
+ graphid |    name     |  namespace
+---------+-------------+-------------
+   25768 | legal_cases | legal_cases
+(1 row)
+```
+
+This graph can be dropped at a later date with this command,
+but don't do this now.
+
+```
+dev=> SELECT * FROM ag_catalog.drop_graph('legal_cases', true);
+```
+
+You can quit and close the psql program with the **\q** command.
+Notice how it puts you back into the original python\ directory
+and the virtual environment is activated as indicated with the (venv)
+prompt prefix.
+
+```
+dev=> \q
+(venv) PS ...\python>
+```
 
 ---
 
@@ -239,47 +439,155 @@ application developers, and data scientists.
 
 This is the Python program (i.e. - *.py suffix) that implements the
 **"console app"** in this project.  You can see its **help content**
-by executing the following:
+by executing the following command.  You should see similar output
+though some lines have been omitted in this documentation.
 
 ```
-python> python .\main.py help
-
+(venv) PS ...\python> python main.py help
 ...
 Usage:
     python main.py log_defined_env_vars
     python main.py list_pg_extensions_and_settings
-    python main.py delete_define_libraries_table
-    python main.py load_libraries_table
-    python main.py create_libraries_table_vector_index sql/libraries_ivfflat_index.sql
-    python main.py vector_search_similar_libraries flask 10
+    python main.py delete_define_legal_cases_table
+    python main.py query_legal_cases_table
+    python main.py relational_search_case_id 594079
+    python main.py load_age_graph_with_agefreighter <graph-naame> <do-load-bool>
+    python main.py load_age_graph_with_agefreighter legal_cases_af1 true
+    python main.py execute_graph_validation_queries legal_cases_af1
+    python main.py vector_search_similar_cases 594079 10
     python main.py vector_search_words word1 word2 word3 etc
-    python main.py vector_search_words running calculator miles kilometers pace speed mph
-    python main.py load_age_graph ../data/cypher/us_openflights.json
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
+    python main.py vector_search_words Woolworth Co. v. City of Seattle
 ```
+
+Display the several **AIG4... environment variables** with this command.
+Visually validate that they are correct (i.e. - pointing to your
+Azure PostgreSQL server, your Azure OpenAI service, etc.).
+
+```
+(venv) PS ...\python> python main.py log_defined_env_vars
+... output not shown here ...
+```
+
+Edit and execute the **set-env-vars-sample.ps1** script if the 
+environment variables have no values, or incorrect values.
 
 ### 3.8.2 main.py - delete_define_libraries_table
 
-```
-python> python .\main.py delete_define_libraries_table
-```
-
-### 3.8.3 main.py - load_libraries_table
+Delete and recreate (i.e. 'delete-define') the legal_cases relational table
+with the following command.  It uses file **python/sql/legal_cases_ddl.sql**
+in the repo.
 
 ```
-python> python .\main.py load_libraries_table
+python> python .\main.py delete_define_legal_cases_table
 ```
 
-### 3.8.4 main.py - vector_search_similar_libraries
+In **psql** you can verify that the table and related indexes 
+were created with the **\d** command.
 
 ```
-python> python .\main.py vector_search_similar_libraries flask 10
+dev=> \d legal_cases
+                                          Table "public.legal_cases"
+      Column       |          Type           | Collation | Nullable |                 Default
+-------------------+-------------------------+-----------+----------+-----------------------------------------
+ id                | bigint                  |           | not null | nextval('legal_cases_id_seq'::regclass)
+ name              | character varying(1024) |           |          |
+ name_abbreviation | character varying(1024) |           |          |
+ case_url          | character varying(1024) |           |          |
+ decision_date     | date                    |           |          |
+ court_name        | character varying(1024) |           |          |
+ citation_count    | integer                 |           |          |
+ text_data         | text                    |           |          |
+ json_data         | jsonb                   |           |          |
+ embedding         | vector(1536)            |           |          |
+Indexes:
+    "legal_cases_pkey" PRIMARY KEY, btree (id)
+    "idx_legal_cases_citation_count" btree (citation_count)
+    "idx_legal_cases_court_name" btree (court_name)
+    "idx_legal_cases_decision_date" btree (decision_date)
+    "idx_legal_cases_diskann_embedding" diskann (embedding vector_cosine_ops)
+    "idx_legal_cases_json_data_gin" gin (json_data)
+    "idx_legal_cases_name_abbreviation" btree (name_abbreviation)
 ```
 
-### 3.8.5 main.py - vector_search_words
+### 3.8.3 psql copy into the legal_cases table
+
+The COPY protocol is very fast and efficient in PostgreSQL.
+We use it here to load the curated dataset in the repo.
+
+Since this curated dataset is large, it is stored in the GitHub
+repo as a zip file: **data/legal_cases/legal_cases.zip**.
+
+One way to do this is with **Windows Explorer**, select the zip file,
+right mouse, then Extract All... 
+Alternatively, if you have Java installed, you can use the jar command.
 
 ```
-python> python .\main.py vector_search_words web framework asynchronous swagger endpoints
+PS ...\legal_cases> jar tvf .\legal_cases.zip
+155009537 Mon Dec 09 10:48:22 EST 2024 legal_cases.sql
+PS ...\legal_cases> jar xvf .\legal_cases.zip
+ inflated: legal_cases.sql
 ```
+
+The unzipped file is **legal_cases.sql**, which is used in the following
+COPY command in **psql**:
+
+```
+dev=> \copy legal_cases FROM '<fully-qualiied-filename>' DELIMITER E'\t'
+```
+
+Your fully-qualiied-filename might look like the following.
+This output indicates that 2679 rows were loaded into the table.
+
+```
+dev=> \copy legal_cases FROM C:\Users\chjoakim\github\AIGraph4pg\data\legal_cases\legal_cases.sql DELIMITER E'\t'
+COPY 2679
+```
+
+Execute this query in psql to confirm that the table does indeed contain 2679 rows.
+
+```
+dev=> select count(*) from legal_cases;
+ count
+-------
+  2679
+(1 row)
+```
+
+## 3.9 Load the legal_cases AGE graph
+
+This process is executed with python, rather than psql, with the
+following command:
+
+```
+(venv) PS ...\python> python main.py load_age_graph_with_agefreighter legal_cases true
+2025-02-09 16:55:26,176 - Running on Windows, setting WindowsSelectorEventLoopPolicy
+2025-02-09 16:55:26,177 - DBService#initialze_pool creating new...
+...
+2025-02-09 16:55:26,683 - AGEGraphLoader#load_legal_cases_dataset: legal_cases True
+2025-02-09 16:55:26,683 - freighter: <agefreighter.multicsvfreighter.MultiCSVFreighter ...
+2025-02-09 16:55:29,186 - freighter loaded
+2025-02-09 16:55:29,186 - closing freighter...
+2025-02-09 16:55:29,187 - closed
+2025-02-09 16:55:29,187 - AGEGraphLoader#execute_validation_queries: legal_cases
+2025-02-09 16:55:29,187 - DBService#execute_query, stmt: select graphid, name, namespace from ag_catalog.ag_graph order by graphid;
+[33836, 'legal_cases', 'legal_cases']
+2025-02-09 16:55:29,253 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH (n) RETURN count(n) as count $$) as (v agtype);
+2679
+2025-02-09 16:55:29,324 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH ()-[r]->() RETURN count(r) as count $$) as (e agtype);
+15998
+2025-02-09 16:55:29,418 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH (c) RETURN c limit 3 $$) as (v agtype);
+{'id': 844424930131969, 'label': 'Case', 'properties': {'id': '1017660', 'name': 'United Mutual Savings Bank v. Riebli', 'court': 'Washington Supreme Court', 'case_url': 'https://static.case.law/wash-2d/55/cases/0816-01.json', 'decision_year': '1960', 'citation_count': '14'}}
+{'id': 844424930131970, 'label': 'Case', 'properties': {'id': '594079', 'name': 'Martindale Clothing Co. v. Spokane & Eastern Trust Co.', 'court': 'Washington Supreme Court', 'case_url': 'https://static.case.law/wash/79/cases/0643-01.json', 'decision_year': '1914', 'citation_count': '5'}}
+{'id': 844424930131971, 'label': 'Case', 'properties': {'id': '552848', 'name': 'Lynch v. Ninemire Packing Co.', 'court': 'Washington Supreme Court', 'case_url': 'https://static.case.law/wash/63/cases/0423-01.json', 'decision_year': '1911', 'citation_count': '7'}}
+2025-02-09 16:55:29,489 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH ()-[r]-() RETURN r limit 3 $$) as (r agtype);
+{'id': 1125899906842625, 'label': 'cites', 'end_id': 844424930131970, 'start_id': 844424930131969, 'properties': {'case_id': '1017660', 'other_id': '1960', 'case_year': '594079', 'other_year': '1914'}}
+{'id': 1407374883553281, 'label': 'cited_by', 'end_id': 844424930131969, 'start_id': 844424930131970, 'properties': {'case_id': '594079', 'other_id': '1914', 'case_year': '1017660', 'other_year': '1960'}}
+{'id': 1125899906842626, 'label': 'cites', 'end_id': 844424930131971, 'start_id': 844424930131969, 'properties': {'case_id': '1017660', 'other_id': '1960', 'case_year': '552848', 'other_year': '1911'}}
+2025-02-09 16:55:29,558 - DBService#close_pool, closing...
+2025-02-09 16:55:29,558 - DBService#close_pool, closed
+```
+
+This output shows that **2679 vertices and 15998 edges** were loaded into the graph.
+
+The output also contains several validation queries which display several
+vertices and edges in the AGE graph.
