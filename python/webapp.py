@@ -28,6 +28,7 @@ from src.models.webservice_models import HealthModel
 
 # Services with Business Logic
 from src.services.ai_service import AiService
+from src.services.db_service import DBService
 from src.services.config_service import ConfigService
 from src.services.logging_level_service import LoggingLevelService
 from src.util.fs import FS
@@ -51,24 +52,6 @@ else:
         )
     )
 
-
-def get_database_connection_string():
-    db = ConfigService.postgresql_database()
-    user = ConfigService.postgresql_user()
-    password = ConfigService.postgresql_password()
-    host = ConfigService.postgresql_server()
-    port = ConfigService.postgresql_port()
-    conn_str = "host={} port={} dbname={} user={} password={}".format(
-        host, port, db, user, password
-    )
-    logging.info(
-        "get_database_connection_string: {} password=<omitted>".format(
-            conn_str.split("password")[0]
-        )
-    )
-    return conn_str
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -76,62 +59,11 @@ async def lifespan(app: FastAPI):
     Create the AiService and async database connection pool for Azure PostgreSQL.
     See https://fastapi.tiangolo.com/advanced/events/#lifespan
     """
-    conn_pool_max_size = 1
     try:
         ConfigService.log_defined_env_vars()
         logging.error("project_version: {}".format(ConfigService.project_version()))
-
-        # Initialize the AiService used for embeddings and cypher generation.
         app.ai_svc = AiService()
-
-        # Initialize the psycopg_pool.AsyncConnectionPool, set the search_path, and
-        # execute some initial queries to check connectivity.
-        conn_str = get_database_connection_string()
-        app.async_pool = psycopg_pool.AsyncConnectionPool(
-            conninfo=conn_str, open=False, min_size=1, max_size=conn_pool_max_size
-        )
-        logging.info("FastAPI lifespan, pool created: {}".format(app.async_pool))
-        await app.async_pool.open()
-        logging.info("FastAPI lifespan, pool opened")
-        await app.async_pool.check()
-        logging.info("FastAPI lifespan, pool checked")
-
-        for n in range(conn_pool_max_size):
-            logging.debug("FastAPI lifespan, conn {} init".format(n))
-            try:
-                set_search_path_stmt = 'SET search_path = "$user", ag_catalog, public;'
-                async with app.async_pool.connection() as conn:
-                    async with conn.cursor() as cursor:
-                        try:
-                            await cursor.execute(set_search_path_stmt)
-                            logging.info(
-                                "FastAPI lifespan, executed: {}".format(
-                                    set_search_path_stmt
-                                )
-                            )
-                        except:
-                            pass
-            except:
-                pass
-            try:
-                # priming AGE query
-                async with app.async_pool.connection() as conn:
-                    async with conn.cursor() as cursor:
-                        try:
-                            query = "SELECT * FROM ag_catalog.cypher('legal_cases', $$ MATCH (c:Case) RETURN c limit 10 $$) as (v agtype);"
-                            await cursor.execute(query)
-                            logging.debug(
-                                "FastAPI lifespan, executed {}".format(
-                                    set_search_path_stmt
-                                )
-                            )
-                        except Exception as e0:
-                            pass  # exception is expected on initial query?
-            except Exception as e0:
-                pass
-        logging.info(
-            "FastAPI lifespan, pool stats: {}".format(app.async_pool.get_stats())
-        )
+        await DBService.initialze_pool()
     except Exception as e:
         logging.error("FastAPI lifespan exception: {}".format(str(e)))
         logging.error(traceback.format_exc())
@@ -139,7 +71,7 @@ async def lifespan(app: FastAPI):
     yield
 
     logging.info("FastAPI lifespan, shutting down...")
-    await app.async_pool.close()
+    await DBService.close_pool()
     logging.info("FastAPI lifespan, pool closed")
 
 
@@ -170,18 +102,9 @@ async def get_health(req: Request, resp: Response) -> HealthModel:
     data["epoch"] = time.time()
     data["app_version"] = ConfigService.project_version()
     try:
-        async with req.app.async_pool.connection() as conn:
-            async with conn.cursor() as cursor:
-                try:
-                    sql = "select count(*) from legal_cases"
-                    await asyncio.wait_for(cursor.execute(sql), timeout=5.0)
-                    query_results = await cursor.fetchall()
-                    for row_idx, row in enumerate(query_results):
-                        if row_idx == 0:
-                            data["row_count"] = row[0]
-                except Exception as e:
-                    alive = False
-                    logging.critical((str(e)))
+        sql = "select count(*) from legal_cases"
+        results = await DBService.execute_query(sql, True)
+        data["row_count"] = len(results)
     except Exception as e:
         pass
     logging.info("liveness_check: {}".format(data))
@@ -316,55 +239,39 @@ async def post_query(req: Request, query_type):
     query_text = form_data.get("query_text").strip()
     view_data = queries_view_data(query_text, query_type)
     qrp = QueryResultParser()
+    parse_age_results = True
 
     if len(query_text) > 10:
-        results_tuples: list[str] = list()
-        result_objects = list()
         start_time = time.time()
         try:
             # alter user chjoakim set search_path='ag_catalog','public';
-            async with req.app.async_pool.connection() as conn:
-                stmt = query_text.replace("\r\n", "")
-                logging.info("queries - stmt: {}".format(stmt))
-                async with conn.cursor() as cursor:
-                    try:
-                        await asyncio.wait_for(
-                            cursor.execute(stmt), timeout=30.0
-                        )  # timeout in seconds
-                        results = await cursor.fetchall()
-                        view_data["elapsed_seconds"] = "elapsed_seconds: {}".format(
-                            time.time() - start_time
-                        )
-                        for row in results:
-                            # logging.warning("row for qrp: {}".format(row))
-                            result_objects.append(qrp.parse(row))
-                            results_tuples.append(str(row))
+            stmt = query_text.replace("\r\n", "")
+            results = await DBService.execute_query(stmt, parse_age_results)
 
-                        view_data["tuples_results_message"] = results_message(
-                            "Results as Python Tuples", results_tuples
-                        )
-                        view_data["tuples_results"] = "\n".join(results_tuples)
-                        view_data["query_text"] = query_text
-                        view_data["json_results_message"] = results_message(
-                            "Results as JSON", result_objects
-                        )
-                        view_data["json_results"] = json.dumps(
-                            result_objects, sort_keys=False, indent=2
-                        )
-                        graph_data = inline_graph_data(query_text, result_objects)
-                        view_data["inline_graph_json"] = graph_data
-                        if len(graph_data) > 0:
-                            view_data["vis_message"] = "Legal Case Citation Graph"
-                        write_query_results_to_file(
-                            view_data, result_objects, graph_data
-                        )
-                    except asyncio.TimeoutError:
-                        view_data["error_message"] = "Error: query timeout"
-                    except Exception as e:
-                        logging.critical((str(e)))
-                        view_data["error_message"] = "Error: {}".format(str(e))
+            view_data["elapsed_seconds"] = "elapsed_seconds: {}".format(
+                time.time() - start_time
+            )
+            print(json.dumps(results, sort_keys=False, indent=2))
+
+            view_data["tuples_results_message"] = results_message(
+                "Results as Python Tuples", results
+            )
+            view_data["tuples_results"] = json.dumps(results)
+            view_data["query_text"] = query_text
+            view_data["json_results_message"] = results_message(
+                "Results as JSON", results
+            )
+            view_data["json_results"] = json.dumps(
+                results, sort_keys=False, indent=2
+            )
+            graph_data = inline_graph_data(query_text, results)
+            view_data["inline_graph_json"] = graph_data
+            if len(graph_data) > 0:
+                view_data["vis_message"] = "Legal Case Citation Graph"
+            #write_query_results_to_file(view_data, results, graph_data)
+
         except Exception as e:
-            logging.critical((str(e)))
+            logging.critical(e, stack_info=True, exc_info=True)
             view_data["error_message"] = "Error: {}".format(str(e))
     return view_data
 
@@ -622,12 +529,10 @@ async def lookup_legal_case_name_and_embedding(req: Request, id) -> list[float] 
             id
         )
         logging.info("lookup_legal_case_name_and_embedding - sql: {}".format(sql))
-        async with req.app.async_pool.connection() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(sql)
-                async for row in cursor:
-                    case_name = row[1]
-                    embedding = json.loads(row[2])
+        results = await DBService.execute_query(sql, False)
+        for row in results:
+            case_name = row[1]
+            embedding = json.loads(row[2])
     except Exception as e:
         logging.critical((str(e)))
         logging.exception(e, stack_info=True, exc_info=True)
@@ -656,11 +561,9 @@ async def execute_vector_search(req: Request, embedding) -> list:
     result_list = list()
     try:
         sql = legal_cases_vector_search_sql(embedding)
-        async with req.app.async_pool.connection() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(sql)
-                async for row in cursor:
-                    result_list.append(row)
+        results = await DBService.execute_query(sql, False)
+        for row in results:
+            result_list.append(row)
     except Exception as e:
         logging.critical((str(e)))
         logging.exception(e, stack_info=True, exc_info=True)

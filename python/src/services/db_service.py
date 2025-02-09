@@ -68,6 +68,7 @@ class DBService:
             except Exception as eprime:
                 pass
 
+        logging.info("DBService#initialze_pool, stats: {}".format(DBService.pool.get_stats()))
         return DBService.pool
     
     @classmethod
