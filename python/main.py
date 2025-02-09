@@ -257,7 +257,7 @@ async def async_main():
     and production-oriented.
     """
     try:
-        await DBService.initialze_pool(True)
+        await DBService.initialze_pool()
         if len(sys.argv) < 2:
             print_options("- no command-line args given")
         else:
