@@ -81,19 +81,21 @@ def gen_ps1_env_var_script():
     )
     lines.append("# Edit ALL of these generated values per your actual deployments.")
     lines.append("")
-    lines.append('echo "Setting AIG4PG environment variables"')
+    lines.append('Write-Host "Setting AIG4PG environment variables ..."')
 
     for name in env_var_names:
         value = ""
         if name in samples:
             value = samples[name]
         lines.append("")
-        lines.append("echo 'setting {}'".format(name))
+        lines.append("Write-Host 'setting {}'".format(name))
         lines.append(
             "[Environment]::SetEnvironmentVariable(|{}|, |{}|, |User|)".format(
                 name, value
             ).replace("|", '"')
         )
+    lines.append("")
+    lines.append('Write-Host "done"')
     lines.append("")
     FS.write_lines(lines, "set-env-vars-sample.ps1")
 
