@@ -73,17 +73,19 @@ class AGEGraphLoader:
     async def execute_validation_queries(self, graph_name) -> None:
         try:
             logging.info("AGEGraphLoader#execute_validation_queries: {}".format(graph_name))
-            await self.execute_query(self.list_age_graphs_sql())
-            await self.execute_query(self.count_vertices_in_graph_sql(graph_name))
-            await self.execute_query(self.count_edges_in_graph_sql(graph_name))
+            await self.execute_query(self.list_age_graphs_sql(), True)
+            await self.execute_query(self.count_vertices_in_graph_sql(graph_name), True)
+            await self.execute_query(self.count_edges_in_graph_sql(graph_name), True)
+            await self.execute_query(self.show_several_vertices_in_graph_sql(graph_name, 3), True)
+            await self.execute_query(self.show_several_edges_in_graph_sql(graph_name, 3), True)
         except Exception as e:
             logging.critical(str(e))
             logging.exception(e, stack_info=True, exc_info=True)
         finally:
             await DBService.close_pool()
 
-    async def execute_query(self, sql) -> list:
-        results_list = await DBService.execute_query(sql)
+    async def execute_query(self, sql, parse_age_results: bool = False) -> list:
+        results_list = await DBService.execute_query(sql, parse_age_results)
         for row in results_list:
             print(row)
     
@@ -97,3 +99,12 @@ class AGEGraphLoader:
     def count_edges_in_graph_sql(self, graph_name):
         t = "select * from ag_catalog.cypher('{}', $$ MATCH ()-[r]->() RETURN count(r) as count $$) as (e agtype);"
         return t.format(graph_name).strip()
+
+    def show_several_vertices_in_graph_sql(self, graph_name, count):
+        t = "select * from ag_catalog.cypher('{}', $$ MATCH (c) RETURN c limit {} $$) as (v agtype);"
+        return t.format(graph_name, count).strip()
+    
+    def show_several_edges_in_graph_sql(self, graph_name, count):
+        t = "select * from ag_catalog.cypher('{}', $$ MATCH ()-[r]-() RETURN r limit {} $$) as (r agtype);"
+        return t.format(graph_name, count).strip()
+    

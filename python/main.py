@@ -239,7 +239,7 @@ async def vector_search_words():
 async def load_age_graph_with_agefreighter(graph_name: str, do_load: bool):
     loader = AGEGraphLoader()
     await loader.load_legal_cases_dataset(graph_name, do_load)
-    if do_load == 9:
+    if do_load:
         await loader.execute_validation_queries(graph_name)
 
 async def execute_graph_validation_queries(graph_name: str):

@@ -56,14 +56,15 @@ class DBService:
                 logging.exception(e, stack_info=True, exc_info=True)
 
             try:
-                # priming AGE query
+                # priming AGE query, it is expected that the first query may fail
                 async with cls.pool.connection() as conn:
                     async with conn.cursor() as cursor:
                         try:
-                            query = "SELECT * FROM ag_catalog.cypher('legal_cases', $$ MATCH (c:Case) RETURN c limit 10 $$) as (v agtype);"
-                            await cursor.execute(query)
+                            t = "SELECT * FROM ag_catalog.cypher('{}', $$ MATCH (c:Case) RETURN c limit 10 $$) as (v agtype);"
+                            stmt = t.format(ConfigService.age_graph_name())
+                            await cursor.execute(stmt)
                         except Exception as e0:
-                            pass  # exception is expected on initial query
+                            pass
             except Exception as eprime:
                 pass
 
@@ -96,16 +97,16 @@ class DBService:
             DBService.pool = None
 
     @classmethod
-    async def execute_query(cls, sql) -> list:
+    async def execute_query(cls, sql, parse_age_results: bool = False) -> list:
         """
         Execute the given SQL query and return the results
         as a list of tuples.
         """
         stmt = sql.replace("\r\n", "")
         logging.info("DBService#execute_query, stmt: {}".format(stmt))
-        results_tuples: list[str] = list()
         result_objects = list()
-        qrp = QueryResultParser()
+        if parse_age_results:
+            qrp = QueryResultParser()
         
         async with cls.pool.connection() as conn:
             stmt = sql.replace("\r\n", "")
@@ -116,11 +117,13 @@ class DBService:
                     )  # timeout in seconds
                     results = await cursor.fetchall()
                     for row in results:
-                        # logging.warning("row for qrp: {}".format(row))
-                        result_objects.append(qrp.parse(row))
-                        results_tuples.append(str(row))
+                        # row is a tuple
+                        if parse_age_results:
+                            # parse row to json with QueryResultParser
+                            result_objects.append(qrp.parse(row)) # 
+                        else:
+                            result_objects.append(row)
                 except Exception as e:
                     logging.critical((str(e)))
-        return results_tuples
-    
+        return result_objects
 
