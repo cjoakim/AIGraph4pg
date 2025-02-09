@@ -1,0 +1,1 @@
+select id, name from legal_cases order by name;

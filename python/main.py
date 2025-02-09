@@ -3,6 +3,7 @@ Usage:
     python main.py log_defined_env_vars
     python main.py list_pg_extensions_and_settings
     python main.py delete_define_legal_cases_table
+    python main.py query_legal_cases_table
     python main.py relational_search_case_id 594079
     python main.py load_age_graph_with_agefreighter <graph-naame> <do-load-bool>
     python main.py load_age_graph_with_agefreighter legal_cases_af1 true
@@ -42,9 +43,6 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s", level=LoggingLevelService.get_level()
 )
 
-VECTOR_QUERY_LOGGED_LENGTH = 140
-
-
 def print_options(msg):
     """
     Use the docopt python library to display the script
@@ -64,62 +62,29 @@ def log_defined_env_vars():
     ConfigService.log_defined_env_vars()
 
 
-async def execute_query(sql) -> list:
-    """
-    Execute the given SQL query and return the results
-    as a list of tuples.
-    """
-    results_list = list()
-    async with DBService.pool.connection() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute(sql)
-            results = await cursor.fetchall()
-            for row in results:
-                results_list.append(row)
-    return results_list
-
-
 async def list_pg_extensions_and_settings():
     """
-    Query several tables such as pg_extension, and
-    pg_available_extensions and display the resulting rows.
+    Query several tables such as pg_extension, pg_available_extensions
+    and pg_setting and capture the results to tmp files.
     """
-    queries, lines = list(), list()
-    queries.append("select * FROM pg_extension")
-    queries.append("select * FROM pg_available_extensions")
-    queries.append("select * FROM pg_settings")
+    results = await DBService.execute_query(
+        "select oid, extname FROM pg_extension order by extname")
+    FS.write_json(results, "tmp/pg_extension.txt")
 
-    for query in queries:
-        lines.append("---")
-        lines.append(query)
-        rows = await execute_query(query)
-        for row in rows:
-            logging.info(row)
-            lines.append(str(row))
+    results = await DBService.execute_query(
+        "select name, comment FROM pg_available_extensions order by name")
+    FS.write_json(results, "tmp/pg_available_extensions.txt")
 
-    FS.write_lines(lines, "tmp/pg_extensions_and_settings.txt")
+    results = await DBService.execute_query(
+        "select name, setting, short_desc FROM pg_settings order by name")
+    FS.write_json(results, "tmp/pg_settings.txt")
 
-
-async def execute_ddl(ddl_filename: str, tablename: str
-):
-    ddl = FS.read(ddl_filename)
-    logging.info(ddl)
-    async with DBService.pool.connection() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute(ddl)
-
-    validation_queries = [
-        "select * FROM information_schema.tables WHERE table_schema='public';",
-        "select column_name, data_type, character_maximum_length FROM information_schema.columns WHERE table_name = '{}';".format(
-            tablename
-        ),
-    ]
-    for validation_query in validation_queries:
-        logging.info("==========")
-        logging.info("validation_query: {}".format(validation_query))
-        rows = await execute_query(validation_query)
-        for row in rows:
-            logging.info(row)
+async def execute_sql_script(script_filename: str):
+    sql = FS.read(script_filename)
+    logging.info(sql)
+    results = await DBService.execute_query(sql)
+    if results is not None:
+        print(json.dumps(results, sort_keys=False, indent=2))
 
 
 def filter_files_list(files_list, suffix):
@@ -155,10 +120,10 @@ select id, name, name_abbreviation, case_url, decision_date, court_name, citatio
         .replace("  ", " ")
     )
 
-    results = await execute_query(sql)
+    results = await DBService.execute_query(sql)
     if (results is not None) and (len(results) > 0):
         logging.info("sql: {}".format(sql))
-        results = await execute_query(sql)
+        results = await DBService.execute_query(sql)
         for row in results:
             obj = dict()
             obj["id"] = row[0]
@@ -186,14 +151,12 @@ async def vector_search_similar_cases(case_id: str, count: int
     sql = "select id, name_abbreviation, embedding from legal_cases where id = {} limit {};".format(
         case_id, count
     )
-    logging.info("sql1: {} ...".format(sql))
 
-    results = await execute_query(sql)
+    results = await DBService.execute_query(sql)
     if (results is not None) and (len(results) > 0):
         embedding = results[0][2]
         sql = vector_query_sql(embedding, count)
-        logging.info("sql2: {} ... ]".format(sql[0:VECTOR_QUERY_LOGGED_LENGTH]))
-        results = await execute_query(sql)
+        results = await DBService.execute_query(sql)
         for row in results:
             logging.info(row)
     else:
@@ -228,8 +191,7 @@ async def vector_search_words():
         embedding = resp.data[0].embedding
         if (embedding is not None) and (len(embedding) == 1536):
             sql = vector_query_sql(embedding, 10)
-            logging.info("sql: {} ... ]".format(sql[0:VECTOR_QUERY_LOGGED_LENGTH]))
-            results = await execute_query(sql)
+            results = await DBService.execute_query(sql)
             for row in results:
                 logging.info(row)
     except Exception as e:
@@ -268,8 +230,12 @@ async def async_main():
                 log_defined_env_vars()
             elif func == "list_pg_extensions_and_settings":
                 await list_pg_extensions_and_settings()
+
             elif func == "delete_define_legal_cases_table":
-                await execute_ddl("sql/legal_cases_ddl.sql", "legal_cases")
+                await execute_sql_script("sql/legal_cases_ddl.sql")
+            elif func == "query_legal_cases_table":
+                await execute_sql_script("sql/query_legal_cases.sql")
+
             elif func == "relational_search_case_id":
                 case_id = sys.argv[2]
                 await relational_search_case_id(case_id)

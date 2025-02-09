@@ -68,7 +68,7 @@ class DBService:
             except Exception as eprime:
                 pass
 
-        logging.info("DBService#initialze_pool, stats: {}".format(DBService.pool.get_stats()))
+        #logging.info("DBService#initialze_pool, stats: {}".format(DBService.pool.get_stats()))
         return DBService.pool
     
     @classmethod
@@ -104,7 +104,11 @@ class DBService:
         as a list of tuples.
         """
         stmt = sql.replace("\r\n", "")
-        logging.info("DBService#execute_query, stmt: {}".format(stmt))
+        if len(stmt) > 400:
+             # truncate embeddings
+            logging.info("DBService#execute_query, stmt: {} ...".format(stmt[0:400]))
+        else:
+            logging.info("DBService#execute_query, stmt: {}".format(stmt))
         result_objects = list()
         if parse_age_results:
             qrp = QueryResultParser()
