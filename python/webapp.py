@@ -253,10 +253,6 @@ async def post_query(req: Request, query_type):
             )
             print(json.dumps(results, sort_keys=False, indent=2))
 
-            view_data["tuples_results_message"] = results_message(
-                "Results as Python Tuples", results
-            )
-            view_data["tuples_results"] = json.dumps(results)
             view_data["query_text"] = query_text
             view_data["json_results_message"] = results_message(
                 "Results as JSON", results
@@ -332,9 +328,6 @@ def queries_view_data(query_text="", query_type="SQL"):
     view_data["sample_queries"] = queries
     view_data["query_text"] = query_text
     view_data["elapsed_seconds"] = ""
-    view_data["tuples_results_message"] = ""
-    view_data["tuples_results"] = ""
-    view_data["tuples_results_message"] = ""
     view_data["json_results_message"] = ""
     view_data["inline_graph_json"] = "{}"
     return view_data
