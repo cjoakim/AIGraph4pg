@@ -335,7 +335,9 @@ If you created your Azure PostgreSQL server manually, rather than
 with the az CLI script in this repo, you'll first have to enable
 these extensions as shown in this screen shot:
 
-TODO - screen shot
+<p align="center">
+  <img src="img/enable-extensions.png" width="90%">
+</p>
 
 ```
 dev=> CREATE EXTENSION IF NOT EXISTS age CASCADE;

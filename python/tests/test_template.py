@@ -10,7 +10,6 @@ from src.services.config_service import ConfigService
 # @pytest.mark.skip(reason="bypassed for now")
 # def test_get_template_and_render():
 #     ConfigService.set_standard_unit_test_env_vars()
-#     TODO - revist this test for vertex/edge generation
 #     t = Template.get_template(os.getcwd(), "test_owl.txt")
 #     assert t != None
 #     values = dict()

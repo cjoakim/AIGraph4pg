@@ -582,7 +582,7 @@ def step7_create_graph_csv_load_files(iteration_infile):
         case = case_url_dict[case_url]
         case_id = case["id"]
         case_name = case["name_abbreviation"]
-        case_lookup_dict[case_id] = case_name.replace(",","")
+        case_lookup_dict[case_id] = case_name.replace(",", "")
 
     case_attr_names = "id,name,court,decision_year,case_url,citation_count".split(",")
     node_lines, cites_lines, cited_by_lines = list(), list(), list()
@@ -619,14 +619,12 @@ def step7_create_graph_csv_load_files(iteration_infile):
                     "Case",
                     cited_id,
                     "Case",
-
                     id,
                     year,
                     case_lookup_dict[id],
-
                     cited_id,
                     cited_year,
-                    case_lookup_dict[cited_id]
+                    case_lookup_dict[cited_id],
                 )
                 cites_lines.append(edge_line)
 
@@ -635,14 +633,12 @@ def step7_create_graph_csv_load_files(iteration_infile):
                     "Case",
                     id,
                     "Case",
-
                     cited_id,
                     cited_year,
                     case_lookup_dict[cited_id],
-
                     id,
                     year,
-                    case_lookup_dict[id]
+                    case_lookup_dict[id],
                 )
                 cited_by_lines.append(edge_line)
 

@@ -10,8 +10,6 @@ import time
 import traceback
 import sys
 
-import psycopg_pool
-
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -33,7 +31,6 @@ from src.services.config_service import ConfigService
 from src.services.logging_level_service import LoggingLevelService
 from src.util.fs import FS
 
-# from src.util.query_result_parser import QueryResultParser
 from src.util.sample_queries import SampleQueries
 
 # standard initialization
@@ -174,9 +171,6 @@ async def get_tutorial(req: Request):
     return views.TemplateResponse(request=req, name=template_name, context=view_data)
 
 
-# ---
-
-
 @app.get("/pg_admin")
 async def get_pg_admin_queries(req: Request):
     query_type = "ADMIN"
@@ -239,7 +233,6 @@ async def post_query(req: Request, query_type):
     logging.info("/post_query form_data: {}".format(form_data))
     query_text = form_data.get("query_text").strip()
     view_data = queries_view_data(query_text, query_type)
-    qrp = QueryResultParser()
     parse_age_results = True
 
     if len(query_text) > 10:
@@ -247,7 +240,6 @@ async def post_query(req: Request, query_type):
         try:
             stmt = query_text.replace("\r\n", "")
             results = await DBService.execute_query(stmt, parse_age_results)
-
             view_data["elapsed_seconds"] = "elapsed_seconds: {}".format(
                 time.time() - start_time
             )
@@ -261,7 +253,6 @@ async def post_query(req: Request, query_type):
             if len(graph_data) > 0:
                 view_data["vis_message"] = "Legal Case Citation Graph"
             write_query_results_to_file(view_data, results, graph_data)
-
         except Exception as e:
             logging.critical(e, stack_info=True, exc_info=True)
             view_data["error_message"] = "Error: {}".format(str(e))
@@ -359,15 +350,18 @@ def inline_graph_data(query_text, result_objects):
                                 edge["target"] = end_id
                                 edge["case_name"] = str(elem["properties"]["case_name"])
                                 edge["case_year"] = str(elem["properties"]["case_year"])
-                                edge["cited_case_name"] = str(elem["properties"]["other_name"])
-                                edge["cited_case_year"] = str(elem["properties"]["other_year"])
+                                edge["cited_case_name"] = str(
+                                    elem["properties"]["other_name"]
+                                )
+                                edge["cited_case_year"] = str(
+                                    elem["properties"]["other_year"]
+                                )
                                 edge["rel"] = label
                                 edge["weight"] = 1
                                 key = "-".join(sorted([start_id, end_id]))
                                 edges_dict[key] = edge
                         elif isinstance(elem, list):
                             logging.info("LIST: {}".format(elem))
-                            #LIST: [{'id': 1125899906842684, 'label': 'cites', 'end_id': 844424930131991, 'start_id': 844424930131984, 'properties': {'case_id': '999494', 'other_id': '4978096', 'case_name': 'Papac v. City of Montesano', 'case_year': '1956', 'other_name': 'Harkoff v. Whatcom County', 'other_year': '1952'}}]
                             for list_elem in elem:
                                 label = list_elem["label"]
                                 if label == "cites":
@@ -376,11 +370,21 @@ def inline_graph_data(query_text, result_objects):
                                     end_id = str(list_elem["properties"]["other_id"])
                                     edge["source"] = start_id
                                     edge["target"] = end_id
-                                    edge["year"] = str(list_elem["properties"]["case_year"])
-                                    edge["case_name"] = str(list_elem["properties"]["case_name"])
-                                    edge["case_year"] = str(list_elem["properties"]["case_year"])
-                                    edge["cited_case_name"] = str(list_elem["properties"]["other_name"])
-                                    edge["cited_case_year"] = str(list_elem["properties"]["other_year"])
+                                    edge["year"] = str(
+                                        list_elem["properties"]["case_year"]
+                                    )
+                                    edge["case_name"] = str(
+                                        list_elem["properties"]["case_name"]
+                                    )
+                                    edge["case_year"] = str(
+                                        list_elem["properties"]["case_year"]
+                                    )
+                                    edge["cited_case_name"] = str(
+                                        list_elem["properties"]["other_name"]
+                                    )
+                                    edge["cited_case_year"] = str(
+                                        list_elem["properties"]["other_year"]
+                                    )
                                     edge["rel"] = label
                                     edge["weight"] = 1
                                     key = "-".join(sorted([start_id, end_id]))
@@ -635,13 +639,3 @@ def opencypher_gen_view_data(query_text=""):
     view_data["results"] = ""
     view_data["elapsed_seconds"] = ""
     return view_data
-
-
-def checkbox_checked(form_data, html_id):
-    try:
-        value = form_data.get(html_id)
-        if value is not None:
-            return True
-    except Exception as e:
-        pass
-    return False

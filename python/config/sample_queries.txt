@@ -162,7 +162,7 @@ select * from ag_catalog.cypher('legal_cases',
 --name CYPHER: Match a Case
 --text
 select * from ag_catalog.cypher('legal_cases',
-  $$ MATCH (c:Case {id:594079}) RETURN c $$)
+  $$ MATCH (c:Case {id:'594079'}) RETURN c $$)
   as (c agtype);
 --end
 
