@@ -100,6 +100,42 @@ The project directory structure looks like this:
     └── views                <-- Web UI HTML page templates
 ```
 
+```
+├── az
+├── data
+│   ├── countries
+│   └── legal_cases
+│       ├── graph_csv
+│       └── work
+├── docs
+│   ├── img
+│   └── pdf
+├── jupyter
+├── mkdocs_overrides
+│   └── partials
+├── pg_scripts
+└── python
+    ├── __pycache__
+    ├── config
+    ├── sql
+    ├── src
+    │   ├── __pycache__
+    │   ├── models
+    │   ├── services
+    │   └── util
+    ├── static
+    │   ├── img
+    │   └── pdf
+    ├── templates
+    ├── tests
+    ├── tmp
+    ├── venv
+    │   ├── bin
+    │   ├── include
+    │   └── lib
+    └── views
+```
+
 ---
 
 ## 3.5 Set the Environment Variables for this project
