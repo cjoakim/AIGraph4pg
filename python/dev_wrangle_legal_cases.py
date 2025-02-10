@@ -15,7 +15,7 @@ Usage:
     python dev_wrangle_legal_cases.py step4_create_cypher_load_file legal_cases tmp/iteration_4.json
     python dev_wrangle_legal_cases.py step5_scan_cypher_load_file
     python dev_wrangle_legal_cases.py step6_reformat_cases_sql_subset
-    python dev_wrangle_legal_cases.py step7_create_csv_load_files
+    python dev_wrangle_legal_cases.py step7_create_graph_csv_load_files
     python dev_wrangle_legal_cases.py adhoc_link_analysis
 Options:
   -h --help     Show this screen.
@@ -571,16 +571,24 @@ def step6_reformat_cases_sql_subset():
     print("output_lines size: {}".format(len(output_lines)))
 
 
-def step7_create_csv_load_files(iteration_infile):
-    print("step7_create_csv_load_files")
+def step7_create_graph_csv_load_files(iteration_infile):
+    print("step7_create_graph_csv_load_files")
     case_url_dict = FS.read_json(iteration_infile)
     print("case_id_dict size: {}".format(len(case_url_dict.keys())))  # 438897
+
+    # collect a case_id to case_name lookup dictionary
+    case_lookup_dict = dict()
+    for case_url in case_url_dict.keys():
+        case = case_url_dict[case_url]
+        case_id = case["id"]
+        case_name = case["name_abbreviation"]
+        case_lookup_dict[case_id] = case_name.replace(",","")
 
     case_attr_names = "id,name,court,decision_year,case_url,citation_count".split(",")
     node_lines, cites_lines, cited_by_lines = list(), list(), list()
     node_lines.append(",".join(case_attr_names))
 
-    edge_header = "start_id,start_vertex_type,end_id,end_vertex_type,case_id,other_id,case_year,other_year"
+    edge_header = "start_id,start_vertex_type,end_id,end_vertex_type,case_id,case_year,case_name,other_id,other_year,other_name"
     cites_lines.append(edge_header)
     cited_by_lines.append(edge_header)
 
@@ -603,22 +611,38 @@ def step7_create_csv_load_files(iteration_infile):
                 cited_year = cite_doc["decision_year"]
 
                 # create edge type: cites
-                edge_line = "{},Case,{},Case,{},{},{},{}".format(
+                # start_id,start_vertex_type,end_id,end_vertex_type,
+                #   case_id,case_year,case_name,
+                #   other_id,other_year,other_name
+                edge_line = "{},{},{},{},{},{},{},{},{},{}".format(
                     id,
+                    "Case",
                     cited_id,
+                    "Case",
+
                     id,
                     year,
+                    case_lookup_dict[id],
+
                     cited_id,
                     cited_year,
+                    case_lookup_dict[cited_id]
                 )
                 cites_lines.append(edge_line)
 
-                # first 4: start_id,start_vertex_type,end_id,end_vertex_type
-                #  last 4: case_id,case_year,other_id,other_year
+                edge_line = "{},{},{},{},{},{},{},{},{},{}".format(
+                    cited_id,
+                    "Case",
+                    id,
+                    "Case",
 
-                # create edge type: cited_by
-                edge_line = "{},Case,{},Case,{},{},{},{}".format(
-                    cited_id, id, cited_id, cited_year, id, year
+                    cited_id,
+                    cited_year,
+                    case_lookup_dict[cited_id],
+
+                    id,
+                    year,
+                    case_lookup_dict[id]
                 )
                 cited_by_lines.append(edge_line)
 
@@ -709,9 +733,9 @@ if __name__ == "__main__":
                 step5_scan_cypher_load_file()
             elif func == "step6_reformat_cases_sql_subset":
                 step6_reformat_cases_sql_subset()
-            elif func == "step7_create_csv_load_files":
+            elif func == "step7_create_graph_csv_load_files":
                 iteration_infile = sys.argv[2]
-                step7_create_csv_load_files(iteration_infile)
+                step7_create_graph_csv_load_files(iteration_infile)
             elif func == "adhoc_link_analysis":
                 adhoc_link_analysis()
             else:
