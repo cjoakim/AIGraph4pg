@@ -573,31 +573,32 @@ following command:
 
 ```
 (venv) PS ...\python> python main.py load_age_graph_with_agefreighter legal_cases true
-2025-02-09 16:55:26,176 - Running on Windows, setting WindowsSelectorEventLoopPolicy
-2025-02-09 16:55:26,177 - DBService#initialze_pool creating new...
+2025-02-10 17:22:22,035 - Running on Windows, setting WindowsSelectorEventLoopPolicy
+2025-02-10 17:22:22,036 - DBService#initialze_pool creating new...
 ...
-2025-02-09 16:55:26,683 - AGEGraphLoader#load_legal_cases_dataset: legal_cases True
-2025-02-09 16:55:26,683 - freighter: <agefreighter.multicsvfreighter.MultiCSVFreighter ...
-2025-02-09 16:55:29,186 - freighter loaded
-2025-02-09 16:55:29,186 - closing freighter...
-2025-02-09 16:55:29,187 - closed
-2025-02-09 16:55:29,187 - AGEGraphLoader#execute_validation_queries: legal_cases
-2025-02-09 16:55:29,187 - DBService#execute_query, stmt: select graphid, name, namespace from ag_catalog.ag_graph order by graphid;
-[33836, 'legal_cases', 'legal_cases']
-2025-02-09 16:55:29,253 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH (n) RETURN count(n) as count $$) as (v agtype);
+2025-02-10 17:22:22,439 - AGEGraphLoader#load_legal_cases_dataset: legal_cases True
+2025-02-10 17:22:22,440 - freighter: <agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60>
+2025-02-10 17:22:22,906 - freighter connected: <agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60>
+2025-02-10 17:22:25,358 - freighter loaded
+2025-02-10 17:22:25,358 - closing freighter...
+2025-02-10 17:22:25,358 - closed
+2025-02-10 17:22:25,359 - AGEGraphLoader#execute_validation_queries: legal_cases
+2025-02-10 17:22:25,359 - DBService#execute_query, stmt: select graphid, name, namespace from ag_catalog.ag_graph order by graphid;
+[33990, 'legal_cases', 'legal_cases']
+2025-02-10 17:22:25,460 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH (n) RETURN count(n) as count $$) as (v agtype);
 2679
-2025-02-09 16:55:29,324 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH ()-[r]->() RETURN count(r) as count $$) as (e agtype);
+2025-02-10 17:22:25,565 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH ()-[r]->() RETURN count(r) as count $$) as (e agtype);
 15998
-2025-02-09 16:55:29,418 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH (c) RETURN c limit 3 $$) as (v agtype);
+2025-02-10 17:22:25,684 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH (c) RETURN c limit 3 $$) as (v agtype);
 {'id': 844424930131969, 'label': 'Case', 'properties': {'id': '1017660', 'name': 'United Mutual Savings Bank v. Riebli', 'court': 'Washington Supreme Court', 'case_url': 'https://static.case.law/wash-2d/55/cases/0816-01.json', 'decision_year': '1960', 'citation_count': '14'}}
 {'id': 844424930131970, 'label': 'Case', 'properties': {'id': '594079', 'name': 'Martindale Clothing Co. v. Spokane & Eastern Trust Co.', 'court': 'Washington Supreme Court', 'case_url': 'https://static.case.law/wash/79/cases/0643-01.json', 'decision_year': '1914', 'citation_count': '5'}}
 {'id': 844424930131971, 'label': 'Case', 'properties': {'id': '552848', 'name': 'Lynch v. Ninemire Packing Co.', 'court': 'Washington Supreme Court', 'case_url': 'https://static.case.law/wash/63/cases/0423-01.json', 'decision_year': '1911', 'citation_count': '7'}}
-2025-02-09 16:55:29,489 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH ()-[r]-() RETURN r limit 3 $$) as (r agtype);
-{'id': 1125899906842625, 'label': 'cites', 'end_id': 844424930131970, 'start_id': 844424930131969, 'properties': {'case_id': '1017660', 'other_id': '1960', 'case_year': '594079', 'other_year': '1914'}}
-{'id': 1407374883553281, 'label': 'cited_by', 'end_id': 844424930131969, 'start_id': 844424930131970, 'properties': {'case_id': '594079', 'other_id': '1914', 'case_year': '1017660', 'other_year': '1960'}}
-{'id': 1125899906842626, 'label': 'cites', 'end_id': 844424930131971, 'start_id': 844424930131969, 'properties': {'case_id': '1017660', 'other_id': '1960', 'case_year': '552848', 'other_year': '1911'}}
-2025-02-09 16:55:29,558 - DBService#close_pool, closing...
-2025-02-09 16:55:29,558 - DBService#close_pool, closed
+2025-02-10 17:22:25,794 - DBService#execute_query, stmt: select * from ag_catalog.cypher('legal_cases', $$ MATCH ()-[r]-() RETURN r limit 3 $$) as (r agtype);
+{'id': 1125899906842625, 'label': 'cites', 'end_id': 844424930131970, 'start_id': 844424930131969, 'properties': {'case_id': '1017660', 'other_id': '594079', 'case_name': 'United Mutual Savings Bank v. Riebli', 'case_year': '1960', 'other_name': 'Martindale Clothing Co. v. Spokane & Eastern Trust Co.', 'other_year': '1914'}}
+{'id': 1407374883553281, 'label': 'cited_by', 'end_id': 844424930131969, 'start_id': 844424930131970, 'properties': {'case_id': '594079', 'other_id': '1017660', 'case_name': 'Martindale Clothing Co. v. Spokane & Eastern Trust Co.', 'case_year': '1914', 'other_name': 'United Mutual Savings Bank v. Riebli', 'other_year': '1960'}}
+{'id': 1125899906842626, 'label': 'cites', 'end_id': 844424930131971, 'start_id': 844424930131969, 'properties': {'case_id': '1017660', 'other_id': '552848', 'case_name': 'United Mutual Savings Bank v. Riebli', 'case_year': '1960', 'other_name': 'Lynch v. Ninemire Packing Co.', 'other_year': '1911'}}
+2025-02-10 17:22:25,907 - DBService#close_pool, closing...
+2025-02-10 17:22:25,908 - DBService#close_pool, closed
 ```
 
 This output shows that **2679 vertices and 15998 edges** were loaded into the graph.
@@ -608,11 +609,13 @@ vertices and edges in the AGE graph.
 This Apache AGE graph loading functionality is implemented here with the
 [agefreighter](https://pypi.org/project/agefreighter/) python library.
 Notice how the above loading of 2679 vertices and 15998 edges only took
-**2.503 seconds** from a laptop and home network (pertinent log lines shown below).
+**2.919 seconds** from a laptop and home network (pertinent log lines shown below).
 
 ```
-2025-02-09 16:55:26,683 - freighter: <agefreighter.multicsvfreighter.MultiCSVFreighter ...
-2025-02-09 16:55:29,186 - freighter loaded
+2025-02-10 17:22:22,439 - AGEGraphLoader#load_legal_cases_dataset: legal_cases True
+2025-02-10 17:22:22,440 - freighter: <agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60>
+2025-02-10 17:22:22,906 - freighter connected: <agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60>
+2025-02-10 17:22:25,358 - freighter loaded
 ```
 
 ---
