@@ -79,61 +79,36 @@ python> some command in the python directory
 The project directory structure looks like this:
 
 ```
-├── az
-├── data
-│   ├── cypher               <-- curated list of statements to populate the Apache AGE graph
-│   └── pypi
-│       └── wrangled_libs    <-- the curated libraries dataset, pre-vectorized
-├── docs
-│   └── img
-└── python
-    ├── docker               <-- Dockerfile and docker-compose.yml
-    ├── sql                  <-- DDL and SQL files for psql and python logic
-    ├── src                  <-- Python source code
-    │   ├── models
-    │   ├── services
-    │   └── util
-    ├── static               <-- static files used by the Web UI application
-    ├── templates            <-- jinga2 text templates 
-    ├── tests                <-- Unit tests built on the pytest framework
-    ├── venv                 <-- The Python virtual environment, not in Git (git ignored)
-    └── views                <-- Web UI HTML page templates
-```
+Directory/File                       Description
 
-```
-├── az
+├── az                           <-- az CLI deployment script for Azure PostgresSQL
 ├── data
-│   ├── countries
-│   └── legal_cases
-│       ├── graph_csv
-│       └── work
-├── docs
-│   ├── img
-│   └── pdf
-├── jupyter
-├── mkdocs_overrides
-│   └── partials
-├── pg_scripts
-└── python
-    ├── __pycache__
-    ├── config
-    ├── sql
-    ├── src
-    │   ├── __pycache__
-    │   ├── models
-    │   ├── services
-    │   └── util
-    ├── static
-    │   ├── img
-    │   └── pdf
-    ├── templates
-    ├── tests
-    ├── tmp
-    ├── venv
-    │   ├── bin
-    │   ├── include
-    │   └── lib
-    └── views
+│   ├── countries                <-- small dataset for script agefreighter_example.py
+│   └── legal_cases              <-- the relational curated dataset for this repo, zipped
+│       ├── graph_csv            <-- the graph curated dataset, csv files
+├── docs                         <-- documentation in markdown format
+├── jupyter                      <-- sample Jypyter notebook for AGE and the agefreighter library
+├── pg_scripts                   <-- scripts for using PostgreSQL CLI programs, like pg_dump
+└── python                       <-- the python3 implementation code for this project
+    ├── agefreighter_example.py  <-- simple python program to load an AGE graph with agefreighter
+    ├── docker-compose.yml       <-- yaml file used to run the web app with docker compose
+    ├── Dockerfile               <-- file used to create the Docker image
+    ├── dotenv_example           <-- example file for creating your optional .env file
+    ├── main.py                  <-- the primary python "console application"
+    ├── pg.ps1                   <-- script to run the psql program in an easy manner
+    ├── requirements.in          <-- the python required libraries list, used by venv.ps1
+    ├── set-env-vars-sample.ps1  <-- editable generated script used to set your environment variables
+    ├── venv.ps1                 <-- powershell script to create your python virthal environment
+    ├── webapp.ps1               <-- powershell script to start the web UI application
+    ├── webapp.py                <-- web app implementation python file
+    ├── sql                      <-- sql scripts, such as to delete/define the legal_cases table and indexes
+    ├── src                      <-- primary python source code directory
+    ├── static                   <-- static assets served by the web application
+    ├── templates                <-- jinja2 templates for dynamic content generation; queries, prompts
+    ├── tests                    <-- unit tests using the pytest testing framework
+    ├── tmp                      <-- not in GitHub; manually create this directory yourself
+    ├── venv                     <-- not in GitHub; this is the python virtual environment
+    └── views                    <-- web UI html views/pages
 ```
 
 ---
