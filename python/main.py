@@ -6,8 +6,8 @@ Usage:
     python main.py query_legal_cases_table
     python main.py relational_search_case_id 594079
     python main.py load_age_graph_with_agefreighter <graph-naame> <do-load-bool>
-    python main.py load_age_graph_with_agefreighter legal_cases_af1 true
-    python main.py execute_graph_validation_queries legal_cases_af1
+    python main.py load_age_graph_with_agefreighter legal_cases true
+    python main.py execute_graph_validation_queries legal_cases
     python main.py vector_search_similar_cases 594079 10
     python main.py vector_search_words word1 word2 word3 etc
     python main.py vector_search_words Woolworth Co. v. City of Seattle
