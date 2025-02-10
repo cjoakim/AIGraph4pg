@@ -204,14 +204,14 @@ select * from ag_catalog.cypher('legal_cases',
 --name CYPHER: Show citations for a Case  (visualized)
 --text
 select * from ag_catalog.cypher('legal_cases',
-  $$ MATCH (c:Case {id: 999494})-[r:cites]->() RETURN c,r limit 50 $$)
+  $$ MATCH (c:Case {id: '999494'})-[r:cites]->() RETURN c,r limit 50 $$)
   as (c agtype, r agtype);
 --end
 
 --name CYPHER: Traverse citations for a Case  (visualized)
 --text
 select * from ag_catalog.cypher('legal_cases',
-  $$ MATCH (c:Case {id: 999494})-[r:cites*1..2]->(c2:Case) RETURN c,r limit 100 $$)
+  $$ MATCH (c:Case {id: '999494'})-[r:cites*1..2]->(c2:Case) RETURN c,r limit 100 $$)
   as (c agtype, r agtype);
 --end
 
@@ -222,7 +222,3 @@ select * from ag_catalog.cypher('legal_cases',
   $$ MATCH (c1:Case {id:594079})-[r:citation*]-(c2:Case) RETURN * $$)
   as (c1 agtype, r agtype, c2 agtype);
 --end
-
-
-
-# Seeds ['999494', '996526', '807253', '762307', '568326', '660528', '1283434', '4978096']

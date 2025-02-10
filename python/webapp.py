@@ -252,8 +252,6 @@ async def post_query(req: Request, query_type):
             view_data["elapsed_seconds"] = "elapsed_seconds: {}".format(
                 time.time() - start_time
             )
-            print(json.dumps(results, sort_keys=False, indent=2))
-
             view_data["query_text"] = query_text
             view_data["json_results_message"] = results_message(
                 "Results as JSON", results
@@ -263,7 +261,7 @@ async def post_query(req: Request, query_type):
             view_data["inline_graph_json"] = graph_data
             if len(graph_data) > 0:
                 view_data["vis_message"] = "Legal Case Citation Graph"
-            # write_query_results_to_file(view_data, results, graph_data)
+            write_query_results_to_file(view_data, results, graph_data)
 
         except Exception as e:
             logging.critical(e, stack_info=True, exc_info=True)
@@ -348,26 +346,35 @@ def inline_graph_data(query_text, result_objects):
                             label = elem["label"]
                             if label == "Case":
                                 node = dict()
-                                row_id, case_id = str(elem["id"]), str(
-                                    elem["properties"]["id"]
-                                )
-                                node["rowid"] = row_id
+                                case_id = str(elem["properties"]["id"])
+                                node["rowid"] = str(elem["id"])
                                 node["type"] = label
                                 node["id"] = case_id
-                                node["url"] = str(elem["properties"]["url"])
+                                node["url"] = str(elem["properties"]["case_url"])
                                 node["name"] = str(elem["properties"]["name"])
                                 node["year"] = str(elem["properties"]["decision_year"])
                                 nodes_dict[case_id] = node
                             elif label == "cites":
+                                # {
+                                #   "id": 1125899906842678,
+                                #   "label": "cites",
+                                #   "end_id": 844424930131985,
+                                #   "start_id": 844424930131984,
+                                #   "properties": {
+                                #     "case_id": "999494",
+                                #     "other_id": "1956",
+                                #     "case_year": "996526",
+                                #     "other_year": "1956"
+                                #   }
+                                # },
+                                # TODO - csv columns misaligned?
                                 edge = dict()
                                 start_id = str(elem["properties"]["case_id"])
-                                end_id = str(elem["properties"]["cited_case_id"])
+                                end_id = str(elem["properties"]["case_year"])
                                 edge["source"] = start_id
                                 edge["target"] = end_id
-                                edge["case_name"] = str(elem["properties"]["case_name"])
-                                edge["cited_case_name"] = str(
-                                    elem["properties"]["cited_case_name"]
-                                )
+                                edge["case_name"] = ""
+                                edge["cited_case_name"] = ""
                                 edge["rel"] = label
                                 edge["weight"] = 1
                                 key = "-".join(sorted([start_id, end_id]))
@@ -379,16 +386,12 @@ def inline_graph_data(query_text, result_objects):
                                     edge = dict()
                                     start_id = str(list_elem["properties"]["case_id"])
                                     end_id = str(
-                                        list_elem["properties"]["cited_case_id"]
+                                        list_elem["properties"]["case_year"]
                                     )
                                     edge["source"] = start_id
                                     edge["target"] = end_id
-                                    edge["case_name"] = str(
-                                        list_elem["properties"]["case_name"]
-                                    )
-                                    edge["cited_case_name"] = str(
-                                        list_elem["properties"]["cited_case_name"]
-                                    )
+                                    edge["case_name"] = ""
+                                    edge["cited_case_name"] = ""
                                     edge["rel"] = label
                                     edge["weight"] = 1
                                     key = "-".join(sorted([start_id, end_id]))

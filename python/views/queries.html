@@ -134,7 +134,7 @@ $(document).ready(function() {
 
     function nodeClicked(e, d) {
       console.log(d)
-      var value = d.id + ", " + d.name
+      var value = d.id + " " + d.name
       value = value.replace(/&amp;/g, "&");
       if (d.year) {
         value = value + ", " + d.year;
