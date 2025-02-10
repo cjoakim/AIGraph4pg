@@ -26,7 +26,7 @@ import os
 import sys
 import traceback
 
-#import psycopg_pool
+# import psycopg_pool
 
 from docopt import docopt
 from dotenv import load_dotenv
@@ -42,6 +42,7 @@ from src.util.fs import FS
 logging.basicConfig(
     format="%(asctime)s - %(message)s", level=LoggingLevelService.get_level()
 )
+
 
 def print_options(msg):
     """
@@ -68,16 +69,20 @@ async def list_pg_extensions_and_settings():
     and pg_setting and capture the results to tmp files.
     """
     results = await DBService.execute_query(
-        "select oid, extname FROM pg_extension order by extname")
+        "select oid, extname FROM pg_extension order by extname"
+    )
     FS.write_json(results, "tmp/pg_extension.txt")
 
     results = await DBService.execute_query(
-        "select name, comment FROM pg_available_extensions order by name")
+        "select name, comment FROM pg_available_extensions order by name"
+    )
     FS.write_json(results, "tmp/pg_available_extensions.txt")
 
     results = await DBService.execute_query(
-        "select name, setting, short_desc FROM pg_settings order by name")
+        "select name, setting, short_desc FROM pg_settings order by name"
+    )
     FS.write_json(results, "tmp/pg_settings.txt")
+
 
 async def execute_sql_script(script_filename: str):
     sql = FS.read(script_filename)
@@ -138,8 +143,7 @@ select id, name, name_abbreviation, case_url, decision_date, court_name, citatio
         logging.info("No results found for case id: {}".format(case_id))
 
 
-async def vector_search_similar_cases(case_id: str, count: int
-):
+async def vector_search_similar_cases(case_id: str, count: int):
     """
     First execute a traditional SELECT to find the given case_id.
     Then use its embedding to find the other similar legal_cases
@@ -203,6 +207,7 @@ async def load_age_graph_with_agefreighter(graph_name: str, do_load: bool):
     await loader.load_legal_cases_dataset(graph_name, do_load)
     if do_load:
         await loader.execute_validation_queries(graph_name)
+
 
 async def execute_graph_validation_queries(graph_name: str):
     loader = AGEGraphLoader()

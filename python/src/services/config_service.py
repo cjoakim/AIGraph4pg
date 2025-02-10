@@ -219,11 +219,11 @@ class ConfigService:
         PostgreSQL database per the AIG4PG_xxx environment variables.
         """
         return "host={} port={} dbname={} user={} password={} ".format(
-            cls.postgresql_server(), 
+            cls.postgresql_server(),
             cls.postgresql_port(),
             cls.postgresql_database(),
             cls.postgresql_user(),
-            cls.postgresql_password()
+            cls.postgresql_password(),
         )
 
     @classmethod

@@ -28,7 +28,11 @@ class AGEGraphLoader:
 
     async def load_legal_cases_dataset(self, graph_name: str, do_load: bool) -> None:
         self.graph_name = graph_name
-        logging.info("AGEGraphLoader#load_legal_cases_dataset: {} {}".format(self.graph_name, do_load))
+        logging.info(
+            "AGEGraphLoader#load_legal_cases_dataset: {} {}".format(
+                self.graph_name, do_load
+            )
+        )
         try:
             conn_str = ConfigService.pg_connection_str()
             freighter = Factory.create_instance("MultiCSVFreighter")
@@ -55,7 +59,7 @@ class AGEGraphLoader:
                     use_copy=True,
                     drop_graph=True,
                     create_graph=True,
-                    progress=True
+                    progress=True,
                 )
                 logging.info("freighter loaded")
         except Exception as e:
@@ -72,12 +76,18 @@ class AGEGraphLoader:
 
     async def execute_validation_queries(self, graph_name) -> None:
         try:
-            logging.info("AGEGraphLoader#execute_validation_queries: {}".format(graph_name))
+            logging.info(
+                "AGEGraphLoader#execute_validation_queries: {}".format(graph_name)
+            )
             await self.execute_query(self.list_age_graphs_sql(), True)
             await self.execute_query(self.count_vertices_in_graph_sql(graph_name), True)
             await self.execute_query(self.count_edges_in_graph_sql(graph_name), True)
-            await self.execute_query(self.show_several_vertices_in_graph_sql(graph_name, 3), True)
-            await self.execute_query(self.show_several_edges_in_graph_sql(graph_name, 3), True)
+            await self.execute_query(
+                self.show_several_vertices_in_graph_sql(graph_name, 3), True
+            )
+            await self.execute_query(
+                self.show_several_edges_in_graph_sql(graph_name, 3), True
+            )
         except Exception as e:
             logging.critical(str(e))
             logging.exception(e, stack_info=True, exc_info=True)
@@ -88,14 +98,16 @@ class AGEGraphLoader:
         results_list = await DBService.execute_query(sql, parse_age_results)
         for row in results_list:
             print(row)
-    
+
     def list_age_graphs_sql(self) -> str:
-        return "select graphid, name, namespace from ag_catalog.ag_graph order by graphid;" 
-    
+        return (
+            "select graphid, name, namespace from ag_catalog.ag_graph order by graphid;"
+        )
+
     def count_vertices_in_graph_sql(self, graph_name):
         t = "select * from ag_catalog.cypher('{}', $$ MATCH (n) RETURN count(n) as count $$) as (v agtype);"
         return t.format(graph_name).strip()
-    
+
     def count_edges_in_graph_sql(self, graph_name):
         t = "select * from ag_catalog.cypher('{}', $$ MATCH ()-[r]->() RETURN count(r) as count $$) as (e agtype);"
         return t.format(graph_name).strip()
@@ -103,8 +115,7 @@ class AGEGraphLoader:
     def show_several_vertices_in_graph_sql(self, graph_name, count):
         t = "select * from ag_catalog.cypher('{}', $$ MATCH (c) RETURN c limit {} $$) as (v agtype);"
         return t.format(graph_name, count).strip()
-    
+
     def show_several_edges_in_graph_sql(self, graph_name, count):
         t = "select * from ag_catalog.cypher('{}', $$ MATCH ()-[r]-() RETURN r limit {} $$) as (r agtype);"
         return t.format(graph_name, count).strip()
-    

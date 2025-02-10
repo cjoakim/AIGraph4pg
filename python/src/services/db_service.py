@@ -1,4 +1,3 @@
-
 import asyncio
 import logging
 import psycopg_pool
@@ -24,18 +23,23 @@ class DBService:
         if DBService.pool is not None:
             logging.info("DBService#initialze_pool already exists...")
             return DBService.pool
-        
+
         conn_pool_max_size = 1
         logging.info("DBService#initialze_pool creating new...")
         conn_str = ConfigService.pg_connection_str()
         conn_str_tokens = conn_str.split("password")
         logging.info(
-            "DBService#initialze_pool, conn_str: {} password=<omitted>".format(conn_str_tokens[0])
+            "DBService#initialze_pool, conn_str: {} password=<omitted>".format(
+                conn_str_tokens[0]
+            )
         )
         DBService.pool = psycopg_pool.AsyncConnectionPool(
-            conninfo=conn_str, open=False, min_size=1, max_size=conn_pool_max_size)
+            conninfo=conn_str, open=False, min_size=1, max_size=conn_pool_max_size
+        )
 
-        logging.info("DBService#initialze_pool, pool created: {}".format(DBService.pool))
+        logging.info(
+            "DBService#initialze_pool, pool created: {}".format(DBService.pool)
+        )
         await DBService.pool.open()
         await DBService.pool.check()
         logging.info("DBService#initialze_pool, pool opened")
@@ -68,9 +72,9 @@ class DBService:
             except Exception as eprime:
                 pass
 
-        #logging.info("DBService#initialze_pool, stats: {}".format(DBService.pool.get_stats()))
+        # logging.info("DBService#initialze_pool, stats: {}".format(DBService.pool.get_stats()))
         return DBService.pool
-    
+
     @classmethod
     def set_search_path_statement(cls):
         return 'SET search_path = ag_catalog, "$user", public;'
@@ -105,14 +109,14 @@ class DBService:
         """
         stmt = sql.replace("\r\n", "")
         if len(stmt) > 400:
-             # truncate embeddings
+            # truncate embeddings
             logging.info("DBService#execute_query, stmt: {} ...".format(stmt[0:400]))
         else:
             logging.info("DBService#execute_query, stmt: {}".format(stmt))
         result_objects = list()
         if parse_age_results:
             qrp = QueryResultParser()
-        
+
         async with cls.pool.connection() as conn:
             stmt = sql.replace("\r\n", "")
             async with conn.cursor() as cursor:
@@ -125,10 +129,9 @@ class DBService:
                         # row is a tuple
                         if parse_age_results:
                             # parse row to json with QueryResultParser
-                            result_objects.append(qrp.parse(row)) # 
+                            result_objects.append(qrp.parse(row))  #
                         else:
                             result_objects.append(row)
                 except Exception as e:
                     logging.critical((str(e)))
         return result_objects
-

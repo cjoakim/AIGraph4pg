@@ -52,6 +52,7 @@ else:
         )
     )
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -257,14 +258,12 @@ async def post_query(req: Request, query_type):
             view_data["json_results_message"] = results_message(
                 "Results as JSON", results
             )
-            view_data["json_results"] = json.dumps(
-                results, sort_keys=False, indent=2
-            )
+            view_data["json_results"] = json.dumps(results, sort_keys=False, indent=2)
             graph_data = inline_graph_data(query_text, results)
             view_data["inline_graph_json"] = graph_data
             if len(graph_data) > 0:
                 view_data["vis_message"] = "Legal Case Citation Graph"
-            #write_query_results_to_file(view_data, results, graph_data)
+            # write_query_results_to_file(view_data, results, graph_data)
 
         except Exception as e:
             logging.critical(e, stack_info=True, exc_info=True)

@@ -279,17 +279,18 @@ def tutorials_to_md():
                     if keep_line == True:
                         if line.startswith("![](static/img/"):
                             line = line.replace("static/", "")
-                            #print("image line: {}".format(line))
+                            # print("image line: {}".format(line))
                         pruned_lines.append(line)
 
                 new_lines = add_outline_sequence(pruned_lines, page_index)
                 FS.write_lines(new_lines, outfile)
 
+
 def read_mkdocs_yml():
     # Read the mkdocs.yml file and extract a list of markdown pages
     # from the "nav" section of the file.  Used for outline sequence.
     pages = list()
-    with open("../mkdocs.yml", 'r') as f:
+    with open("../mkdocs.yml", "r") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
         nav = data["nav"]
         for item in nav:
@@ -304,11 +305,13 @@ def read_mkdocs_yml():
     FS.write_json(pages, "tmp/mkdocs_pages.json")
     return pages
 
+
 def lookup_page_index(pages, filename):
     for page in pages:
         if filename.startswith(page):
             return pages.index(page) + 1
     return -1
+
 
 def add_outline_sequence(pruned_lines, page_index):
     new_lines, lev = list(), 0
