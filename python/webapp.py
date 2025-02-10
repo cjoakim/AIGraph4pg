@@ -245,7 +245,6 @@ async def post_query(req: Request, query_type):
     if len(query_text) > 10:
         start_time = time.time()
         try:
-            # alter user chjoakim set search_path='ag_catalog','public';
             stmt = query_text.replace("\r\n", "")
             results = await DBService.execute_query(stmt, parse_age_results)
 
@@ -347,51 +346,41 @@ def inline_graph_data(query_text, result_objects):
                             if label == "Case":
                                 node = dict()
                                 case_id = str(elem["properties"]["id"])
-                                node["rowid"] = str(elem["id"])
                                 node["type"] = label
                                 node["id"] = case_id
-                                node["url"] = str(elem["properties"]["case_url"])
                                 node["name"] = str(elem["properties"]["name"])
                                 node["year"] = str(elem["properties"]["decision_year"])
                                 nodes_dict[case_id] = node
                             elif label == "cites":
-                                # {
-                                #   "id": 1125899906842678,
-                                #   "label": "cites",
-                                #   "end_id": 844424930131985,
-                                #   "start_id": 844424930131984,
-                                #   "properties": {
-                                #     "case_id": "999494",
-                                #     "other_id": "1956",
-                                #     "case_year": "996526",
-                                #     "other_year": "1956"
-                                #   }
-                                # },
-                                # TODO - csv columns misaligned?
                                 edge = dict()
                                 start_id = str(elem["properties"]["case_id"])
-                                end_id = str(elem["properties"]["case_year"])
+                                end_id = str(elem["properties"]["other_id"])
                                 edge["source"] = start_id
                                 edge["target"] = end_id
-                                edge["case_name"] = ""
-                                edge["cited_case_name"] = ""
+                                edge["case_name"] = str(elem["properties"]["case_name"])
+                                edge["case_year"] = str(elem["properties"]["case_year"])
+                                edge["cited_case_name"] = str(elem["properties"]["other_name"])
+                                edge["cited_case_year"] = str(elem["properties"]["other_year"])
                                 edge["rel"] = label
                                 edge["weight"] = 1
                                 key = "-".join(sorted([start_id, end_id]))
                                 edges_dict[key] = edge
                         elif isinstance(elem, list):
+                            logging.info("LIST: {}".format(elem))
+                            #LIST: [{'id': 1125899906842684, 'label': 'cites', 'end_id': 844424930131991, 'start_id': 844424930131984, 'properties': {'case_id': '999494', 'other_id': '4978096', 'case_name': 'Papac v. City of Montesano', 'case_year': '1956', 'other_name': 'Harkoff v. Whatcom County', 'other_year': '1952'}}]
                             for list_elem in elem:
                                 label = list_elem["label"]
                                 if label == "cites":
                                     edge = dict()
                                     start_id = str(list_elem["properties"]["case_id"])
-                                    end_id = str(
-                                        list_elem["properties"]["case_year"]
-                                    )
+                                    end_id = str(list_elem["properties"]["other_id"])
                                     edge["source"] = start_id
                                     edge["target"] = end_id
-                                    edge["case_name"] = ""
-                                    edge["cited_case_name"] = ""
+                                    edge["year"] = str(list_elem["properties"]["case_year"])
+                                    edge["case_name"] = str(list_elem["properties"]["case_name"])
+                                    edge["case_year"] = str(list_elem["properties"]["case_year"])
+                                    edge["cited_case_name"] = str(list_elem["properties"]["other_name"])
+                                    edge["cited_case_year"] = str(list_elem["properties"]["other_year"])
                                     edge["rel"] = label
                                     edge["weight"] = 1
                                     key = "-".join(sorted([start_id, end_id]))
@@ -413,9 +402,8 @@ def inline_graph_data(query_text, result_objects):
                         new_node["id"] = end_id
                         new_node["type"] = "Case"
                         new_node["id"] = end_id
-                        new_node["url"] = ""
                         new_node["name"] = edge["cited_case_name"]
-                        new_node["year"] = ""
+                        new_node["year"] = edge["cited_case_year"]
                         nodes_dict[end_id] = new_node
                         data["nodes"].append(new_node)
                 else:
@@ -423,16 +411,12 @@ def inline_graph_data(query_text, result_objects):
                     new_node["id"] = start_id
                     new_node["type"] = "Case"
                     new_node["cid"] = "0"
-                    new_node["url"] = ""
                     new_node["name"] = edge["case_name"]
-                    new_node["year"] = ""
+                    new_node["year"] = edge["case_year"]
                     nodes_dict[start_id] = new_node
                     data["nodes"].append(new_node)
 
-            if (len(data["nodes"]) > 0) and (len(data["edges"]) > 0):
-                wrapper["graph_data"] = data
-            else:
-                wrapper["graph_data"] = data  # TODO - remove this else
+            wrapper["graph_data"] = data
         except Exception as e:
             logging.critical((str(e)))
             logging.exception(e, stack_info=True, exc_info=True)
