@@ -553,7 +553,7 @@ dev=> select count(*) from legal_cases;
 (1 row)
 ```
 
-## 3.9 Load the legal_cases AGE graph
+### 3.8.5 Load the legal_cases AGE graph
 
 This process is executed with python, rather than psql, with the
 following command:
@@ -591,3 +591,90 @@ This output shows that **2679 vertices and 15998 edges** were loaded into the gr
 
 The output also contains several validation queries which display several
 vertices and edges in the AGE graph.
+
+This Apache AGE graph loading functionality is implemented here with the
+[agefreighter](https://pypi.org/project/agefreighter/) python library.
+Notice how the above loading of 2679 vertices and 15998 edges only took
+**2.503 seconds** from a laptop and home network (pertinent log lines shown below).
+
+```
+2025-02-09 16:55:26,683 - freighter: <agefreighter.multicsvfreighter.MultiCSVFreighter ...
+2025-02-09 16:55:29,186 - freighter loaded
+```
+
+---
+
+## 3.9 Run the Web Application on your computer
+
+Now that you've loaded both the relational and Apache AGE graph data
+into your Azure PostgreSQL server, you can access it with a web application
+which provides a User Interface (UI).
+
+The web application is intended to run locally, but you may wish to 
+deploy it to Azure, such as to Azure Container Apps (ACA).
+This deployment process is easy, but is out-of-scope for this 
+tutorial and reference application.  You can read more about 
+Azure Container Apps here: https://learn.microsoft.com/en-us/azure/container-apps/ 
+
+### 3.9.1 Run as a Python process
+
+Simply run the **webapp.ps1** script in the \python directory as shown below:
+
+```
+(venv) PS ...\python> .\webapp.ps1
+activating the venv ...
+Python 3.12.9
+2025-02-10 09:35:41,406 - Windows platform detected, setting WindowsSelectorEventLoopPolicy
+2025-02-10 09:35:41,407 - webapp.py started
+2025-02-10 09:35:43,920 - Windows platform detected, setting WindowsSelectorEventLoopPolicy
+2025-02-10 09:35:43,921 - webapp.py started
+2025-02-10 09:35:43,926 - log_defined_env_vars: {
+  "AIG4PG_LLM_CONTEXT_MAX_NTOKENS": "10000",
+  "AIG4PG_LOG_LEVEL": "info",
+
+...
+
+2025-02-10 09:35:44,301 - DBService#initialze_pool, pool opened
+[2025-02-10 09:35:44 -0500] [6880] [INFO] Running on http://127.0.0.1:8000 (CTRL + C to quit)
+2025-02-10 09:35:44,752 - Running on http://127.0.0.1:8000 (CTRL + C to quit)
+```
+
+You should see logging output similar to the above.
+
+Visit **http://127.0.0.1:8000** with your browser.  You should then see the
+home page of the UI
+
+### 3.9.2 Run as a Docker container
+
+This UI application can also be executed as a Docker container
+on your desktop with **docker compose**.
+See the [Docker Compose](https://docs.docker.com/compose/) docs for more info.
+
+See the **python/docker-compose.yml** file, and edit it as necessary.
+Docker Compose works with environment variables, which are passed in from
+your computer into the running container.
+
+In one PowerShell tab in the \python directory, enter this command:
+
+```
+(venv) PS ...\python> 
+docker compose -f docker-compose.yml up
+```
+
+This will download and execute the **cjoakim/aigraph4pg:latest**
+image that is hosted at Docker Hub.
+
+Open to your web browser to URL **http://127.0.0.1:8000** or **http://localhost:8000**
+to see the home page of the applicaton, which looks like this:
+
+<p align="center">
+  <img src="img/ui-home-page.png" width="90%">
+</p>
+
+In another PowerShell tab, also in the \python directory, enter this command
+when you want to stop the application.
+
+```
+(venv) PS ...\python> 
+docker compose -f docker-compose.yml down
+```

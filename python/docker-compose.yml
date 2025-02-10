@@ -28,4 +28,10 @@ services:
       PORT:                               8000
       WEB_CONCURRENCY:                    1
 
+
+# In the envorinment: section the environment variables on the right 
+# are used to set the corresponding environment variables in the container.
+# For example, the value of your $AIG4PG_PG_FLEX_SERVER environment variable
+# is passed into the container as AIG4PG_PG_FLEX_SERVER.
+
 # WEB_CONCURRENCY relates to uvicorn and the --workers count; see https://www.uvicorn.org
