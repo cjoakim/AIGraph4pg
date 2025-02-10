@@ -336,7 +336,7 @@ with the az CLI script in this repo, you'll first have to enable
 these extensions as shown in this screen shot:
 
 <p align="center">
-  <img src="img/enable-extensions.png" width="90%">
+  <img src="img/enable-extensions.png" width="70%">
 </p>
 
 ```
