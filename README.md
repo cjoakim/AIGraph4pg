@@ -25,7 +25,7 @@ Directory/File                       Description
 ├── data
 │   ├── countries                <-- small dataset for script agefreighter_example.py
 │   └── legal_cases              <-- the relational curated dataset for this repo, zipped
-│       ├── graph_csv            <-- the graph curated dataset, csv files
+│       └── graph_csv            <-- the graph curated dataset, csv files
 ├── docs                         <-- documentation in markdown format
 ├── jupyter                      <-- sample Jypyter notebook for AGE and the agefreighter library
 ├── pg_scripts                   <-- scripts for using PostgreSQL CLI programs, like pg_dump

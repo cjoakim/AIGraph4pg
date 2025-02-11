@@ -84,25 +84,34 @@ and this reference application.
 ## 1.3 Directory Structure of this GitHub Repository
 
 ```
-Directory/File             Description
+Directory/File                       Description
 
-├── az                     az CLI deployment script for Azure PostgreSQL
+├── az                           <-- az CLI deployment script for Azure PostgresSQL
 ├── data
-│   └── legal_cases        Zipped curated dataset files for both relational and graph data
-├── docs                   User documentation
-└── python                 The Python-based implementation
-    ├── config             Contains file sample_queries.txt, used by the Web UI
-    ├── sql                Miscellaneous SQL, DDL, indexing scripts
-    ├── src                The primary Python source code
-    ├── static             Static assets used in the Web app
-    ├── templates          Jinja2 templates used in text generation
-    ├── tests              Unit tests
-    ├── views              Web app HTML views/templates, including tutorial_<topic>.html pages
-    ├── main.py            The "console app" part of this application
-    ├── requirements.in    The base list of Python requirements, used by venv.ps1/venv.sh
-    ├── venv.ps1           Windows PowerShell script to create the Python virtual environment
-    ├── venv.sh            Linux/macOS script to create the Python virtual environment
-    ├── webapp.py          The Web application, built with the FastAPI framework
-    ├── webapp.ps1         Windows PowerShell script to start the Web app
-    └── webapp.sh          Linux/macOS script to start the Web app
+│   ├── countries                <-- small dataset for script agefreighter_example.py
+│   └── legal_cases              <-- the relational curated dataset for this repo, zipped
+│       └── graph_csv            <-- the graph curated dataset, csv files
+├── docs                         <-- documentation in markdown format
+├── jupyter                      <-- sample Jypyter notebook for AGE and the agefreighter library
+├── pg_scripts                   <-- scripts for using PostgreSQL CLI programs, like pg_dump
+└── python                       <-- the python3 implementation code for this project
+    ├── agefreighter_example.py  <-- simple python program to load an AGE graph with agefreighter
+    ├── docker-compose.yml       <-- yaml file used to run the web app with docker compose
+    ├── Dockerfile               <-- file used to create the Docker image
+    ├── dotenv_example           <-- example file for creating your optional .env file
+    ├── main.py                  <-- the primary python "console application"
+    ├── pg.ps1                   <-- script to run the psql program in an easy manner
+    ├── requirements.in          <-- the python required libraries list, used by venv.ps1
+    ├── set-env-vars-sample.ps1  <-- editable generated script used to set your environment variables
+    ├── venv.ps1                 <-- powershell script to create your python virthal environment
+    ├── webapp.ps1               <-- powershell script to start the web UI application
+    ├── webapp.py                <-- web app implementation python file
+    ├── sql                      <-- sql scripts, such as to delete/define the legal_cases table and indexes
+    ├── src                      <-- primary python source code directory
+    ├── static                   <-- static assets served by the web application
+    ├── templates                <-- jinja2 templates for dynamic content generation; queries, prompts
+    ├── tests                    <-- unit tests using the pytest testing framework
+    ├── tmp                      <-- not in GitHub; manually create this directory yourself
+    ├── venv                     <-- not in GitHub; this is the python virtual environment
+    └── views                    <-- web UI html views/pages
 ```
