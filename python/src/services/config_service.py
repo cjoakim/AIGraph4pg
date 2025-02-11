@@ -90,7 +90,7 @@ class ConfigService:
 
     @classmethod
     def project_version(cls) -> str:
-        return "1.0.0, 2025/02/10"
+        return "1.0.0, 2025/02/18"
 
     @classmethod
     def defined_environment_variables(cls) -> dict:

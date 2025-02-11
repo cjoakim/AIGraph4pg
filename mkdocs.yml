@@ -32,8 +32,8 @@ plugins:
   - search
 
 # nav: controls which docs/*.md files are included in the
-# navigation UI, and their sequence.
-# Default is all *.md files in an alphanumeric order.
+# navigation UI, and their order.  The default is all *.md
+# files in an alphanumeric order.
 nav:
   - index.md
   - Setup:
@@ -65,10 +65,6 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.mark
   - attr_list
-  # - pymdownx.emoji:
-  #     emoji_index: !!python/name:material.extensions.emoji.twemoji
-  #     emoji_generator: !!python/name:materialx.emoji.to_svg
-
 
 # =============================================================================
 #
