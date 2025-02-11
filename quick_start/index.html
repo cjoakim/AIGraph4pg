@@ -560,6 +560,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#371-configure-the-dev-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.7.1 Configure the dev database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#372-configure-the-dev-database-for-apache-age-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.7.2 Configure the dev database for Apache AGE graphs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#38-load-azure-postgresql-with-the-python-libraries-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       3.8 Load Azure PostgreSQL with the Python Libraries Dataset
@@ -588,27 +606,51 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#383-mainpy-load_libraries_table" class="md-nav__link">
+  <a href="#383-psql-copy-into-the-legal_cases-table" class="md-nav__link">
     <span class="md-ellipsis">
-      3.8.3 main.py - load_libraries_table
+      3.8.3 psql copy into the legal_cases table
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#384-mainpy-vector_search_similar_libraries" class="md-nav__link">
+  <a href="#385-load-the-legal_cases-age-graph" class="md-nav__link">
     <span class="md-ellipsis">
-      3.8.4 main.py - vector_search_similar_libraries
+      3.8.5 Load the legal_cases AGE graph
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#39-run-the-web-application-on-your-computer" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.9 Run the Web Application on your computer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.9 Run the Web Application on your computer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#391-run-as-a-python-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.9.1 Run as a Python process
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#385-mainpy-vector_search_words" class="md-nav__link">
+  <a href="#392-run-as-a-docker-container" class="md-nav__link">
     <span class="md-ellipsis">
-      3.8.5 main.py - vector_search_words
+      3.9.2 Run as a Docker container
     </span>
   </a>
   
@@ -953,7 +995,7 @@
 
 <h1 id="30-aigraph4pg-quick-start-documentation">3.0 AIGraph4pg - Quick Start Documentation</h1>
 <p>These instructions are intended to help you deploy Azure PaaS Services
-run this reference application on your workstation.</p>
+and run this reference application on your workstation.</p>
 <h2 id="31-recommended-skills">3.1 Recommended Skills</h2>
 <ul>
 <li>Some programming language experience, especially with Python 3</li>
@@ -985,10 +1027,11 @@ run this reference application on your workstation.</p>
 <li>Edit the <strong>az/provision-config.json</strong> per your subscription.  The entry names are self-explanatory</li>
 <li>Execute <strong>az login</strong>.  See https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli</li>
 <li>Execute the <strong>az/provision.ps1</strong> script to provision your Azure PostgreSQL server</li>
-<li>Alternatively, provision this manually in Azure Portal.
-Enable the VECTOR and AGE extensions.
+<li>Alternatively, provision this manually in Azure Portal.</li>
+<li>Enable the VECTOR and AGE extensions.
 See https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions</li>
 </ul>
+<p>This reference application assumes that the name of your database is <strong>dev</strong>.</p>
 <h3 id="332-azure-openai">3.3.2 Azure OpenAI</h3>
 <ul>
 <li>Recommended, for this project, to provision this manually in Azure Portal</li>
@@ -1012,25 +1055,36 @@ directory, the instructions will look like this:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python&gt; some command in the python directory
 </code></pre></div>
 <p>The project directory structure looks like this:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>├── az
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>├── data
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│   ├── cypher               &lt;-- curated list of statements to populate the Apache AGE graph
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│   └── pypi
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│       └── wrangled_libs    &lt;-- the curated libraries dataset, pre-vectorized
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>├── docs
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│   └── img
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>└── python
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    ├── docker               &lt;-- Dockerfile and docker-compose.yml
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    ├── sql                  &lt;-- DDL and SQL files for psql and python logic
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    ├── src                  &lt;-- Python source code
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    │   ├── models
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    │   ├── services
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    │   └── util
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    ├── static               &lt;-- static files used by the Web UI application
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    ├── templates            &lt;-- jinga2 text templates 
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    ├── tests                &lt;-- Unit tests built on the pytest framework
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    ├── venv                 &lt;-- The Python virtual environment, not in Git (git ignored)
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    └── views                &lt;-- Web UI HTML page templates
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Directory/File                       Description
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>├── az                           &lt;-- az CLI deployment script for Azure PostgresSQL
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>├── data
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│   ├── countries                &lt;-- small dataset for script agefreighter_example.py
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>│   └── legal_cases              &lt;-- the relational curated dataset for this repo, zipped
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│       ├── graph_csv            &lt;-- the graph curated dataset, csv files
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>├── docs                         &lt;-- documentation in markdown format
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>├── jupyter                      &lt;-- sample Jypyter notebook for AGE and the agefreighter library
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>├── pg_scripts                   &lt;-- scripts for using PostgreSQL CLI programs, like pg_dump
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>└── python                       &lt;-- the python3 implementation code for this project
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    ├── agefreighter_example.py  &lt;-- simple python program to load an AGE graph with agefreighter
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    ├── docker-compose.yml       &lt;-- yaml file used to run the web app with docker compose
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    ├── Dockerfile               &lt;-- file used to create the Docker image
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    ├── dotenv_example           &lt;-- example file for creating your optional .env file
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    ├── main.py                  &lt;-- the primary python &quot;console application&quot;
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    ├── pg.ps1                   &lt;-- script to run the psql program in an easy manner
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    ├── requirements.in          &lt;-- the python required libraries list, used by venv.ps1
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    ├── set-env-vars-sample.ps1  &lt;-- editable generated script used to set your environment variables
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    ├── venv.ps1                 &lt;-- powershell script to create your python virthal environment
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    ├── webapp.ps1               &lt;-- powershell script to start the web UI application
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    ├── webapp.py                &lt;-- web app implementation python file
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    ├── sql                      &lt;-- sql scripts, such as to delete/define the legal_cases table and indexes
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    ├── src                      &lt;-- primary python source code directory
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    ├── static                   &lt;-- static assets served by the web application
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    ├── templates                &lt;-- jinja2 templates for dynamic content generation; queries, prompts
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    ├── tests                    &lt;-- unit tests using the pytest testing framework
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    ├── tmp                      &lt;-- not in GitHub; manually create this directory yourself
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    ├── venv                     &lt;-- not in GitHub; this is the python virtual environment
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    └── views                    &lt;-- web UI html views/pages
 </code></pre></div>
 <hr />
 <h2 id="35-set-the-environment-variables-for-this-project">3.5 Set the Environment Variables for this project</h2>
@@ -1121,7 +1175,7 @@ so that application secrets don't get leaked into your source control system.</p
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&gt; git clone https://github.com/cjoakim/aigraph4pg.git
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>&gt; cd AIGraph4pg    &lt;-- this is the project root directory
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>&gt; cd AIGraph4pg    &lt;-- navigate into the project root directory
 </code></pre></div>
 <h3 id="362-create-the-python-virtual-environment">3.6.2 Create the Python Virtual Environment</h3>
 <p>A Python Virtual Environment is an isolated location on your computer
@@ -1138,120 +1192,15 @@ NPM (Node.js and JavaScript ecosystem), etc..</p>
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
 <a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>python&gt; pip list          &lt;-- pip is the library installer program; you&#39;ll see smilar output below
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>Package                   Version
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>------------------------- -----------
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>aiofiles                  23.2.1
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>aiohappyeyeballs          2.4.3
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>aiohttp                   3.10.10
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>aiosignal                 1.3.1
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>annotated-types           0.7.0
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>anyio                     4.6.2.post1
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>asgiref                   3.8.1
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>attrs                     24.2.0
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>azure-core                1.31.0
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>azure-identity            1.19.0
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>azure-storage-blob        12.23.1
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>black                     24.10.0
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>build                     1.2.2.post1
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>certifi                   2024.8.30
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>cffi                      1.17.1
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>chardet                   5.2.0
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>charset-normalizer        3.4.0
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>click                     8.1.7
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>colorama                  0.4.6
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>coverage                  7.6.4
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>cryptography              43.0.3
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>defusedxml                0.7.1
-<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>distro                    1.9.0
-<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>dnspython                 2.7.0
-<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>docopt                    0.6.2
-<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>Faker                     26.1.0
-<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>fastapi                   0.115.3
-<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>fastapi_msal              2.1.6
-<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>frozenlist                1.5.0
-<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>h11                       0.14.0
-<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>h2                        4.1.0
-<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>hpack                     4.0.0
-<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a>httpcore                  1.0.6
-<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>httpx                     0.27.2
-<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>Hypercorn                 0.17.3
-<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>hyperframe                6.0.1
-<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>idna                      3.10
-<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>iniconfig                 2.0.0
-<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>isodate                   0.7.2
-<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>itsdangerous              2.2.0
-<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a>Jinja2                    3.1.4
-<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>jiter                     0.6.1
-<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>jsonschema                4.23.0
-<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>jsonschema-path           0.3.3
-<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a>jsonschema-spec           0.2.4
-<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a>jsonschema-specifications 2023.7.1
-<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>lazy-object-proxy         1.10.0
-<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a>MarkupSafe                3.0.2
-<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>more-itertools            10.5.0
-<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a>motor                     3.6.0
-<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a>msal                      1.31.0
-<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a>msal-extensions           1.2.0
-<a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a>multidict                 6.1.0
-<a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a>mypy-extensions           1.0.0
-<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a>numpy                     1.26.4
-<a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a>openai                    1.52.2
-<a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a>openapi-core              0.18.2
-<a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a>openapi-schema-validator  0.6.2
-<a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a>openapi-spec-validator    0.7.1
-<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a>packaging                 24.1
-<a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a>parse                     1.20.2
-<a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a>pathable                  0.4.3
-<a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a>pathspec                  0.12.1
-<a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a>pip                       24.3.1
-<a id="__codelineno-4-75" name="__codelineno-4-75" href="#__codelineno-4-75"></a>pip-tools                 7.4.1
-<a id="__codelineno-4-76" name="__codelineno-4-76" href="#__codelineno-4-76"></a>platformdirs              4.3.6
-<a id="__codelineno-4-77" name="__codelineno-4-77" href="#__codelineno-4-77"></a>pluggy                    1.5.0
-<a id="__codelineno-4-78" name="__codelineno-4-78" href="#__codelineno-4-78"></a>portalocker               2.10.1
-<a id="__codelineno-4-79" name="__codelineno-4-79" href="#__codelineno-4-79"></a>prance                    23.6.21.0
-<a id="__codelineno-4-80" name="__codelineno-4-80" href="#__codelineno-4-80"></a>priority                  2.0.0
-<a id="__codelineno-4-81" name="__codelineno-4-81" href="#__codelineno-4-81"></a>propcache                 0.2.0
-<a id="__codelineno-4-82" name="__codelineno-4-82" href="#__codelineno-4-82"></a>psycopg                   3.2.3
-<a id="__codelineno-4-83" name="__codelineno-4-83" href="#__codelineno-4-83"></a>psycopg-binary            3.2.3
-<a id="__codelineno-4-84" name="__codelineno-4-84" href="#__codelineno-4-84"></a>psycopg-pool              3.2.3
-<a id="__codelineno-4-85" name="__codelineno-4-85" href="#__codelineno-4-85"></a>pycparser                 2.22
-<a id="__codelineno-4-86" name="__codelineno-4-86" href="#__codelineno-4-86"></a>pydantic                  2.9.2
-<a id="__codelineno-4-87" name="__codelineno-4-87" href="#__codelineno-4-87"></a>pydantic_core             2.23.4
-<a id="__codelineno-4-88" name="__codelineno-4-88" href="#__codelineno-4-88"></a>pydantic-settings         2.6.0
-<a id="__codelineno-4-89" name="__codelineno-4-89" href="#__codelineno-4-89"></a>PyJWT                     2.9.0
-<a id="__codelineno-4-90" name="__codelineno-4-90" href="#__codelineno-4-90"></a>pymongo                   4.9.2
-<a id="__codelineno-4-91" name="__codelineno-4-91" href="#__codelineno-4-91"></a>pyproject_hooks           1.2.0
-<a id="__codelineno-4-92" name="__codelineno-4-92" href="#__codelineno-4-92"></a>pytest                    8.3.3
-<a id="__codelineno-4-93" name="__codelineno-4-93" href="#__codelineno-4-93"></a>pytest-asyncio            0.24.0
-<a id="__codelineno-4-94" name="__codelineno-4-94" href="#__codelineno-4-94"></a>pytest-cov                5.0.0
-<a id="__codelineno-4-95" name="__codelineno-4-95" href="#__codelineno-4-95"></a>python-dateutil           2.9.0.post0
-<a id="__codelineno-4-96" name="__codelineno-4-96" href="#__codelineno-4-96"></a>python-dotenv             1.0.1
-<a id="__codelineno-4-97" name="__codelineno-4-97" href="#__codelineno-4-97"></a>python-multipart          0.0.15
-<a id="__codelineno-4-98" name="__codelineno-4-98" href="#__codelineno-4-98"></a>pywin32                   308
-<a id="__codelineno-4-99" name="__codelineno-4-99" href="#__codelineno-4-99"></a>PyYAML                    6.0.2
-<a id="__codelineno-4-100" name="__codelineno-4-100" href="#__codelineno-4-100"></a>referencing               0.30.2
-<a id="__codelineno-4-101" name="__codelineno-4-101" href="#__codelineno-4-101"></a>regex                     2023.12.25
-<a id="__codelineno-4-102" name="__codelineno-4-102" href="#__codelineno-4-102"></a>requests                  2.32.3
-<a id="__codelineno-4-103" name="__codelineno-4-103" href="#__codelineno-4-103"></a>rfc3339-validator         0.1.4
-<a id="__codelineno-4-104" name="__codelineno-4-104" href="#__codelineno-4-104"></a>rpds-py                   0.20.0
-<a id="__codelineno-4-105" name="__codelineno-4-105" href="#__codelineno-4-105"></a>ruamel.yaml               0.18.6
-<a id="__codelineno-4-106" name="__codelineno-4-106" href="#__codelineno-4-106"></a>ruamel.yaml.clib          0.2.12
-<a id="__codelineno-4-107" name="__codelineno-4-107" href="#__codelineno-4-107"></a>semantic-kernel           0.9.1b1
-<a id="__codelineno-4-108" name="__codelineno-4-108" href="#__codelineno-4-108"></a>setuptools                75.3.0
-<a id="__codelineno-4-109" name="__codelineno-4-109" href="#__codelineno-4-109"></a>six                       1.16.0
-<a id="__codelineno-4-110" name="__codelineno-4-110" href="#__codelineno-4-110"></a>sniffio                   1.3.1
-<a id="__codelineno-4-111" name="__codelineno-4-111" href="#__codelineno-4-111"></a>starlette                 0.41.2
-<a id="__codelineno-4-112" name="__codelineno-4-112" href="#__codelineno-4-112"></a>tiktoken                  0.8.0
-<a id="__codelineno-4-113" name="__codelineno-4-113" href="#__codelineno-4-113"></a>tqdm                      4.66.5
-<a id="__codelineno-4-114" name="__codelineno-4-114" href="#__codelineno-4-114"></a>typing_extensions         4.12.2
-<a id="__codelineno-4-115" name="__codelineno-4-115" href="#__codelineno-4-115"></a>tzdata                    2024.2
-<a id="__codelineno-4-116" name="__codelineno-4-116" href="#__codelineno-4-116"></a>urllib3                   2.2.3
-<a id="__codelineno-4-117" name="__codelineno-4-117" href="#__codelineno-4-117"></a>uvicorn                   0.32.0
-<a id="__codelineno-4-118" name="__codelineno-4-118" href="#__codelineno-4-118"></a>Werkzeug                  3.0.6
-<a id="__codelineno-4-119" name="__codelineno-4-119" href="#__codelineno-4-119"></a>wheel                     0.44.0
-<a id="__codelineno-4-120" name="__codelineno-4-120" href="#__codelineno-4-120"></a>wsproto                   1.2.0
-<a id="__codelineno-4-121" name="__codelineno-4-121" href="#__codelineno-4-121"></a>xmlformatter              0.2.6
-<a id="__codelineno-4-122" name="__codelineno-4-122" href="#__codelineno-4-122"></a>yarl                      1.16.0
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>Package                              Version
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>------------------------------------ -----------
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>aenum                                3.1.15
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>agefreighter                         0.7.5
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>ageqrp                               0.1.0
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>     ... many lines omitted here ...
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>wsproto                              1.2.0
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>yarl                                 1.16.0
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>zipp                                 3.21.0
 </code></pre></div>
 <h3 id="363-activate-the-python-virtual-environment-venv">3.6.3 Activate the Python Virtual Environment (venv)</h3>
 <p><strong>Each time</strong> you navigate to the python directory of this project
@@ -1265,14 +1214,150 @@ This is a useful visual cue.</p>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>PS ...\python&gt; .\venv\Scripts\Activate.ps1
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>(venv) PS ...\python&gt;
 </code></pre></div>
+<p>If you find this tedious to type often, you can optionally create an alias
+in your <strong>Microsoft.PowerShell_profile.ps1</strong> file like the following.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>New-Alias va .\venv\Scripts\activate
+</code></pre></div>
+<p>With this alias, you simply have to type <strong>va</strong> (i.e - virtualenv activate)
+instead of typing out ".\venv\Scripts\Activate.ps1".</p>
+<p>See https://learn.microsoft.com/en-us/powershell/scripting/learn/shell/creating-profiles?view=powershell-7.5</p>
 <h3 id="365-macos-bash-shell">3.6.5 macOS bash shell</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>[~/AIGraph4pg]$ cd python
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>[~/AIGraph4pg/python]$ source venv/bin/activate
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>(venv) [~/AIGraph4pg/python]$
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>[~/AIGraph4pg]$ cd python
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>[~/AIGraph4pg/python]$ source venv/bin/activate
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>(venv) [~/AIGraph4pg/python]$
 </code></pre></div>
 <hr />
 <h2 id="37-prepare-your-azure-postgresql-server">3.7 Prepare your Azure PostgreSQL Server</h2>
-<p>TODO</p>
+<p>In a <strong>Windows PowerShell</strong> window navigate to the python\ directory of this repo,
+execute the following command to connect to the <strong>postgres</strong>
+database in your Azure PostgreSQL server.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>.\pg.ps1 flex postgres
+</code></pre></div>
+<p>This will put you into a <strong>psql</strong> terminal, connected to your Azure PostgreSQL
+server, per the several AIG4... environment variables you set above.
+Alternatively, you can use a desktop UI such as <strong>pgAdmin4</strong> for these commands,
+but the documentation here assumes psql.</p>
+<p>Your terminal prompt should now look like this, indicating that you are connected
+to the postgres database, and psql is awaiting a command.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>postgres=&gt;
+</code></pre></div>
+<p>Next, confirm the user, database, and host your psql terminal is connected to.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>postgres=&gt; \conninfo
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>You are connected to database &quot;postgres&quot; as user &quot;chjoakim&quot; on host ...
+</code></pre></div>
+<p>You can see the list of users with the <strong>\du</strong> command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>postgres=&gt; \du
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>                                List of roles
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>   Role name    |                         Attributes
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>----------------+------------------------------------------------------------
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a> azure_pg_admin | Cannot login
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a> azuresu        | Superuser, Create role, Create DB, Replication, Bypass RLS
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a> chjoakim       | Create role, Create DB, Bypass RLS
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a> replication    | Replication
+</code></pre></div>
+<p>You can create and alter additional database users with these commands.
+In these examples, elsa is the user ID.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>postgres=&gt; create role elsa with createdb login password &#39;&lt;secret&gt;&#39;;
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>postgres=&gt; alter user elsa with password &#39;&lt;new-password&gt;&#39;;
+</code></pre></div>
+<p>Next, list the databases in the server.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>postgres=&gt; SELECT datname FROM pg_catalog.pg_database;
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>      datname
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>-------------------
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a> azure_maintenance
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a> template1
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a> postgres
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a> azure_sys
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a> template0
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a> dev
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>(6 rows)
+</code></pre></div>
+<p>If the <strong>dev</strong> database is not present, create it as shown here.
+Replace chjoakim with your ID.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>postgres=&gt; create database dev owner chjoakim;
+</code></pre></div>
+<h2 id="371-configure-the-dev-database">3.7.1 Configure the dev database</h2>
+<p>First, switch to the dev database with this command.
+Notice how the prompt changes to 'dev-&gt;'/</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>postgres=&gt; \connect dev
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>You are now connected to database &quot;dev&quot; as user ...
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>dev=&gt;
+</code></pre></div>
+<p>Enable the four PostgreSQL extensions that we'll use in this application
+with the <strong>CREATE EXTENSION</strong> command.</p>
+<p>If you created your Azure PostgreSQL server manually, rather than
+with the az CLI script in this repo, you'll first have to enable
+these extensions as shown in this screen shot:</p>
+<p align="center">
+  <img src="img/enable-extensions.png" width="70%">
+</p>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>dev=&gt; CREATE EXTENSION IF NOT EXISTS age CASCADE;
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>CREATE EXTENSION
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>dev=&gt; CREATE EXTENSION IF NOT EXISTS vector CASCADE;
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>CREATE EXTENSION
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>dev=&gt; CREATE EXTENSION IF NOT EXISTS PG_DISKANN CASCADE;
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>CREATE EXTENSION
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>dev=&gt; CREATE EXTENSION IF NOT EXISTS AZURE_AI CASCADE;
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>CREATE EXTENSION
+</code></pre></div>
+<p>Verify that these extensions are created with this query.
+You should see similar output.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>dev=&gt; SELECT oid, extname FROM pg_extension order by extname;
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  oid  |  extname
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>-------+------------
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a> 25081 | age
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a> 25687 | azure_ai
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a> 25668 | pg_diskann
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a> 14258 | plpgsql
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a> 24760 | vector
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>(5 rows)
+</code></pre></div>
+<p>This is a similar query:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>dev=&gt; show azure.extensions;
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>        azure.extensions
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>--------------------------------
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a> AGE,VECTOR,PG_DISKANN,AZURE_AI
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>(1 row)
+</code></pre></div>
+<h2 id="372-configure-the-dev-database-for-apache-age-graphs">3.7.2 Configure the dev database for Apache AGE graphs</h2>
+<p>To make AGE functionality easier to use for a given user,
+you can set their default <strong>search_path</strong> as shown below.
+Replace chjoakim with your ID.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>dev=&gt; alter user chjoakim set search_path=&#39;public&#39;,&#39;ag_catalog&#39;,&quot;$user&quot;;
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>ALTER ROLE
+</code></pre></div>
+<p>You can list the AGE graphs with this query.
+It should initially return zero rows.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>dev=&gt; SELECT * FROM ag_catalog.ag_graph;
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a> graphid | name | namespace
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>---------+------+-----------
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>(0 rows)
+</code></pre></div>
+<p>Create the Apache AGE <strong>legal_cases</strong> graph, enter this command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>dev=&gt; SELECT ag_catalog.create_graph(&#39;legal_cases&#39;);
+</code></pre></div>
+<p>List the AGE graphs again, and legal_cases should be in the list.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>dev=&gt; SELECT * FROM ag_catalog.ag_graph;
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a> graphid |    name     |  namespace
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>---------+-------------+-------------
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>   25768 | legal_cases | legal_cases
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>(1 row)
+</code></pre></div>
+<p>This graph can be dropped at a later date with this command,
+but don't do this now.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>dev=&gt; SELECT * FROM ag_catalog.drop_graph(&#39;legal_cases&#39;, true);
+</code></pre></div>
+<p>You can quit and close the psql program with the <strong>\q</strong> command.
+Notice how it puts you back into the original python\ directory
+and the virtual environment is activated as indicated with the (venv)
+prompt prefix.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>dev=&gt; \q
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>(venv) PS ...\python&gt;
+</code></pre></div>
 <hr />
 <h2 id="38-load-azure-postgresql-with-the-python-libraries-dataset">3.8 Load Azure PostgreSQL with the Python Libraries Dataset</h2>
 <p>The dataset is a curated set of information on 10,000+ <strong>Python Libraries</strong>
@@ -1287,35 +1372,189 @@ application developers, and data scientists.</p>
 <h3 id="381-mainpy">3.8.1 main.py</h3>
 <p>This is the Python program (i.e. - <em>.py suffix) that implements the
 </em><em>"console app"</em><em> in this project.  You can see its </em><em>help content</em>*
-by executing the following:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python&gt; python .\main.py help
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>...
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Usage:
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    python main.py log_defined_env_vars
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    python main.py list_pg_extensions_and_settings
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    python main.py delete_define_libraries_table
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    python main.py load_libraries_table
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    python main.py create_libraries_table_vector_index sql/libraries_ivfflat_index.sql
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    python main.py vector_search_similar_libraries flask 10
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    python main.py vector_search_words word1 word2 word3 etc
-<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    python main.py vector_search_words running calculator miles kilometers pace speed mph
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    python main.py load_age_graph ../data/cypher/us_openflights.json
-<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>Options:
-<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>  -h --help     Show this screen.
-<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>  --version     Show version.
+by executing the following command.  You should see similar output
+though some lines have been omitted in this documentation.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>(venv) PS ...\python&gt; python main.py help
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>...
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>Usage:
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>    python main.py log_defined_env_vars
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>    python main.py list_pg_extensions_and_settings
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>    python main.py delete_define_legal_cases_table
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>    python main.py query_legal_cases_table
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    python main.py relational_search_case_id 594079
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>    python main.py load_age_graph_with_agefreighter &lt;graph-naame&gt; &lt;do-load-bool&gt;
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>    python main.py load_age_graph_with_agefreighter legal_cases_af1 true
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>    python main.py execute_graph_validation_queries legal_cases_af1
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>    python main.py vector_search_similar_cases 594079 10
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>    python main.py vector_search_words word1 word2 word3 etc
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>    python main.py vector_search_words Woolworth Co. v. City of Seattle
 </code></pre></div>
+<p>Display the several <strong>AIG4... environment variables</strong> with this command.
+Visually validate that they are correct (i.e. - pointing to your
+Azure PostgreSQL server, your Azure OpenAI service, etc.).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>(venv) PS ...\python&gt; python main.py log_defined_env_vars
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>... output not shown here ...
+</code></pre></div>
+<p>Edit and execute the <strong>set-env-vars-sample.ps1</strong> script if the 
+environment variables have no values, or incorrect values.</p>
 <h3 id="382-mainpy-delete_define_libraries_table">3.8.2 main.py - delete_define_libraries_table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>python&gt; python .\main.py delete_define_libraries_table
+<p>Delete and recreate (i.e. 'delete-define') the legal_cases relational table
+with the following command.  It uses file <strong>python/sql/legal_cases_ddl.sql</strong>
+in the repo.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>python&gt; python .\main.py delete_define_legal_cases_table
 </code></pre></div>
-<h3 id="383-mainpy-load_libraries_table">3.8.3 main.py - load_libraries_table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python&gt; python .\main.py load_libraries_table
+<p>In <strong>psql</strong> you can verify that the table and related indexes 
+were created with the <strong>\d</strong> command.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>dev=&gt; \d legal_cases
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>                                          Table &quot;public.legal_cases&quot;
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>      Column       |          Type           | Collation | Nullable |                 Default
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>-------------------+-------------------------+-----------+----------+-----------------------------------------
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a> id                | bigint                  |           | not null | nextval(&#39;legal_cases_id_seq&#39;::regclass)
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a> name              | character varying(1024) |           |          |
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a> name_abbreviation | character varying(1024) |           |          |
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a> case_url          | character varying(1024) |           |          |
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a> decision_date     | date                    |           |          |
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a> court_name        | character varying(1024) |           |          |
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a> citation_count    | integer                 |           |          |
+<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a> text_data         | text                    |           |          |
+<a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a> json_data         | jsonb                   |           |          |
+<a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a> embedding         | vector(1536)            |           |          |
+<a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a>Indexes:
+<a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a>    &quot;legal_cases_pkey&quot; PRIMARY KEY, btree (id)
+<a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a>    &quot;idx_legal_cases_citation_count&quot; btree (citation_count)
+<a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a>    &quot;idx_legal_cases_court_name&quot; btree (court_name)
+<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a>    &quot;idx_legal_cases_decision_date&quot; btree (decision_date)
+<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a>    &quot;idx_legal_cases_diskann_embedding&quot; diskann (embedding vector_cosine_ops)
+<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a>    &quot;idx_legal_cases_json_data_gin&quot; gin (json_data)
+<a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a>    &quot;idx_legal_cases_name_abbreviation&quot; btree (name_abbreviation)
 </code></pre></div>
-<h3 id="384-mainpy-vector_search_similar_libraries">3.8.4 main.py - vector_search_similar_libraries</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>python&gt; python .\main.py vector_search_similar_libraries flask 10
+<h3 id="383-psql-copy-into-the-legal_cases-table">3.8.3 psql copy into the legal_cases table</h3>
+<p>The COPY protocol is very fast and efficient in PostgreSQL.
+We use it here to load the curated dataset in the repo.</p>
+<p>Since this curated dataset is large, it is stored in the GitHub
+repo as a zip file: <strong>data/legal_cases/legal_cases.zip</strong>.</p>
+<p>One way to do this is with <strong>Windows Explorer</strong>, select the zip file,
+right mouse, then Extract All... 
+Alternatively, if you have Java installed, you can use the jar command.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>PS ...\legal_cases&gt; jar tvf .\legal_cases.zip
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>155009537 Mon Dec 09 10:48:22 EST 2024 legal_cases.sql
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>PS ...\legal_cases&gt; jar xvf .\legal_cases.zip
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a> inflated: legal_cases.sql
 </code></pre></div>
-<h3 id="385-mainpy-vector_search_words">3.8.5 main.py - vector_search_words</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python&gt; python .\main.py vector_search_words web framework asynchronous swagger endpoints
+<p>The unzipped file is <strong>legal_cases.sql</strong>, which is used in the following
+COPY command in <strong>psql</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>dev=&gt; \copy legal_cases FROM &#39;&lt;fully-qualiied-filename&gt;&#39; DELIMITER E&#39;\t&#39;
+</code></pre></div>
+<p>Your fully-qualiied-filename might look like the following.
+This output indicates that 2679 rows were loaded into the table.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>dev=&gt; \copy legal_cases FROM C:\Users\chjoakim\github\AIGraph4pg\data\legal_cases\legal_cases.sql DELIMITER E&#39;\t&#39;
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>COPY 2679
+</code></pre></div>
+<p>Execute this query in psql to confirm that the table does indeed contain 2679 rows.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>dev=&gt; select count(*) from legal_cases;
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a> count
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>-------
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>  2679
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>(1 row)
+</code></pre></div>
+<h3 id="385-load-the-legal_cases-age-graph">3.8.5 Load the legal_cases AGE graph</h3>
+<p>This process is executed with python, rather than psql, with the
+following command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>(venv) PS ...\python&gt; python main.py load_age_graph_with_agefreighter legal_cases true
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>2025-02-10 17:22:22,035 - Running on Windows, setting WindowsSelectorEventLoopPolicy
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>2025-02-10 17:22:22,036 - DBService#initialze_pool creating new...
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>...
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>2025-02-10 17:22:22,439 - AGEGraphLoader#load_legal_cases_dataset: legal_cases True
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>2025-02-10 17:22:22,440 - freighter: &lt;agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60&gt;
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>2025-02-10 17:22:22,906 - freighter connected: &lt;agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60&gt;
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>2025-02-10 17:22:25,358 - freighter loaded
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>2025-02-10 17:22:25,358 - closing freighter...
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>2025-02-10 17:22:25,358 - closed
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>2025-02-10 17:22:25,359 - AGEGraphLoader#execute_validation_queries: legal_cases
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>2025-02-10 17:22:25,359 - DBService#execute_query, stmt: select graphid, name, namespace from ag_catalog.ag_graph order by graphid;
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a>[33990, &#39;legal_cases&#39;, &#39;legal_cases&#39;]
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>2025-02-10 17:22:25,460 - DBService#execute_query, stmt: select * from ag_catalog.cypher(&#39;legal_cases&#39;, $$ MATCH (n) RETURN count(n) as count $$) as (v agtype);
+<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a>2679
+<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a>2025-02-10 17:22:25,565 - DBService#execute_query, stmt: select * from ag_catalog.cypher(&#39;legal_cases&#39;, $$ MATCH ()-[r]-&gt;() RETURN count(r) as count $$) as (e agtype);
+<a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a>15998
+<a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a>2025-02-10 17:22:25,684 - DBService#execute_query, stmt: select * from ag_catalog.cypher(&#39;legal_cases&#39;, $$ MATCH (c) RETURN c limit 3 $$) as (v agtype);
+<a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a>{&#39;id&#39;: 844424930131969, &#39;label&#39;: &#39;Case&#39;, &#39;properties&#39;: {&#39;id&#39;: &#39;1017660&#39;, &#39;name&#39;: &#39;United Mutual Savings Bank v. Riebli&#39;, &#39;court&#39;: &#39;Washington Supreme Court&#39;, &#39;case_url&#39;: &#39;https://static.case.law/wash-2d/55/cases/0816-01.json&#39;, &#39;decision_year&#39;: &#39;1960&#39;, &#39;citation_count&#39;: &#39;14&#39;}}
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>{&#39;id&#39;: 844424930131970, &#39;label&#39;: &#39;Case&#39;, &#39;properties&#39;: {&#39;id&#39;: &#39;594079&#39;, &#39;name&#39;: &#39;Martindale Clothing Co. v. Spokane &amp; Eastern Trust Co.&#39;, &#39;court&#39;: &#39;Washington Supreme Court&#39;, &#39;case_url&#39;: &#39;https://static.case.law/wash/79/cases/0643-01.json&#39;, &#39;decision_year&#39;: &#39;1914&#39;, &#39;citation_count&#39;: &#39;5&#39;}}
+<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a>{&#39;id&#39;: 844424930131971, &#39;label&#39;: &#39;Case&#39;, &#39;properties&#39;: {&#39;id&#39;: &#39;552848&#39;, &#39;name&#39;: &#39;Lynch v. Ninemire Packing Co.&#39;, &#39;court&#39;: &#39;Washington Supreme Court&#39;, &#39;case_url&#39;: &#39;https://static.case.law/wash/63/cases/0423-01.json&#39;, &#39;decision_year&#39;: &#39;1911&#39;, &#39;citation_count&#39;: &#39;7&#39;}}
+<a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a>2025-02-10 17:22:25,794 - DBService#execute_query, stmt: select * from ag_catalog.cypher(&#39;legal_cases&#39;, $$ MATCH ()-[r]-() RETURN r limit 3 $$) as (r agtype);
+<a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a>{&#39;id&#39;: 1125899906842625, &#39;label&#39;: &#39;cites&#39;, &#39;end_id&#39;: 844424930131970, &#39;start_id&#39;: 844424930131969, &#39;properties&#39;: {&#39;case_id&#39;: &#39;1017660&#39;, &#39;other_id&#39;: &#39;594079&#39;, &#39;case_name&#39;: &#39;United Mutual Savings Bank v. Riebli&#39;, &#39;case_year&#39;: &#39;1960&#39;, &#39;other_name&#39;: &#39;Martindale Clothing Co. v. Spokane &amp; Eastern Trust Co.&#39;, &#39;other_year&#39;: &#39;1914&#39;}}
+<a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a>{&#39;id&#39;: 1407374883553281, &#39;label&#39;: &#39;cited_by&#39;, &#39;end_id&#39;: 844424930131969, &#39;start_id&#39;: 844424930131970, &#39;properties&#39;: {&#39;case_id&#39;: &#39;594079&#39;, &#39;other_id&#39;: &#39;1017660&#39;, &#39;case_name&#39;: &#39;Martindale Clothing Co. v. Spokane &amp; Eastern Trust Co.&#39;, &#39;case_year&#39;: &#39;1914&#39;, &#39;other_name&#39;: &#39;United Mutual Savings Bank v. Riebli&#39;, &#39;other_year&#39;: &#39;1960&#39;}}
+<a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a>{&#39;id&#39;: 1125899906842626, &#39;label&#39;: &#39;cites&#39;, &#39;end_id&#39;: 844424930131971, &#39;start_id&#39;: 844424930131969, &#39;properties&#39;: {&#39;case_id&#39;: &#39;1017660&#39;, &#39;other_id&#39;: &#39;552848&#39;, &#39;case_name&#39;: &#39;United Mutual Savings Bank v. Riebli&#39;, &#39;case_year&#39;: &#39;1960&#39;, &#39;other_name&#39;: &#39;Lynch v. Ninemire Packing Co.&#39;, &#39;other_year&#39;: &#39;1911&#39;}}
+<a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a>2025-02-10 17:22:25,907 - DBService#close_pool, closing...
+<a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a>2025-02-10 17:22:25,908 - DBService#close_pool, closed
+</code></pre></div>
+<p>This output shows that <strong>2679 vertices and 15998 edges</strong> were loaded into the graph.</p>
+<p>The output also contains several validation queries which display several
+vertices and edges in the AGE graph.</p>
+<p>This Apache AGE graph loading functionality is implemented here with the
+<a href="https://pypi.org/project/agefreighter/">agefreighter</a> python library.
+Notice how the above loading of 2679 vertices and 15998 edges only took
+<strong>2.919 seconds</strong> from a laptop and home network (pertinent log lines shown below).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>2025-02-10 17:22:22,439 - AGEGraphLoader#load_legal_cases_dataset: legal_cases True
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>2025-02-10 17:22:22,440 - freighter: &lt;agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60&gt;
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>2025-02-10 17:22:22,906 - freighter connected: &lt;agefreighter.multicsvfreighter.MultiCSVFreighter object at 0x0000021B15073B60&gt;
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>2025-02-10 17:22:25,358 - freighter loaded
+</code></pre></div>
+<hr />
+<h2 id="39-run-the-web-application-on-your-computer">3.9 Run the Web Application on your computer</h2>
+<p>Now that you've loaded both the relational and Apache AGE graph data
+into your Azure PostgreSQL server, you can access it with a web application
+which provides a User Interface (UI).</p>
+<p>The web application is intended to run locally, but you may wish to 
+deploy it to Azure, such as to Azure Container Apps (ACA).
+This deployment process is easy, but is out-of-scope for this 
+tutorial and reference application.  You can read more about 
+Azure Container Apps here: https://learn.microsoft.com/en-us/azure/container-apps/ </p>
+<h3 id="391-run-as-a-python-process">3.9.1 Run as a Python process</h3>
+<p>Simply run the <strong>webapp.ps1</strong> script in the \python directory as shown below:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>(venv) PS ...\python&gt; .\webapp.ps1
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>activating the venv ...
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>Python 3.12.9
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>2025-02-10 09:35:41,406 - Windows platform detected, setting WindowsSelectorEventLoopPolicy
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>2025-02-10 09:35:41,407 - webapp.py started
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>2025-02-10 09:35:43,920 - Windows platform detected, setting WindowsSelectorEventLoopPolicy
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>2025-02-10 09:35:43,921 - webapp.py started
+<a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>2025-02-10 09:35:43,926 - log_defined_env_vars: {
+<a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>  &quot;AIG4PG_LLM_CONTEXT_MAX_NTOKENS&quot;: &quot;10000&quot;,
+<a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>  &quot;AIG4PG_LOG_LEVEL&quot;: &quot;info&quot;,
+<a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>
+<a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>...
+<a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>
+<a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>2025-02-10 09:35:44,301 - DBService#initialze_pool, pool opened
+<a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a>[2025-02-10 09:35:44 -0500] [6880] [INFO] Running on http://127.0.0.1:8000 (CTRL + C to quit)
+<a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a>2025-02-10 09:35:44,752 - Running on http://127.0.0.1:8000 (CTRL + C to quit)
+</code></pre></div>
+<p>You should see logging output similar to the above.</p>
+<p>Visit <strong>http://127.0.0.1:8000</strong> with your browser.  You should then see the
+home page of the UI</p>
+<h3 id="392-run-as-a-docker-container">3.9.2 Run as a Docker container</h3>
+<p>This UI application can also be executed as a Docker container
+on your desktop with <strong>docker compose</strong>.
+See the <a href="https://docs.docker.com/compose/">Docker Compose</a> docs for more info.</p>
+<p>See the <strong>python/docker-compose.yml</strong> file, and edit it as necessary.
+Docker Compose works with environment variables, which are passed in from
+your computer into the running container.</p>
+<p>In one PowerShell tab in the \python directory, enter this command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>(venv) PS ...\python&gt; 
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>docker compose -f docker-compose.yml up
+</code></pre></div>
+<p>This will download and execute the <strong>cjoakim/aigraph4pg:latest</strong>
+image that is hosted at Docker Hub.</p>
+<p>Open to your web browser to URL <strong>http://127.0.0.1:8000</strong> or <strong>http://localhost:8000</strong>
+to see the home page of the applicaton, which looks like this:</p>
+<p align="center">
+  <img src="img/ui-home-page.png" width="90%">
+</p>
+
+<p>In another PowerShell tab, also in the \python directory, enter this command
+when you want to stop the application.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>(venv) PS ...\python&gt; 
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>docker compose -f docker-compose.yml down
 </code></pre></div>
 
 

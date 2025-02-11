@@ -16,7 +16,7 @@
     
     
       
-        <title>Exploring the legal_cases schema from AIGraph4pg - AIGraph4pg</title>
+        <title>AIGraph4pg - Project Roadmap - AIGraph4pg</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#exploring-the-legal_cases-schema-from-aigraph4pg" class="md-skip">
+        <a href="#aigraph4pg-project-roadmap" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Exploring the legal_cases schema from AIGraph4pg
+              AIGraph4pg - Project Roadmap
             
           </span>
         </div>
@@ -675,108 +675,53 @@
   
 
 
-<h1 id="exploring-the-legal_cases-schema-from-aigraph4pg">Exploring the legal_cases schema from AIGraph4pg</h1>
-<p>Used pgAdmin 4, right mouse, and "Create Script" to capture
-the following content for the AIGraph4pg legal_cases graph.</p>
-<h3 id="schema">Schema</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>-- SCHEMA: legal_cases
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>-- DROP SCHEMA IF EXISTS legal_cases ;
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>CREATE SCHEMA IF NOT EXISTS legal_cases
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    AUTHORIZATION chjoakim;
-</code></pre></div>
-<h3 id="base-vertex-table">Base Vertex table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>-- Table: legal_cases._ag_label_vertex
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>-- DROP TABLE IF EXISTS legal_cases._ag_label_vertex;
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>CREATE TABLE IF NOT EXISTS legal_cases._ag_label_vertex
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>(
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    id graphid NOT NULL DEFAULT _graphid((_label_id(&#39;legal_cases&#39;::name, &#39;_ag_label_vertex&#39;::name))::integer, nextval(&#39;legal_cases._ag_label_vertex_id_seq&#39;::regclass)),
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    properties agtype NOT NULL DEFAULT agtype_build_map(),
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    CONSTRAINT _ag_label_vertex_pkey PRIMARY KEY (id)
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>)
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>TABLESPACE pg_default;
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>ALTER TABLE IF EXISTS legal_cases._ag_label_vertex
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    OWNER to chjoakim;
-</code></pre></div>
-<h3 id="base-edge-table">Base Edge Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>-- Table: legal_cases._ag_label_edge
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>-- DROP TABLE IF EXISTS legal_cases._ag_label_edge;
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>CREATE TABLE IF NOT EXISTS legal_cases._ag_label_edge
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>(
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    id graphid NOT NULL DEFAULT _graphid((_label_id(&#39;legal_cases&#39;::name, &#39;_ag_label_edge&#39;::name))::integer, nextval(&#39;legal_cases._ag_label_edge_id_seq&#39;::regclass)),
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    start_id graphid NOT NULL,
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    end_id graphid NOT NULL,
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    properties agtype NOT NULL DEFAULT agtype_build_map(),
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    CONSTRAINT _ag_label_edge_pkey PRIMARY KEY (id)
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>)
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>TABLESPACE pg_default;
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>ALTER TABLE IF EXISTS legal_cases._ag_label_edge
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    OWNER to chjoakim;
-</code></pre></div>
-<h3 id="case-table">Case Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>-- Table: legal_cases.Case
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>-- DROP TABLE IF EXISTS legal_cases.&quot;Case&quot;;
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>CREATE TABLE IF NOT EXISTS legal_cases.&quot;Case&quot;
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>(
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    -- Inherited from table legal_cases._ag_label_vertex: id graphid NOT NULL DEFAULT _graphid((_label_id(&#39;legal_cases&#39;::name, &#39;Case&#39;::name))::integer, nextval(&#39;legal_cases.&quot;Case_id_seq&quot;&#39;::regclass)),
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    -- Inherited from table legal_cases._ag_label_vertex: properties agtype NOT NULL DEFAULT agtype_build_map()
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>)
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    INHERITS (legal_cases._ag_label_vertex)
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>TABLESPACE pg_default;
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>ALTER TABLE IF EXISTS legal_cases.&quot;Case&quot;
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    OWNER to chjoakim;
-</code></pre></div>
-<h3 id="cites-table">cites Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>-- Table: legal_cases.cites
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>-- DROP TABLE IF EXISTS legal_cases.cites;
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>CREATE TABLE IF NOT EXISTS legal_cases.cites
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>(
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    -- Inherited from table legal_cases._ag_label_edge: id graphid NOT NULL DEFAULT _graphid((_label_id(&#39;legal_cases&#39;::name, &#39;cites&#39;::name))::integer, nextval(&#39;legal_cases.cites_id_seq&#39;::regclass)),
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    -- Inherited from table legal_cases._ag_label_edge: start_id graphid NOT NULL,
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    -- Inherited from table legal_cases._ag_label_edge: end_id graphid NOT NULL,
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    -- Inherited from table legal_cases._ag_label_edge: properties agtype NOT NULL DEFAULT agtype_build_map()
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>)
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    INHERITS (legal_cases._ag_label_edge)
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>TABLESPACE pg_default;
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>ALTER TABLE IF EXISTS legal_cases.cites
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    OWNER to chjoakim;
-</code></pre></div>
-<h3 id="cited_by-table">cited_by Table</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>-- Table: legal_cases.cited_by
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>-- DROP TABLE IF EXISTS legal_cases.cited_by;
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>CREATE TABLE IF NOT EXISTS legal_cases.cited_by
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>(
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    -- Inherited from table legal_cases._ag_label_edge: id graphid NOT NULL DEFAULT _graphid((_label_id(&#39;legal_cases&#39;::name, &#39;cited_by&#39;::name))::integer, nextval(&#39;legal_cases.cited_by_id_seq&#39;::regclass)),
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    -- Inherited from table legal_cases._ag_label_edge: start_id graphid NOT NULL,
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    -- Inherited from table legal_cases._ag_label_edge: end_id graphid NOT NULL,
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    -- Inherited from table legal_cases._ag_label_edge: properties agtype NOT NULL DEFAULT agtype_build_map()
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>)
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    INHERITS (legal_cases._ag_label_edge)
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>TABLESPACE pg_default;
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>ALTER TABLE IF EXISTS legal_cases.cited_by
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    OWNER to chjoakim;
-</code></pre></div>
+<h1 id="aigraph4pg-project-roadmap">AIGraph4pg - Project Roadmap</h1>
+<h2 id="initial-release-febmarch-2025">Initial Release: Feb/March 2025</h2>
+<ul>
+<li>az CLI deployment process for Azure PostgreSQL</li>
+<li>Curated and vectorized legal_cases relational and graph datasets</li>
+<li>Relational functionality with the legal_cases table</li>
+<li>JSONB functionality with the legal_cases table</li>
+<li>Simple agefreighter example; python/agefreighter_example.py</li>
+<li>AGE graph loading with the agefreighter library</li>
+<li>AGE graph queries with D3.js visualization of query results</li>
+<li>DiskANN vector search</li>
+<li>Initial generative AI for openCypher query generation</li>
+<li>Jypyter notebook for AGE and agefreighter</li>
+<li>Documentation:<ul>
+<li>Architecture diagram</li>
+<li>Integrated docs in the web app via clicking the library icon</li>
+<li>Commplete markdown docs in the \docs directory, including quick_start</li>
+<li>Complete html documentation with mkdocs</li>
+</ul>
+</li>
+<li>Docker support:<ul>
+<li>Dockerfile</li>
+<li>Docker compose script</li>
+<li>image in Docker Hub: cjoakim/aigraph4pg</li>
+</ul>
+</li>
+<li>Deploy to an AzureSamples repo</li>
+</ul>
+<h2 id="aprilmay-2025">April/May 2025</h2>
+<ul>
+<li>Add the <strong>azure_ai</strong> extension for embeddings generation<ul>
+<li>https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/generative-ai-azure-overview</li>
+</ul>
+</li>
+<li>Integrate <strong>Semantic Ranking</strong> with DiskANN vector search<ul>
+<li>https://techcommunity.microsoft.com/blog/adforpostgresql/introducing-the-semantic-ranking-solution-for-azure-database-for-postgresql/4298781</li>
+</ul>
+</li>
+</ul>
+<h2 id="backlog">Backlog</h2>
+<ul>
+<li>In-database vectorization with SLM</li>
+<li>RBAC</li>
+<li>Enhanced IDE integration</li>
+<li>Fabric Mirroring integration</li>
+<li>Integrate ongoing Azure Database for PostgreSQL innovation</li>
+</ul>
 
 
 
