@@ -18,8 +18,8 @@ Please see the [Documentation site](https://cjoakim.github.io/AIGraph4pg/)
 
 - repo: https://github.com/cjoakim/AIGraph4pg
 - docs: https://cjoakim.github.io/AIGraph4pg/
-
-Both will move to an AzureSamples or similar repo soon.
+- AGE:  https://age.apache.org/
+- Azure PostgreSQL: https://azure.microsoft.com/en-us/products/postgresql/
 
 ---
 
