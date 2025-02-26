@@ -14,6 +14,13 @@ Please see the [Documentation site](https://cjoakim.github.io/AIGraph4pg/)
   <img src="docs/img/AIGraph4pg-architecture.jpg" width="70%">
 </p>
 
+### Links
+
+- repo: https://github.com/cjoakim/AIGraph4pg
+- docs: https://cjoakim.github.io/AIGraph4pg/
+
+Both will move to an AzureSamples or similar repo soon.
+
 ---
 
 ## Directory Structure of this GitHub Repository
