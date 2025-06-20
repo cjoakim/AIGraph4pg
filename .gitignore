@@ -13,6 +13,7 @@
 **/tmp/
 **/Scripts/
 **/venv/
+**./venv/
 **/.vscode/
 **/__MACOSX/
 **/pyvenv.cfg
