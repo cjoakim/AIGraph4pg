@@ -1,45 +1,34 @@
 #!/bin/bash
 
-# Recreate the python virtual environment and reinstall libs on mac/linux.
-# Chris Joakim, 3Cloud
+# Recreate the python virtual environment and reinstall libs on mac/linux
+# using a "modern" python toolchain which includes uv and pyproject.toml
+# rather than pip and requirements.in.
+# Chris Joakim, 2025
 
-# delete previous venv directory
-mkdir -p venv 
-rm -rf venv 
+echo "Prune/ensure directories..."
+rm -rf venv    # legacy directory 
+rm -rf .venv
+rm -rf .coverage
+rm -rf .pytest_cache
+rm -rf htmlcov
+mkdir -p out 
+mkdir -p tmp 
 
-echo 'displaying python3 location ...'
-which python3
+echo "Creating a new virtual environment in .venv..."
+uv venv
 
-echo 'creating new python3 virtual environment in the venv directory ...'
-python3 -m venv venv
+echo "Activating the virtual environment..."
+source .venv/bin/activate
 
-echo 'activating new venv ...'
-source venv/bin/activate
+echo "Installing libraries..."
+uv pip install --editable .
 
-echo 'upgrading pip ...'
-python3 -m pip install --upgrade pip 
+# echo "Creating a requirements.txt file..."
+# uv pip compile pyproject.toml -o requirements.txt
 
-echo 'install pip-tools ...'
-pip install --upgrade pip-tools
+# uv tree
 
-echo 'displaying python version'
-which python
-python3 --version
+echo "Activating the virtual environment..."
+source .venv/bin/activate
 
-
-echo 'pip-compile requirements.in ...'
-pip-compile --output-file requirements.txt requirements.in
-
-echo 'pip install requirements.txt ...'
-pip install -q -r requirements.txt
-
-echo 'activating virtual environment ...'
-source venv/bin/activate
-
-echo ''
-echo 'displaying the python version ...'
-python3 --version
-
-echo ''
-echo 'listing the python libraries installed in this virtual environment ...'
-pip list
+echo "next: source .venv/bin/activate"

@@ -1,0 +1,53 @@
+[project]
+name = "AIGraph4pg"
+version = "1.1.0"
+dependencies = [
+  "Faker",
+  "Jinja2",
+  "PyYAML",
+  "agefreighter==0.9.2",
+  "ageqrp",
+  "black",
+  "docopt",
+  "fastapi",
+  "hypercorn",
+  "itsdangerous",
+  "markdownify",
+  "multidict",
+  "nltk",
+  "numpy==2.2.1",
+  "openai",
+  "pytest-asyncio",
+  "pytest-cov",
+  "pytest",
+  "python-dotenv",
+  "python-multipart",
+  "semantic-kernel==1.17.1",
+  "tiktoken",
+  "uvicorn"
+]
+requires-python = ">=3.13"
+authors = [
+  {name = "Chris Joakim", email = "christopher.joakim@gmail.com"}
+]
+maintainers = [
+  {name = "Chris Joakim", email = "christopher.joakim@gmail.com"}
+]
+description = "AIGraph4pg - tutorial app with Apache AGE graph in Azure PostgreSQL"
+readme = "readme.md"
+license = "MIT"
+license-files = ["LICEN[CS]E.*"]
+keywords = ["python", "pyproject.toml", "age", "graph", "azure", "postgresql"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Homepage = "https://github.com/cjoakim/AIGraph4pg"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+ignore = ["E722"]
