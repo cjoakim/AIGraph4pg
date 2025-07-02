@@ -7,7 +7,7 @@ from typing import Iterator
 
 # This class is used to interact with the local filesystem, such as
 # reading and writing text, csv, and json files.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class FS:

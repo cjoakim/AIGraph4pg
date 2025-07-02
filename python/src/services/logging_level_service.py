@@ -15,7 +15,7 @@ import traceback
 # ERROR:    40
 # CRITICAL: 50
 #
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class LoggingLevelService:

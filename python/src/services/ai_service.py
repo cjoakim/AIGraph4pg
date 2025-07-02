@@ -10,7 +10,7 @@ from src.services.ai_completion import AiCompletion
 from src.util.template import Template
 
 # Instances of this class are used to execute AzureOpenAI functionality.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class AiService:

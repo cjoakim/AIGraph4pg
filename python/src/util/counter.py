@@ -1,6 +1,6 @@
 # This class implements a simple key-based counter, often used
 # for data exploration and wrangling.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class Counter:

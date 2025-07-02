@@ -13,7 +13,7 @@ from src.util.fs import FS
 # This class reads file "config/sample_queries.txt" and
 # returns a list of the parsed queries.  This is used in
 # the UI to get the query text from a selected query name.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class SampleQueries:

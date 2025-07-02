@@ -8,7 +8,7 @@ import time
 # in this solution.  These are typically obtained at runtime via
 # environment variables.
 #
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class ConfigService:

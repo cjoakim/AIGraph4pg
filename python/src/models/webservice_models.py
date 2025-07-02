@@ -11,7 +11,7 @@ from typing import Any
 # See https://fastapi.tiangolo.com/tutorial/response-model/
 # See https://fastapi.tiangolo.com/tutorial/body/
 #
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class PingModel(BaseModel):

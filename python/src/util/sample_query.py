@@ -1,6 +1,6 @@
 # Instances of this class represent one of the queries
 # in the "config/sample_queries.txt" file.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class SampleQuery:

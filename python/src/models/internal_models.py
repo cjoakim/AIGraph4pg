@@ -3,7 +3,7 @@ from typing import Any
 
 # This module contains the several Pydantic "models" for objects
 # passed internally within the app, and not externally via web services.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class OwlInfo(BaseModel):

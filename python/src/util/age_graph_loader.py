@@ -18,7 +18,7 @@ from src.util.fs import FS
 
 # This class is used to load specific CSV datasets into Apache AGE graphs
 # in Azure PostgreSQL.  The implementation uses the agefreighter library.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class AGEGraphLoader:

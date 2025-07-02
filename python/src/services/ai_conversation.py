@@ -17,7 +17,7 @@ from src.services.config_service import ConfigService
 # Instances of this class represent an growing AI conversation with ChatHistory
 # and related completions and token usage.  Instances are JSON-serializable and
 # can be persisted and read from Cosmos DB.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class AiConversation:

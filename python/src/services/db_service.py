@@ -7,7 +7,7 @@ from ageqrp import QueryResultParser
 from src.services.config_service import ConfigService
 
 # Service class for interacting with Azure PostgreSQL via psycopg.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class DBService:

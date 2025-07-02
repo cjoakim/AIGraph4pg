@@ -9,7 +9,7 @@ from semantic_kernel.functions.function_result import FunctionResult
 # It collects the contents of the various Semantic Kernel and OpenAI objects
 # from a completion into a single JSON-serializable object that can be persisted
 # in Cosmos DB.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 
 class AiCompletion:
