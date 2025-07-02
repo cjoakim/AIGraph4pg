@@ -190,7 +190,7 @@ class ConfigService:
 
     @classmethod
     def azure_openai_version(cls) -> str:
-        return cls.envvar("AIG4PG_OPENAI_VERSION", "2023-12-01-preview")
+        return cls.envvar("AIG4PG_OPENAI_VERSION", "2023-05-15")
 
     @classmethod
     def azure_openai_completions_deployment(cls) -> str:
