@@ -17,7 +17,7 @@ Options:
 """
 
 # THIS SCRIPT IS FOR THE DEVELOPMENT OF AIGRAPH4PG, NOT FOR END-USERS.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 import logging
 import os

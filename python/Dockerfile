@@ -11,7 +11,7 @@ EXPOSE  8001
 CMD     ["uvicorn", "webapp:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # This file contains the instructions for building the Docker image.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 #
 # Developer Notes:
 # docker build -t cjoakim/aigraph4pg .

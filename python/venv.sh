@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Recreate the python virtual environment and reinstall libs on mac/linux.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 # delete previous venv directory
 mkdir -p venv 

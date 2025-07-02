@@ -10,7 +10,7 @@ Options:
 # Simple example of using the agefreighter library to load an AGE graph
 # using the Countries and Cities data from the data/countries/ directory.
 #
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 import asyncio
 import logging

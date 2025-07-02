@@ -1,7 +1,7 @@
 # Start the web app, running within the hypercorn server.
 # Entry point is webapp.py, 'app' is the FastAPI object.
 # hypercorn enables restarting the app as the Python code changes.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 # ensure that the tmp/ directory exists
 New-Item -ItemType Directory -Force -Path .\tmp | out-null

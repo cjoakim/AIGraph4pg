@@ -2,7 +2,7 @@
 
     <description>
         Apache Ant script to create a zip file backup of this project.
-        Chris Joakim, Microsoft
+        Chris Joakim, 3Cloud
         Use: ant -f backup.xml
     </description>
 

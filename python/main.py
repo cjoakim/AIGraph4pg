@@ -17,7 +17,7 @@ Options:
 """
 
 # This script implements "console app" functionality for the AIG4PG project.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 import asyncio
 import json

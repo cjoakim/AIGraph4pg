@@ -4,7 +4,7 @@
 # for the app_common package, with code coverage.
 # Note: The Graph microservice should be running on localhost
 # when these tests are executed.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 mkdir -p tmp
 

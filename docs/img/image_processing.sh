@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Process images with ImageMagick.
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 # Normalize the raw image sizes
 convert -thumbnail 500 apache-age-logo.png  age-500.jpeg

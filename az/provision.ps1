@@ -1,6 +1,6 @@
 # Provisions an Azure PostgreSQL Server using the Azure CLI.
 # See https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 $config_json_file = ".\provision-config.json"
 
@@ -116,6 +116,8 @@ if (cli_arg_present $args "provision") {
         --name $resource_group `
         --location $azure_region $az_verbose_flag > .\tmp\az_group_create.json
 
+    # Version 16 supports AGE, version 17 currently doesn't.
+
     Write-Output 'az postgres flexible-server create ...'
     az postgres flexible-server create `
         --subscription $azure_subscription `
@@ -123,6 +125,7 @@ if (cli_arg_present $args "provision") {
         --name $pg_server_name `
         --sku-name $pg_sku_name `
         --tier GeneralPurpose `
+        --version 16 `
         --storage-size 512 `
         --performance-tier P30 `
         --high-availability $pg_high_availability `

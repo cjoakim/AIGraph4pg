@@ -3,7 +3,7 @@
     <description>
         Apache Ant script to create a zip data files, containing the
         primary PostgreSQL datasets, for storage in GitHub.
-        Chris Joakim, Microsoft
+        Chris Joakim, 3Cloud
         Use: ant -f zip_data_files.xml
     </description>
 

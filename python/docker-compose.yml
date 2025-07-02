@@ -2,7 +2,7 @@
 # Use of this script:
 #   docker compose -f docker-compose.yml up
 #   docker compose -f docker-compose.yml down  (in a second terminal window)
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 services:
 

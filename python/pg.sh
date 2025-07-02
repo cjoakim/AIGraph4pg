@@ -10,7 +10,7 @@
 # Execute the following command in a bash terminal to see script usage:
 # (venv) PS ...\python> ./pg.sh help
 #
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 ENVNAME="$1"
 DBNAME="$2"
