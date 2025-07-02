@@ -2,7 +2,7 @@
 
 # Provisions an Azure PostgreSQL Server using the Azure CLI.
 # See https://learn.microsoft.com/en-us/cli/azure/get-started-with-azure-cli
-# Chris Joakim, Microsoft
+# Chris Joakim, 3Cloud
 
 mkdir -p tmp
 json_data=$(cat provision-config.json)
