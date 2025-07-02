@@ -9,7 +9,7 @@
 mkdir -p tmp/
 
 echo 'activating the venv ...'
-source venv/bin/activate
+source .venv/bin/activate
 python --version
 
 # start the web application on port 8080
