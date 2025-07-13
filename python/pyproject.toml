@@ -17,6 +17,7 @@ dependencies = [
   "nltk",
   "numpy==2.2.1",
   "openai",
+  "psycopg[binary,pool]",
   "pytest-asyncio",
   "pytest-cov",
   "pytest",
